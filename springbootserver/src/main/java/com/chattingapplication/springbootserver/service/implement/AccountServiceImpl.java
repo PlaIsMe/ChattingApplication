@@ -1,4 +1,4 @@
-package com.chattingapplication.service.implement;
+package com.chattingapplication.springbootserver.service.implement;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.chattingapplication.entity.AccountEntity;
-import com.chattingapplication.model.Account;
-import com.chattingapplication.repository.AccountRepository;
-import com.chattingapplication.service.interfaces.AccountService;
+import com.chattingapplication.springbootserver.entity.AccountEntity;
+import com.chattingapplication.springbootserver.model.Account;
+import com.chattingapplication.springbootserver.repository.AccountRepository;
+import com.chattingapplication.springbootserver.service.interfaces.AccountService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

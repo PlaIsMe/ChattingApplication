@@ -1,4 +1,4 @@
-package com.chattingapplication.entity;
+package com.chattingapplication.springbootserver.entity;
 
 import java.time.LocalDateTime;
 

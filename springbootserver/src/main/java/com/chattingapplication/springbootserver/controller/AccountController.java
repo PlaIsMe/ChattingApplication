@@ -1,4 +1,4 @@
-package com.chattingapplication.controller;
+package com.chattingapplication.springbootserver.controller;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chattingapplication.model.Account;
-import com.chattingapplication.service.interfaces.AccountService;
+import com.chattingapplication.springbootserver.model.Account;
+import com.chattingapplication.springbootserver.service.interfaces.AccountService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

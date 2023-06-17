@@ -1,8 +1,10 @@
-package com.chattingapplication.service.interfaces;
+package com.chattingapplication.springbootserver.service.interfaces;
 
 import java.util.List;
 
-import com.chattingapplication.model.Account;
+import com.chattingapplication.springbootserver.model.Account;
+
+
 
 public interface AccountService {
   List<Account> getAllAccounts();
