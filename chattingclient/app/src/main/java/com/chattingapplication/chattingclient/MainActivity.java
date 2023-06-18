@@ -61,19 +61,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void unused) {
             super.onPostExecute(unused);
-//            new Thread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    while (clientFd.isConnected()) {
-//                        try {
-//                            response = dIn.readUTF();
-//                            handleResponse(response);
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
-//                    }
-//                }
-//            }).start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (clientFd.isConnected()) {
+                        try {
+                            response = dIn.readUTF();
+                            handleResponse(response);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            }).start();
         }
     }
 
