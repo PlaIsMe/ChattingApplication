@@ -14,7 +14,6 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,11 +28,14 @@ public class UserEntity {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
+    @OneToOne(mappedBy = "user")
+    private AccountEntity account;
+
     @Column(name = "last_name", nullable = false, length = 40)
     private String lastName;
 
     @Column(name = "first_name", nullable = false, length = 40)
-    private String fistName;
+    private String firstName;
 
     @Column(name = "avatar", nullable = true, length = 300)
     private String avatar;
@@ -44,10 +46,6 @@ public class UserEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "dob", nullable = true)
     private LocalDateTime dob;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "account_id", referencedColumnName = "id")
-    private AccountEntity account;
 
     @ManyToMany
     @JoinTable(

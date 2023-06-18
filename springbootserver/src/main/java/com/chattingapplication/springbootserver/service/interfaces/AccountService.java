@@ -12,4 +12,5 @@ public interface AccountService {
   boolean deleteAccount(Long accountId) throws Exception;
   Account updateAccount(Long accountId, Account account) throws Exception;
   Account getAccountById(Long accountId) throws Exception;
+  Account loginAccount(Account account) throws Exception;
 }

@@ -42,6 +42,14 @@ public class AccountController {
         return accountService.createAccount(account);
     }
 
+    @PostMapping(path = "/signup")
+    public Account loginAccount(@Valid @RequestBody Account account, BindingResult result) throws Exception {
+        if (result.hasErrors()){
+            throw new Exception(result.getAllErrors().get(0).getDefaultMessage());
+        }
+        return accountService.loginAccount(account);
+    }
+
     @DeleteMapping(path = "{accountId}")
     public void deleteAccount(@PathVariable("accountId") Long accountId) throws Exception {
         accountService.deleteAccount(accountId);

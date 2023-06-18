@@ -2,6 +2,9 @@ package com.chattingapplication.springbootserver.model;
 
 import java.time.LocalDateTime;
 
+import com.chattingapplication.springbootserver.entity.ChatRoomEntity;
+import com.chattingapplication.springbootserver.entity.UserEntity;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,4 +22,6 @@ public class Message {
     private String content;
 
     private LocalDateTime createAt;
+    private UserEntity user;
+    private ChatRoomEntity chatRoom;
 }

@@ -39,24 +39,24 @@
             app:layout_constraintTop_toBottomOf="@+id/editTxtEmail" />
 
         <Button
-            android:id="@+id/btnRegister"
+            android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"
-            android:onClick="register"
-            android:text="Register"
+            android:onClick="login"
+            android:text="Login"
             app:layout_constraintEnd_toEndOf="@+id/editTxtPassword"
             app:layout_constraintStart_toStartOf="@+id/editTxtPassword"
             app:layout_constraintTop_toBottomOf="@+id/editTxtPassword" />
 
         <TextView
-            android:id="@+id/txtInformLogin"
+            android:id="@+id/txtInformRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Already have an account? Login now"
-            android:onClick="swapLogin"
-            app:layout_constraintBottom_toTopOf="@+id/btnRegister"
+            android:text="New user? Register now"
+            android:onClick="swapRegister"
+            app:layout_constraintBottom_toTopOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="@+id/editTxtPassword"
             app:layout_constraintStart_toStartOf="@+id/editTxtPassword"
             app:layout_constraintTop_toBottomOf="@+id/editTxtPassword" />

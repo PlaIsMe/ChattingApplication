@@ -68,6 +68,18 @@ public class ServerService {
         ServerService.socketSend(clientHandleService, "registerResponse", response);
     }
 
+    public static void loginRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
+        String response = RequestService.postRequest("account/signup", jsonString);
+        Gson gson = new Gson();
+        try {
+            Account currentAccount = gson.fromJson(response, Account.class);
+            clientHandleService.setClientAccount(currentAccount);
+        } catch (JsonSyntaxException e) {
+
+        }
+        ServerService.socketSend(clientHandleService, "loginResponse", response);
+    }
+
 
     public static void handleRequest(ClientHandleService clientHandleService, String jsonRequest) throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException {
         System.out.println(jsonRequest);

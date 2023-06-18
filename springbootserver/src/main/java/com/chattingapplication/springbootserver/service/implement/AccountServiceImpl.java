@@ -31,7 +31,8 @@ public class AccountServiceImpl implements AccountService {
                 account.getEmail(),
                 account.getPassword(),
                 account.getCreatedAt(),
-                account.getUpdatedAt()
+                account.getUpdatedAt(),
+                account.getUser()
             )).collect(Collectors.toList());
     }
 
@@ -95,5 +96,25 @@ public class AccountServiceImpl implements AccountService {
             throw new Exception("Account not found!");
         }
     }
+
+    @Override
+    public Account loginAccount(Account account) throws Exception {
+        try {
+            AccountEntity accountEntity = new AccountEntity();
+            BeanUtils.copyProperties(account, accountEntity);
+            if (accountRepository.findByEmail(account.getEmail()).isPresent()) {
+                if (accountRepository.loginAccount(account.getEmail(), accountEntity.getPassword()).isPresent()) {
+                    return account;
+                } else {
+                    throw new Exception("Wrong password!");
+                }
+            } else {
+                throw new Exception("Email not found!");
+            }
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
 
 }

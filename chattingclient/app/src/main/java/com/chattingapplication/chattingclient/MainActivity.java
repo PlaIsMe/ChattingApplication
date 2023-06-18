@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void register(View v) throws IOException {
+    public void register(View v) {
         EditText editTextEmail = findViewById(R.id.editTxtEmail);
         EditText editTextPassword = findViewById(R.id.editTxtPassword);
         String jsonString;
@@ -173,6 +173,22 @@ public class MainActivity extends AppCompatActivity {
         }
         SendTask sendTask = new SendTask();
         sendTask.execute("registerRequest", jsonString);
+    }
+
+    public void login(View v) {
+        EditText editTextEmail = findViewById(R.id.editTxtEmail);
+        EditText editTextPassword = findViewById(R.id.editTxtPassword);
+        String jsonString;
+        try {
+            jsonString = new JSONObject()
+                    .put("email", editTextEmail.getText())
+                    .put("password", editTextPassword.getText())
+                    .toString();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        SendTask sendTask = new SendTask();
+        sendTask.execute("loginRequest", jsonString);
     }
 
     public void sendMessage(View view) {
@@ -191,6 +207,14 @@ public class MainActivity extends AppCompatActivity {
         myMsg.setText(message);
         myMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         linearLayout.addView(myMsg);
+    }
+
+    public void swapRegister(View v) {
+        setContentView(R.layout.fragment_register);
+    }
+
+    public void swapLogin(View v) {
+        setContentView(R.layout.fragment_login);
     }
 
     public void closeClient() {
