@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/account")
 @RequiredArgsConstructor
 public class AccountController {
-    private final AccountService accountService;    
+    private final AccountService accountService;
 
     @GetMapping
 	public List<Account> getAllAccounts() {

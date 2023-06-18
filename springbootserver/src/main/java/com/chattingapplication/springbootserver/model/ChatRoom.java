@@ -1,9 +1,5 @@
 package com.chattingapplication.springbootserver.model;
 
-import java.util.Set;
-
-import com.chattingapplication.springbootserver.entity.UserEntity;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;

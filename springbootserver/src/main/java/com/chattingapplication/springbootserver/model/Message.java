@@ -22,6 +22,6 @@ public class Message {
     private String content;
 
     private LocalDateTime createAt;
-    private UserEntity user;
-    private ChatRoomEntity chatRoom;
+    private User user;
+    private ChatRoom chatRoom;
 }

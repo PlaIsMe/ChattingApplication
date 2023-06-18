@@ -2,8 +2,6 @@ package com.chattingapplication.springbootserver.model;
 
 import java.time.LocalDateTime;
 
-import com.chattingapplication.springbootserver.entity.UserEntity;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,5 +25,5 @@ public class Account {
     private String password;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private UserEntity user;
+    private User user;
 }

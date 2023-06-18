@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 
 import com.chattingapplication.springbootserver.entity.AccountEntity;
 import com.chattingapplication.springbootserver.model.Account;
+import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.AccountRepository;
 import com.chattingapplication.springbootserver.service.interfaces.AccountService;
+import com.chattingapplication.springbootserver.service.interfaces.UserService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(rollbackOn = Exception.class)
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
+    private final UserService userService;
     
     @Override
     public List<Account> getAllAccounts() {
@@ -32,7 +35,7 @@ public class AccountServiceImpl implements AccountService {
                 account.getPassword(),
                 account.getCreatedAt(),
                 account.getUpdatedAt(),
-                account.getUser()
+                new User(account.getUser().getId())
             )).collect(Collectors.toList());
     }
 
@@ -44,10 +47,10 @@ public class AccountServiceImpl implements AccountService {
                 throw new Exception("email taken");
             }
             account.setCreatedAt(LocalDateTime.now());
-            account.setUpdatedAt(LocalDateTime.now());
+            account.setUpdatedAt(LocalDateTime.now());         
+            account.setUser(userService.createUser(new User()));
             BeanUtils.copyProperties(account, accountEntity);
-            accountRepository.save(accountEntity);
-            account.setId(accountRepository.findByEmail(account.getEmail()).get().getId());
+            account.setId(accountRepository.save(accountEntity).getId());
             return account;
         } catch (Exception e) {
             throw new Exception(e.getMessage());

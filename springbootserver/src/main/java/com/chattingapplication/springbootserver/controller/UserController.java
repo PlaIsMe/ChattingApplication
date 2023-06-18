@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.chattingapplication.springbootserver.model.Account;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.service.interfaces.UserService;
 
@@ -23,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api/user")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserService userService;    
+    private final UserService userService;
 
     @GetMapping
 	public List<User> getAllUsers() {

@@ -1,26 +1,15 @@
 package com.chattingapplication.springbootserver.service.implement;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
 
-import com.chattingapplication.springbootserver.entity.AccountEntity;
 import com.chattingapplication.springbootserver.entity.UserEntity;
-import com.chattingapplication.springbootserver.model.Account;
 import com.chattingapplication.springbootserver.model.User;
-import com.chattingapplication.springbootserver.repository.AccountRepository;
 import com.chattingapplication.springbootserver.repository.UserRepository;
-import com.chattingapplication.springbootserver.service.interfaces.AccountService;
 import com.chattingapplication.springbootserver.service.interfaces.UserService;
 
 import jakarta.transaction.Transactional;
@@ -50,7 +39,6 @@ public class UserServiceImpl implements UserService {
     public User createUser(User user) throws Exception {
         try {
             UserEntity userEntity = new UserEntity();
-            BeanUtils.copyProperties(user, userEntity);
             user.setId(userRepository.save(userEntity).getId());
             return user;
         } catch (Exception e) {
@@ -60,29 +48,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean deleteUser(Long userId) throws Exception {
-        // try {
-        //     AccountEntity accountEntity = accountRepository.findById(accountId).get();
-        //     accountRepository.delete(accountEntity);
+        try {
+            UserEntity userEntity = userRepository.findById(userId).get();
+            userRepository.delete(userEntity);
             return true;
-        // } catch (NoSuchElementException e) {
-        //     throw new Exception("Account not found!");
-        // }
+        } catch (NoSuchElementException e) {
+            throw new Exception("User not found!");
+        }
     }
 
     @Override
     public User updateUser(Long userId, User user) throws Exception {
         try {
-            // AccountEntity accountEntity = accountRepository.findById(accountId).get();
-            // if (accountRepository.findByEmail(account.getEmail()).isPresent()) {
-            //     throw new Exception("email taken");
-            // }
-            // accountEntity.setPassword(account.getPassword());
-            // accountEntity.setEmail(account.getEmail());
-            // accountEntity.setUpdatedAt(LocalDateTime.now());
-            // accountRepository.save(accountEntity);
-            // account.setCreatedAt(accountEntity.getCreatedAt());
-            // account.setUpdatedAt(accountEntity.getUpdatedAt());
-            // account.setId(accountId);
+            UserEntity userEntity = userRepository.findById(userId).get();
+            userEntity.setAvatar(user.getAvatar());
+            userEntity.setDob(user.getDob());
+            userEntity.setFirstName(user.getFirstName());
+            userEntity.setGender(user.getGender());
+            userEntity.setLastName(user.getLastName());
+            userRepository.save(userEntity);
+            user.setId(userId);
             return user;
         } catch (NoSuchElementException e) {
             throw new Exception("Account not found!");
@@ -92,12 +77,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) throws Exception {
         try {
-            // AccountEntity accountEntity = accountRepository.findById(accountId).get();
+            UserEntity userEntity = userRepository.findById(userId).get();
             User user = new User();
-            // BeanUtils.copyProperties(accountEntity, account);
+            BeanUtils.copyProperties(userEntity, user);
             return user;
         } catch (NoSuchElementException e) {
-            throw new Exception("Account not found!");
+            throw new Exception("User not found!");
         }
     }
 }

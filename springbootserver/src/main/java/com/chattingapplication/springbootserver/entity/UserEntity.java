@@ -31,10 +31,10 @@ public class UserEntity {
     @OneToOne(mappedBy = "user")
     private AccountEntity account;
 
-    @Column(name = "last_name", nullable = false, length = 40)
+    @Column(name = "last_name", nullable = true, length = 40)
     private String lastName;
 
-    @Column(name = "first_name", nullable = false, length = 40)
+    @Column(name = "first_name", nullable = true, length = 40)
     private String firstName;
 
     @Column(name = "avatar", nullable = true, length = 300)

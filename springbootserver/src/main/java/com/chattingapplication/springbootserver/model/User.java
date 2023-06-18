@@ -14,6 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+    public User(Long id) {
+        this.id = id;
+    }
+
     private Long id;
 
     @NotBlank(message = "last name must not be blank")
