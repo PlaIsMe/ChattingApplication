@@ -2,10 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/registerContainer"
+    android:id="@+id/loginContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterFragment">
+    tools:context=".LoginFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_content_layout"
@@ -32,7 +32,7 @@
             android:layout_marginTop="24dp"
             android:ems="10"
             android:hint="Password"
-            android:inputType="text"
+            android:inputType="textPassword"
             android:text=""
             app:layout_constraintEnd_toEndOf="@+id/editTxtEmail"
             app:layout_constraintStart_toStartOf="@+id/editTxtEmail"
@@ -47,7 +47,7 @@
             android:text="Login"
             app:layout_constraintEnd_toEndOf="@+id/editTxtPassword"
             app:layout_constraintStart_toStartOf="@+id/editTxtPassword"
-            app:layout_constraintTop_toBottomOf="@+id/editTxtPassword" />
+            app:layout_constraintTop_toBottomOf="@+id/editTxtPassword"/>
 
         <TextView
             android:id="@+id/txtInformRegister"

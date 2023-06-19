@@ -41,6 +41,7 @@ public class ServerService {
             throw new RuntimeException(e);
         }
         try {
+            System.out.printf("DEBUG SENT: %s\n", message);
             clientHandleService.getdOut().writeUTF(message);
             clientHandleService.getdOut().flush();
         } catch (IOException e) {

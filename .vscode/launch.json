@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "com.chattingapplication.Main",
+            "projectName": "socketserver"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SpringbootserverApplication<springbootserver>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.chattingapplication.springbootserver.SpringbootserverApplication",
+            "projectName": "springbootserver",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

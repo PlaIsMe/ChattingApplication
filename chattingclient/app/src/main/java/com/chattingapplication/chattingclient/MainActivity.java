@@ -3,6 +3,7 @@ package com.chattingapplication.chattingclient;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -21,15 +22,20 @@ import com.google.gson.JsonSyntaxException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
 import java.net.Socket;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    String SERVER_IP = "192.168.1.245";
+    String SERVER_IP = "192.168.1.147";
+    String apiUrl = "http://192.168.1.147:8080/api/";
     int SERVER_PORT = 8081;
     Socket clientFd;
     static DataOutputStream dOut;
@@ -45,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
 //        HandlePattern("REGISTER|{\"username\":\"test19\",\"email\":\"test19@gmail.com\",\"password\":\"IamPhong\"}");
     }
 
+//    Kết nối socket
     class ConnectTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    Gửi tin nhắn cho server
     public class SendTask extends AsyncTask<String, String, Void> {
         @Override
         protected Void doInBackground(String... params) {
@@ -99,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    Hàm xử lý response từ server
     public void registerResponse(String jsonString) {
         Gson gson = new Gson();
         try {
@@ -106,9 +115,39 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    setContentView(R.layout.fragment_chatting);
+                    setContentView(R.layout.fragment_sub_register);
                 }
             });
+        } catch (JsonSyntaxException e) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), jsonString, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    public void loginResponse(String jsonString) {
+        Gson gson = new Gson();
+        try {
+            Account currentAccount = gson.fromJson(jsonString, Account.class);
+            try {
+                currentAccount.getUser().getFirstName();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setContentView(R.layout.fragment_chatting);
+                    }
+                });
+            } catch (NullPointerException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setContentView(R.layout.fragment_sub_register);
+                    }
+                });
+            }
         } catch (JsonSyntaxException e) {
             runOnUiThread(new Runnable() {
                 @Override
@@ -127,7 +166,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+//
 
+//    Tách jsonString response từ server
     public void handleResponse(String jsonResponse) {
         Gson gson = new Gson();
         Response response = gson.fromJson(jsonResponse, Response.class);
@@ -144,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    Xử lý giao diện tin nhắn
     public void appendOtherMsg(String message) {
         try {
             LinearLayout linearLayout = findViewById(R.id.layoutReceive);
@@ -159,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    Đăng ký khi bấm vào btnRegister
     public void register(View v) {
         EditText editTextEmail = findViewById(R.id.editTxtEmail);
         EditText editTextPassword = findViewById(R.id.editTxtPassword);
@@ -175,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
         sendTask.execute("registerRequest", jsonString);
     }
 
+//    Đăng nhập khi click vào btnLogin
     public void login(View v) {
         EditText editTextEmail = findViewById(R.id.editTxtEmail);
         EditText editTextPassword = findViewById(R.id.editTxtPassword);
@@ -191,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         sendTask.execute("loginRequest", jsonString);
     }
 
+//    Gửi message
     public void sendMessage(View view) {
         EditText editTxtMessage = findViewById(R.id.editTxtMessage);
         String message = editTxtMessage.getText().toString();
@@ -209,6 +254,7 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(myMsg);
     }
 
+//    Xử lý khi bấm vào dòng chữ phụ khi login/register
     public void swapRegister(View v) {
         setContentView(R.layout.fragment_register);
     }
@@ -217,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.fragment_login);
     }
 
+//    Đóng client
     public void closeClient() {
         try {
             if (clientFd != null) {
@@ -230,6 +277,29 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public class GetRequestTask extends AsyncTask<String, Void, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                URL url = new URL(apiUrl + params[0]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    String inputLine;
+                    StringBuffer response = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                } else {
+                }
+            } catch (IOException e) {
+            }
+            return null;
         }
     }
 }

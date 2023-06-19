@@ -1,14 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/subRegisterContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SubRegisterFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_content_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="match_parent">
 
+        <EditText
+            android:id="@+id/editTxtFirstName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:ems="10"
+            android:hint="First name"
+            android:inputType="text"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/btnChangeAvatar"
+            app:layout_constraintStart_toStartOf="@+id/btnChangeAvatar"
+            app:layout_constraintTop_toBottomOf="@+id/btnChangeAvatar" />
+
+        <EditText
+            android:id="@+id/editTxtLastName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:hint="Last name"
+            android:inputType="text"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/editTxtFirstName"
+            app:layout_constraintStart_toStartOf="@+id/editTxtFirstName"
+            app:layout_constraintTop_toBottomOf="@+id/editTxtFirstName" />
+
+        <EditText
+            android:id="@+id/editTxtGender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:ems="10"
+            android:hint="Gender"
+            android:inputType="text"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/editTxtLastName"
+            app:layout_constraintStart_toStartOf="@+id/editTxtLastName"
+            app:layout_constraintTop_toBottomOf="@+id/editTxtLastName" />
+
+        <Button
+            android:id="@+id/btnChangeAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Change avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+
+        <Button
+            android:id="@+id/btnSubmitSubRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Submit"
+            app:layout_constraintEnd_toEndOf="@+id/editTxtGender"
+            app:layout_constraintStart_toStartOf="@+id/editTxtGender"
+            app:layout_constraintTop_toBottomOf="@+id/editTxtGender" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
+            android:src="@drawable/default_avatar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

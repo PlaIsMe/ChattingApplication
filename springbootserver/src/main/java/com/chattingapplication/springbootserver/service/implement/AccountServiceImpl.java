@@ -9,6 +9,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.chattingapplication.springbootserver.entity.AccountEntity;
+import com.chattingapplication.springbootserver.entity.UserEntity;
 import com.chattingapplication.springbootserver.model.Account;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.AccountRepository;
@@ -47,9 +48,13 @@ public class AccountServiceImpl implements AccountService {
                 throw new Exception("email taken");
             }
             account.setCreatedAt(LocalDateTime.now());
-            account.setUpdatedAt(LocalDateTime.now());         
-            account.setUser(userService.createUser(new User()));
+            account.setUpdatedAt(LocalDateTime.now());
+            User newUser = userService.createUser(new User());
+            UserEntity newUserEntity = new UserEntity();
+            BeanUtils.copyProperties(newUser, newUserEntity);
             BeanUtils.copyProperties(account, accountEntity);
+            accountEntity.setUser(newUserEntity);
+            account.setUser(newUser);
             account.setId(accountRepository.save(accountEntity).getId());
             return account;
         } catch (Exception e) {

@@ -2,7 +2,6 @@ package com.chattingapplication.springbootserver.model;
 
 import java.time.LocalDateTime;
 
-import com.chattingapplication.springbootserver.entity.AccountEntity;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
