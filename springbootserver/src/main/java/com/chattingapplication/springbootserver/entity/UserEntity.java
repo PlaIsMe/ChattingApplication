@@ -28,9 +28,6 @@ public class UserEntity {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @OneToOne(mappedBy = "user")
-    private AccountEntity account;
-
     @Column(name = "last_name", nullable = true, length = 40)
     private String lastName;
 
@@ -54,4 +51,7 @@ public class UserEntity {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<ChatRoomEntity> chatRooms;
+
+    @OneToOne(mappedBy = "user")
+    private AccountEntity account;
 }

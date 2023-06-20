@@ -1,5 +1,6 @@
 package com.chattingapplication.springbootserver.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -8,13 +9,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Getter
 @Setter
+@Getter
 @Table(name = "chat_room")
 public class ChatRoomEntity {
     @Id
@@ -30,4 +32,7 @@ public class ChatRoomEntity {
 
     @ManyToMany(mappedBy = "chatRooms")
     private Set<UserEntity> users;
+
+    @OneToMany(mappedBy = "chatRoom")
+    private List<MessageEntity> messages;
 }
