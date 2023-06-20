@@ -6,8 +6,8 @@ import com.chattingapplication.springbootserver.model.ChatRoom;
 import com.chattingapplication.springbootserver.model.User;
 
 public interface ChatRoomService {
-    List<ChatRoom> getChatRoomByUser(User user);
     List<ChatRoom> getChatRooms();
-    ChatRoom createChatRoom(ChatRoom chatRoom);
-    void deleteChatRoom(ChatRoom chatRoom);
+    ChatRoom createChatRoom(ChatRoom chatRoom) throws Exception;
+    void deleteChatRoom(ChatRoom chatRoom) throws Exception;
+    void addUsers(ChatRoom chatRoom, List<User> users) throws Exception;
 }
