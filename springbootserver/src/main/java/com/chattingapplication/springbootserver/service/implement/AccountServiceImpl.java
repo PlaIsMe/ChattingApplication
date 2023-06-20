@@ -3,6 +3,7 @@ package com.chattingapplication.springbootserver.service.implement;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanUtils;
@@ -36,7 +37,13 @@ public class AccountServiceImpl implements AccountService {
                 account.getPassword(),
                 account.getCreatedAt(),
                 account.getUpdatedAt(),
-                new User(account.getUser().getId())
+                new User(
+                    account.getUser().getId(),
+                    account.getUser().getFirstName(),
+                    account.getUser().getLastName(),
+                    account.getUser().getGender(),
+                    account.getUser().getAvatar(),
+                    account.getUser().getDob())
             )).collect(Collectors.toList());
     }
 
@@ -98,7 +105,10 @@ public class AccountServiceImpl implements AccountService {
         try {
             AccountEntity accountEntity = accountRepository.findById(accountId).get();
             Account account = new Account();
+            User user = new User();
+            BeanUtils.copyProperties(accountEntity.getUser(), user);
             BeanUtils.copyProperties(accountEntity, account);
+            account.setUser(user);
             return account;
         } catch (NoSuchElementException e) {
             throw new Exception("Account not found!");
@@ -111,7 +121,13 @@ public class AccountServiceImpl implements AccountService {
             AccountEntity accountEntity = new AccountEntity();
             BeanUtils.copyProperties(account, accountEntity);
             if (accountRepository.findByEmail(account.getEmail()).isPresent()) {
-                if (accountRepository.loginAccount(account.getEmail(), accountEntity.getPassword()).isPresent()) {
+                Optional<AccountEntity> accountEngtityOptional = accountRepository.loginAccount(account.getEmail(), accountEntity.getPassword());
+                if (accountEngtityOptional.isPresent()) {
+                    accountEntity = accountEngtityOptional.get();
+                    BeanUtils.copyProperties(accountEntity, account);
+                    User user = new User();
+                    BeanUtils.copyProperties(accountEntity.getUser(), user);
+                    account.setUser(user);
                     return account;
                 } else {
                     throw new Exception("Wrong password!");

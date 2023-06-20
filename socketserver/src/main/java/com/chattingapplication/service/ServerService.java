@@ -21,7 +21,9 @@ public class ServerService {
 
     public static String socketReceive(ClientHandleService clientHandleService) {
         try {
-            return clientHandleService.getdIn().readUTF();           
+            String bufferIn = clientHandleService.getdIn().readUTF();
+            System.out.printf("RECEIVED: %s\n", bufferIn);
+            return bufferIn;
         } catch (EOFException e) {
             clientHandleService.closeClientSocket();
         } catch (IOException e) {
@@ -41,7 +43,7 @@ public class ServerService {
             throw new RuntimeException(e);
         }
         try {
-            System.out.printf("DEBUG SENT: %s\n", message);
+            System.out.printf("SENT: %s\n", message);
             clientHandleService.getdOut().writeUTF(message);
             clientHandleService.getdOut().flush();
         } catch (IOException e) {

@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
             user.setId(userId);
             return user;
         } catch (NoSuchElementException e) {
-            throw new Exception("Account not found!");
+            throw new Exception("User not found!");
         }
     }
 

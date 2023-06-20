@@ -15,7 +15,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.chattingapplication.chattingclient.Model.Account;
+import com.chattingapplication.chattingclient.Model.ExceptionError;
 import com.chattingapplication.chattingclient.Model.Response;
+import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -27,6 +29,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
@@ -34,13 +37,17 @@ import java.net.Socket;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    String SERVER_IP = "192.168.1.147";
-    String apiUrl = "http://192.168.1.147:8080/api/";
+    String SERVER_IP = "192.168.1.245";
+    String apiUrl = String.format("http://%s:8080/api/", SERVER_IP);
     int SERVER_PORT = 8081;
     Socket clientFd;
     static DataOutputStream dOut;
     DataInputStream dIn;
-    String response;
+    String socketResponse;
+    String httpResponse;
+    Account currentAccount;
+    boolean isHttpSuccess;
+    Gson gson = new Gson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +80,9 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     while (clientFd.isConnected()) {
                         try {
-                            response = dIn.readUTF();
-                            handleResponse(response);
+                            socketResponse = dIn.readUTF();
+                            Log.d("debugReceived", socketResponse);
+                            handleResponse(socketResponse);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
             try {
+                Log.d("debugSent", request);
                 dOut.writeUTF(request);
                 dOut.flush();
             } catch (IOException e) {
@@ -109,9 +118,8 @@ public class MainActivity extends AppCompatActivity {
 
 //    Hàm xử lý response từ server
     public void registerResponse(String jsonString) {
-        Gson gson = new Gson();
         try {
-            Account currentAccount = gson.fromJson(jsonString, Account.class);
+            currentAccount = gson.fromJson(jsonString, Account.class);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -129,11 +137,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loginResponse(String jsonString) {
-        Gson gson = new Gson();
         try {
-            Account currentAccount = gson.fromJson(jsonString, Account.class);
+            currentAccount = gson.fromJson(jsonString, Account.class);
             try {
-                currentAccount.getUser().getFirstName();
+                String checkName = currentAccount.getUser().getFirstName();
+                Log.d("debugCheckName", checkName);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -170,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
 //    Tách jsonString response từ server
     public void handleResponse(String jsonResponse) {
-        Gson gson = new Gson();
         Response response = gson.fromJson(jsonResponse, Response.class);
         try {
             Class<?> c = Class.forName(getPackageName() + ".MainActivity");
@@ -254,6 +261,37 @@ public class MainActivity extends AppCompatActivity {
         linearLayout.addView(myMsg);
     }
 
+//    Xử lý khi bấm vào nút submit trong giao diện subregister
+    public void subRegisterSubmit(View v) {
+        EditText editTxtFirstName = findViewById(R.id.editTxtFirstName);
+        EditText editTxtLastName = findViewById(R.id.editTxtLastName);
+        EditText editTxtGender = findViewById(R.id.editTxtGender);
+
+        PutRequestTask pushRequestTask = new PutRequestTask();
+        String path = String.format("user/%s", currentAccount.getUser().getId());
+
+        try {
+            String jsonString = new JSONObject()
+                    .put("firstName", editTxtFirstName.getText())
+                    .put("lastName", editTxtLastName.getText())
+                    .put("gender", editTxtGender.getText())
+                    .toString();
+            pushRequestTask.execute(path, jsonString);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        Log.d("debugIsHttpSuccessMainThread", String.valueOf(isHttpSuccess));
+        if (isHttpSuccess) {
+            currentAccount.setUser(gson.fromJson(httpResponse, User.class));
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setContentView(R.layout.fragment_chatting);
+                }
+            });
+        }
+    }
+
 //    Xử lý khi bấm vào dòng chữ phụ khi login/register
     public void swapRegister(View v) {
         setContentView(R.layout.fragment_register);
@@ -280,23 +318,74 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    Read response body
+    public void readResponseBody(BufferedReader in) throws IOException {
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+        httpResponse = response.toString();
+    }
+
+//    Get request
     public class GetRequestTask extends AsyncTask<String, Void, Void> {
         @Override
         protected Void doInBackground(String... params) {
             try {
                 URL url = new URL(apiUrl + params[0]);
+                Log.d("debugGetURL", apiUrl + params[0]);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
+                    readResponseBody(in);
+                    Log.d("debugGetResponse", httpResponse);
                 } else {
                 }
+            } catch (IOException e) {
+            }
+            return null;
+        }
+    }
+
+//    Put request
+    public class PutRequestTask extends AsyncTask<String, String, Void> {
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                URL url = new URL(apiUrl + params[0]);
+                Log.d("debugPutURL", apiUrl + params[0]);
+                Log.d("debugPutContent", params[1]);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("PUT");
+                conn.setRequestProperty("Content-Type", "application/json");
+
+                OutputStreamWriter osw = new OutputStreamWriter(conn.getOutputStream());
+                osw.write(params[1]);
+                osw.flush();
+                osw.close();
+
+                BufferedReader in;
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    readResponseBody(in);
+                    isHttpSuccess = true;
+                } else {
+                    in = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                    readResponseBody(in);
+                    isHttpSuccess = false;
+                    ExceptionError exceptionError = gson.fromJson(httpResponse, ExceptionError.class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+                Log.d("debugPutResponse", httpResponse);
+                Log.d("debugIsHttpSuccessPutTask", String.valueOf(isHttpSuccess));
             } catch (IOException e) {
             }
             return null;
