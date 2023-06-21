@@ -29,15 +29,17 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
-    String SERVER_IP = "192.168.1.245";
+    String SERVER_IP = "192.168.101.32";
     String apiUrl = String.format("http://%s:8080/api/", SERVER_IP);
     int SERVER_PORT = 8081;
     Socket clientFd;

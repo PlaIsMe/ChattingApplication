@@ -7,6 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".LoginFragment">
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="sendGetRequest"
+        android:text="Button" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_content_layout"
         android:layout_width="match_parent"
@@ -47,15 +54,15 @@
             android:text="Login"
             app:layout_constraintEnd_toEndOf="@+id/editTxtPassword"
             app:layout_constraintStart_toStartOf="@+id/editTxtPassword"
-            app:layout_constraintTop_toBottomOf="@+id/editTxtPassword"/>
+            app:layout_constraintTop_toBottomOf="@+id/editTxtPassword" />
 
         <TextView
             android:id="@+id/txtInformRegister"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="New user? Register now"
             android:onClick="swapRegister"
+            android:text="New user? Register now"
             app:layout_constraintBottom_toTopOf="@+id/btnLogin"
             app:layout_constraintEnd_toEndOf="@+id/editTxtPassword"
             app:layout_constraintStart_toStartOf="@+id/editTxtPassword"
