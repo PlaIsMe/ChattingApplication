@@ -43,6 +43,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
             public void run() {
                 while (clientFd.isConnected()) {
                     try {
+                        // Luồng luôn đọc từ client
                         socketResponse = dIn.readUTF();
                         Log.d("debugReceived", socketResponse);
                         mainActivity.handleResponse(socketResponse);

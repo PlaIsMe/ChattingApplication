@@ -1,7 +1,7 @@
 package com.chattingapplication.springbootserver.model;
 
 import java.time.LocalDateTime;
-
+import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -28,4 +28,6 @@ public class User {
     @Size(max = 20, min = 2, message = "gender must be between 2 and 20 characters")
     private String gender;
     private LocalDateTime dob;
+
+    // private Set<ChatRoom> chatRooms;
 }

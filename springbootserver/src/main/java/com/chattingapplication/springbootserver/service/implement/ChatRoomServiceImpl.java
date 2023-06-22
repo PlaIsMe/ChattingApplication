@@ -32,6 +32,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             room.setId(r.getId());
             room.setPrivate(r.isPrivate());
             room.setRoomName(r.getRoomName());
+            
             return room;
         }).collect(Collectors.toList());
     }
@@ -43,6 +44,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             ChatRoomEntity chatRoomEntity = new ChatRoomEntity();
             BeanUtils.copyProperties(chatRoom, chatRoomEntity);
             chatRoomRepository.save(chatRoomEntity);
+            chatRoom.setId(chatRoomEntity.getId());
             return chatRoom;
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -50,9 +52,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void deleteChatRoom(ChatRoom chatRoom) throws Exception {
+    public void deleteChatRoom(Long chatRoomId) throws Exception {
         try {
-            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoom.getId()).get();
+            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).get();
+            chatRoomEntity.getUsers().stream().forEach(u -> {
+                u.getChatRooms().remove(chatRoomEntity);
+                userRepository.save(u);
+            });
             chatRoomEntity.getUsers().clear();
             chatRoomRepository.save(chatRoomEntity);
             chatRoomRepository.delete(chatRoomEntity);
@@ -62,9 +68,9 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void addUsers(ChatRoom chatRoom, List<User> users) throws Exception {
+    public void addUsers(Long chatRoomId, List<User> users) throws Exception {
         try {
-            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoom.getId()).get();
+            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).get();
             Set<UserEntity> userEntities = users.stream().map(u ->{
                 return userRepository.findById(u.getId()).get();
             }).collect(Collectors.toSet());
@@ -83,6 +89,21 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new Exception(e.getMessage());
         }
         
+    }
+
+    @Override
+    public User addUser(Long chatRoomId, User user) throws Exception {
+        try {
+            ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).get();
+            UserEntity userEntity = userRepository.findById(user.getId()).get();
+            chatRoomEntity.getUsers().add(userEntity);
+            userEntity.getChatRooms().add(chatRoomEntity);
+            chatRoomRepository.save(chatRoomEntity);
+            userRepository.save(userEntity);
+            return user;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
     
 }

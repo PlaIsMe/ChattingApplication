@@ -21,6 +21,7 @@ public class SendTask extends AsyncTask<String, String, Void> {
             throw new RuntimeException(e);
         }
         try {
+            // Gửi message qua client
             Log.d("debugSent", request);
             ConnectTask.dOut.writeUTF(request);
             ConnectTask.dOut.flush();

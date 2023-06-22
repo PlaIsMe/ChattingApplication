@@ -94,6 +94,8 @@ public class ServerService {
 
     public static void handleConnect(ServerSocket serverSocket) throws IOException {
         System.out.println("Server started!");
+        // The server socket always wait for new client socket incoming
+        // to start new client socket
         while (!serverSocket.isClosed()) {
             Socket clientSocket = serverSocket.accept();
             ClientHandleService clientHandleService = new ClientHandleService(clientSocket);
