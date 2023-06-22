@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.chattingapplication.chattingclient.AsyncTask.ConnectTask;
 import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public static String httpResponse;
     Account currentAccount;
     Gson gson = new Gson();
+    FragmentManager fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    setContentView(R.layout.fragment_sub_register);
+                    swapFragment(R.id.fragmentContainerViewFullContent, SubRegisterFragment.class);
                 }
             });
         } catch (JsonSyntaxException e) {
@@ -74,14 +76,14 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setContentView(R.layout.fragment_chatting);
+                        swapFragment(R.id.fragmentContainerViewFullContent, MainMenuFragment.class);
                     }
                 });
             } catch (NullPointerException e) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setContentView(R.layout.fragment_sub_register);
+                        swapFragment(R.id.fragmentContainerViewFullContent, SubRegisterFragment.class);
                     }
                 });
             }
@@ -144,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    setContentView(R.layout.fragment_chatting);
+                    swapFragment(R.id.fragmentContainerViewFullContent, MainMenuFragment.class);
                 }
             });
         } else {
@@ -232,13 +234,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    Xử lý khi bấm vào dòng chữ phụ khi login/register
-    public void swapRegister(View v) {
-        setContentView(R.layout.fragment_register);
+//    Switch fragment
+    public void swapFragment(int fragmentContainerId, Class targetFragment) {
+        fragmentManager.beginTransaction()
+                .replace(fragmentContainerId, targetFragment, null)
+                .setReorderingAllowed(true)
+                .addToBackStack("name")
+                .commit();
     }
 
-    public void swapLogin(View v) {
-        setContentView(R.layout.fragment_login);
+//    Hàm handle switch fragment
+    public void handleSwapFragment(View v) {
+        if (v.getId() == R.id.txtInformRegister) {
+            swapFragment(R.id.fragmentContainerViewFullContent, RegisterFragment.class);
+        } else if (v.getId() == R.id.txtInformLogin) {
+            swapFragment(R.id.fragmentContainerViewFullContent, LoginFragment.class);
+        } else if (v.getId() == R.id.linearLayoutChats) {
+            swapFragment(R.id.fragmentContainerViewMainMenu, ChatRoomFragment.class);
+        } else if (v.getId() == R.id.linearLayoutPeople) {
+            swapFragment(R.id.fragmentContainerViewMainMenu, PeopleFragment.class);
+        }
     }
 
 //    Read response body
