@@ -1,6 +1,7 @@
 package com.chattingapplication.springbootserver.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -71,7 +72,7 @@ public class ChatRoomController {
     }
 
     @GetMapping(path = "{user_id}")
-    public List<ChatRoom> getChatRoomsByUserId(@PathVariable(name = "user_id") Long userId){
+    public Set<ChatRoom> getChatRoomsByUserId(@PathVariable(name = "user_id") Long userId){
         return chatRoomService.getChatRoomsByUserId(userId);
     }
 }

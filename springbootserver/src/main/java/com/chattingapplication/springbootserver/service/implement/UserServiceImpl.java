@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.chattingapplication.springbootserver.entity.UserEntity;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.UserRepository;
+import com.chattingapplication.springbootserver.service.interfaces.ChatRoomService;
 import com.chattingapplication.springbootserver.service.interfaces.UserService;
 
 import jakarta.transaction.Transactional;
@@ -20,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(rollbackOn = Exception.class)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final ChatRoomService chatRoomService;
     
     @Override
     public List<User> getAllUsers() {
@@ -31,7 +33,8 @@ public class UserServiceImpl implements UserService {
                 user.getFirstName(),
                 user.getAvatar(),
                 user.getGender(),
-                user.getDob()
+                user.getDob(),
+                chatRoomService.getChatRoomsByUserId(user.getId())
             )).collect(Collectors.toList());
     }
 

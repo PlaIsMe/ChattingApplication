@@ -1,6 +1,7 @@
 package com.chattingapplication.springbootserver.service.interfaces;
 
 import java.util.List;
+import java.util.Set;
 
 import com.chattingapplication.springbootserver.model.ChatRoom;
 import com.chattingapplication.springbootserver.model.User;
@@ -11,5 +12,5 @@ public interface ChatRoomService {
     void deleteChatRoom(Long chatRoomId) throws Exception;
     void addUsers(Long chatRoomId, List<User> users) throws Exception;
     User addUser(Long chatRoomId, User user) throws Exception;
-    List<ChatRoom> getChatRoomsByUserId(Long userId);
+    Set<ChatRoom> getChatRoomsByUserId(Long userId);
 }

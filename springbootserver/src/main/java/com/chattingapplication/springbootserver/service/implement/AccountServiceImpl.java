@@ -15,6 +15,7 @@ import com.chattingapplication.springbootserver.model.Account;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.AccountRepository;
 import com.chattingapplication.springbootserver.service.interfaces.AccountService;
+import com.chattingapplication.springbootserver.service.interfaces.ChatRoomService;
 import com.chattingapplication.springbootserver.service.interfaces.UserService;
 
 import jakarta.transaction.Transactional;
@@ -26,6 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final UserService userService;
+    private final ChatRoomService chatRoomService;
     
     @Override
     public List<Account> getAllAccounts() {
@@ -43,7 +45,9 @@ public class AccountServiceImpl implements AccountService {
                     account.getUser().getLastName(),
                     account.getUser().getGender(),
                     account.getUser().getAvatar(),
-                    account.getUser().getDob())
+                    account.getUser().getDob(),
+                    chatRoomService.getChatRoomsByUserId(account.getUser().getId())
+                )
             )).collect(Collectors.toList());
     }
 

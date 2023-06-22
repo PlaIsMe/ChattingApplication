@@ -1,6 +1,7 @@
 package com.chattingapplication.springbootserver.model;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -28,5 +29,5 @@ public class User {
     private String gender;
     private LocalDateTime dob;
 
-    // private Set<ChatRoom> chatRooms;
+    private Set<ChatRoom> chatRooms;
 }

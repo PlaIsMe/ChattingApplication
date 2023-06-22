@@ -32,7 +32,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             room.setId(r.getId());
             room.setPrivate(r.isPrivate());
             room.setRoomName(r.getRoomName());
-            
             return room;
         }).collect(Collectors.toList());
     }
@@ -107,13 +106,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public List<ChatRoom> getChatRoomsByUserId(Long userId) {
+    public Set<ChatRoom> getChatRoomsByUserId(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).get();
         System.out.println(userEntity.getChatRooms());
         return userEntity.getChatRooms().stream().map(cr -> {
             ChatRoom chatRoom = new ChatRoom();
             BeanUtils.copyProperties(cr, chatRoom);
             return chatRoom;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toSet());
     }
 }
