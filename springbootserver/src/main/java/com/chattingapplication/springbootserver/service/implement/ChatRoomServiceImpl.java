@@ -105,5 +105,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new Exception(e.getMessage());
         }
     }
-    
+
+    @Override
+    public List<ChatRoom> getChatRoomsByUserId(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).get();
+        System.out.println(userEntity.getChatRooms());
+        return userEntity.getChatRooms().stream().map(cr -> {
+            ChatRoom chatRoom = new ChatRoom();
+            BeanUtils.copyProperties(cr, chatRoom);
+            return chatRoom;
+        }).collect(Collectors.toList());
+    }
 }

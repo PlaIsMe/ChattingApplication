@@ -17,7 +17,6 @@ import com.chattingapplication.springbootserver.service.interfaces.ChatRoomServi
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 
 @RestController
 @RequestMapping("api/chat_room")
@@ -69,5 +68,10 @@ public class ChatRoomController {
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @GetMapping(path = "{user_id}")
+    public List<ChatRoom> getChatRoomsByUserId(@PathVariable(name = "user_id") Long userId){
+        return chatRoomService.getChatRoomsByUserId(userId);
     }
 }

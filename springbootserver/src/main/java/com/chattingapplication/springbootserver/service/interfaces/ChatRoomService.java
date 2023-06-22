@@ -11,4 +11,5 @@ public interface ChatRoomService {
     void deleteChatRoom(Long chatRoomId) throws Exception;
     void addUsers(Long chatRoomId, List<User> users) throws Exception;
     User addUser(Long chatRoomId, User user) throws Exception;
+    List<ChatRoom> getChatRoomsByUserId(Long userId);
 }
