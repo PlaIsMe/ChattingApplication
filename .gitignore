@@ -29,4 +29,4 @@ hs_err_pid*
 replay_pid*
 
 #my_ipv4.json file
-/chattingclient/app/src/main/assets/my_ipv4.json
+# /chattingclient/app/src/main/assets/my_ipv4.json
