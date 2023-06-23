@@ -21,6 +21,7 @@ import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ExceptionError;
 import com.chattingapplication.chattingclient.Model.Response;
 import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.Utils.Utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -29,11 +30,13 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class MainActivity extends AppCompatActivity {
-    public static String apiUrl = String.format("http://%s:8080/api/", "192.168.1.245");
+    public static String IP;
+    public static String apiUrl;
     public static String httpResponse;
     Account currentAccount;
     Gson gson = new Gson();
@@ -43,8 +46,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d("RESULT_IPV4",Utils.getIpV4(this, "my_ipv4.json"));
+        IP = Utils.getIpV4(this, "my_ipv4.json");
         ConnectTask connectTask = new ConnectTask(this);
         connectTask.execute();
+        apiUrl = String.format("http://%s:8080/api/", IP);
     }
 
 //    Hàm xử lý response từ server

@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.chattingapplication.chattingclient.MainActivity;
+import com.chattingapplication.chattingclient.Utils.Utils;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,8 +12,8 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ConnectTask extends AsyncTask<Void, Void, Void> {
-    private static final String SERVER_IP = "192.168.1.245";
-    private static final int SERVER_PORT = 8081;
+    private static String SERVER_IP;
+    private static int SERVER_PORT = 8081;
     public static Socket clientFd;
     public static DataOutputStream dOut;
     public static DataInputStream dIn;
@@ -26,6 +27,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... voids) {
         try {
+            SERVER_IP = MainActivity.IP;
             clientFd = new Socket(SERVER_IP, SERVER_PORT);
             dOut = new DataOutputStream(clientFd.getOutputStream());
             dIn = new DataInputStream(clientFd.getInputStream());
