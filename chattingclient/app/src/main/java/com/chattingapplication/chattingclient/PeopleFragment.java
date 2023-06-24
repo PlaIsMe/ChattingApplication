@@ -100,15 +100,14 @@ public class PeopleFragment extends Fragment {
             Type userListType = new TypeToken<List<User>>() {}.getType();
             List<User> userList = MainActivity.gson.fromJson(jsonArray.toString(), userListType);
 
-            List<String> usersName = userList.stream().filter(user -> (user.getLastName() != null && user.getFirstName() != null))
+            List<String> usersName = userList.stream().filter(user ->
+                            (user.getLastName() != null && user.getFirstName() != null))
                     .map(user -> String.format("%s %s",
                             user.getFirstName(),
                             user.getLastName())
                     ).collect(Collectors.toList());
 
-            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>(this.getContext(),
-                    R.layout.user_list_view,
-                    R.id.userName, usersName);
+            ListAdapter userAdapter = new UserAdapter(this.getContext(), usersName);
             ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -116,42 +115,9 @@ public class PeopleFragment extends Fragment {
                 }
             });
 
-//            for (User user : userList) {
-//                if (user.getFirstName() != null && user.getLastName() != null) {
-////                    Log.d("debugUser", user.getFirstName());
-//                    ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            appendUser(user);
-//                        }
-//                    });
-//                }
-//            }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-//    public void appendUser(User user) {
-//        LinearLayout linearLayout = new LinearLayout(this.getContext());
-//        linearLayout.setTag(String.format("user_%d", user.getId()));
-//        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-//        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100));
-//        linearLayout.setPadding(10,10,10,10);
-//
-//        ImageView imageView = new ImageView(this.getContext());
-//        imageView.setLayoutParams(new LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.MATCH_PARENT));
-//        imageView.setImageResource(R.drawable.default_avatar);
-//
-//        TextView textView = new TextView(this.getContext());
-//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//        params.gravity = Gravity.CENTER_VERTICAL;
-//        textView.setLayoutParams(params);
-//        textView.setPadding(10, 0, 0, 0);
-//        textView.setText(String.format("%s %s", user.getLastName(), user.getFirstName()));
-//
-//        linearLayout.addView(imageView);
-//        linearLayout.addView(textView);
-//        linearLayoutUserContainer.addView(linearLayout);
-//    }
 }
