@@ -106,7 +106,10 @@ public class PeopleFragment extends Fragment {
                             user.getLastName())
                     ).collect(Collectors.toList());
 
-            ListAdapter userAdapter = new UserAdapter((MainActivity) getActivity(), usersName);
+//            ListAdapter userAdapter = new UserAdapter((MainActivity) getActivity(), usersName);
+            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>((MainActivity) getActivity(),
+                    R.layout.user_list_view,
+                    R.id.userName, usersName);
             peopleListView.setAdapter(userAdapter);
 
 //            for (User user : userList) {
