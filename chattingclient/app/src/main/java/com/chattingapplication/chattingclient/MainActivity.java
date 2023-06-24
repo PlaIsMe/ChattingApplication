@@ -60,6 +60,11 @@ public class MainActivity extends AppCompatActivity {
         return mainMenuFragment;
     }
 
+//    SOS cứu
+//    public Fragment getPeopleFragment() {
+//        return this.mainMenuFragment.getPeopleFragment();
+//    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

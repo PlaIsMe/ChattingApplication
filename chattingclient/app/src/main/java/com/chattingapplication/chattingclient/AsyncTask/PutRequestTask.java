@@ -43,7 +43,6 @@ public class PutRequestTask extends AsyncTask<String, String, Void> {
             Log.d("debugResponseCode", String.valueOf(conn.getResponseCode()));
             mainActivity.readResponseBody(in);
 
-            Log.d("debugClassName", String.format("%s.%s", mainActivity.getPackageName(), params[3]));
             Class<?> mainClass = Class.forName(mainActivity.getPackageName() + ".MainActivity");
             Method getMethod = mainClass.getDeclaredMethod(String.format("get%s", params[3]));
             Object getResult = getMethod.invoke(mainActivity);

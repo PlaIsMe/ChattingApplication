@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,16 @@ public class MainMenuFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
+    private Fragment chatRoomFragment;
+    private Fragment peopleFragment = new PeopleFragment();
+    public Fragment getChatRoomFragment() {
+        return chatRoomFragment;
+    }
+
+    public Fragment getPeopleFragment() {
+        return peopleFragment;
+    }
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -65,8 +76,7 @@ public class MainMenuFragment extends Fragment {
         LinearLayout linearLayoutChats = (LinearLayout) view.findViewById(R.id.linearLayoutChats);
         LinearLayout linearLayoutPeople = (LinearLayout) view.findViewById(R.id.linearLayoutPeople);
         FragmentManager fragmentManager = getChildFragmentManager();
-        Fragment chatRoomFragment = fragmentManager.findFragmentById(R.id.fragmentContainerViewMainMenu);
-        Fragment peopleFragment = new PeopleFragment();
+        chatRoomFragment = fragmentManager.findFragmentById(R.id.fragmentContainerViewMainMenu);
 
         linearLayoutChats.setOnClickListener(new View.OnClickListener() {
             @Override
