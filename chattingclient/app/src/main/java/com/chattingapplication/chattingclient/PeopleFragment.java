@@ -48,7 +48,7 @@ public class PeopleFragment extends Fragment {
     private String mParam2;
 //    private LinearLayout linearLayoutUserContainer;
 
-    private ListView peopleListView;
+    private ListView listViewPeople;
 
 
     public PeopleFragment() {
@@ -88,7 +88,7 @@ public class PeopleFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_people, container, false);
         GetRequestTask getRequestTask = new GetRequestTask((MainActivity) getActivity());
-        peopleListView = view.findViewById(R.id.peopleListView);
+        listViewPeople = view.findViewById(R.id.listViewPeople);
         getRequestTask.execute("user", "loadUser", "PeopleFragment");
         return view;
     }
@@ -100,17 +100,21 @@ public class PeopleFragment extends Fragment {
             Type userListType = new TypeToken<List<User>>() {}.getType();
             List<User> userList = MainActivity.gson.fromJson(jsonArray.toString(), userListType);
 
-            List<String> usersName = userList.stream().map(user ->
-                    String.format("%s %s",
+            List<String> usersName = userList.stream().filter(user -> (user.getLastName() != null && user.getFirstName() != null))
+                    .map(user -> String.format("%s %s",
                             user.getFirstName(),
                             user.getLastName())
                     ).collect(Collectors.toList());
 
-//            ListAdapter userAdapter = new UserAdapter((MainActivity) getActivity(), usersName);
-            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>((MainActivity) getActivity(),
+            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>(this.getContext(),
                     R.layout.user_list_view,
                     R.id.userName, usersName);
-            peopleListView.setAdapter(userAdapter);
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listViewPeople.setAdapter(userAdapter);
+                }
+            });
 
 //            for (User user : userList) {
 //                if (user.getFirstName() != null && user.getLastName() != null) {
