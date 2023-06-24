@@ -4,9 +4,21 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
+import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
+import com.chattingapplication.chattingclient.Model.ExceptionError;
+import com.chattingapplication.chattingclient.Model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +71,53 @@ public class SubRegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sub_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_sub_register, container, false);
+        Button btnSubmitSubRegister = (Button) view.findViewById(R.id.btnSubmitSubRegister);
+
+        btnSubmitSubRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTxtFirstName = (EditText) view.findViewById(R.id.editTxtFirstName);
+                EditText editTxtLastName = (EditText) view.findViewById(R.id.editTxtLastName);
+                EditText editTxtGender = (EditText) view.findViewById(R.id.editTxtGender);
+
+                PutRequestTask putRequestTask = new PutRequestTask((MainActivity) getActivity());
+                String path = String.format("user/%s", MainActivity.currentAccount.getUser().getId());
+
+                try {
+                    String jsonString = new JSONObject()
+                            .put("firstName", editTxtFirstName.getText())
+                            .put("lastName", editTxtLastName.getText())
+                            .put("gender", editTxtGender.getText())
+                            .toString();
+                    putRequestTask.execute(path, jsonString, "handleResponseSubRegister", "SubRegisterFragment");
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        return view;
+    }
+
+    public void handleResponseSubRegister(int responseCode) {
+        if (responseCode == 200) {
+            MainActivity.currentAccount.setUser(MainActivity.gson.fromJson(MainActivity.httpResponse, User.class));
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
+                            ((MainActivity) getActivity()).getMainMenuFragment());
+                }
+            });
+        } else {
+            ExceptionError exceptionError = MainActivity.gson.fromJson(MainActivity.httpResponse, ExceptionError.class);
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(((MainActivity) getActivity()).getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

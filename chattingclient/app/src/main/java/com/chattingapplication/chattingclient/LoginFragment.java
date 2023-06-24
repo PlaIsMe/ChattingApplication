@@ -4,9 +4,21 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.chattingapplication.chattingclient.AsyncTask.SendTask;
+import com.chattingapplication.chattingclient.Model.Account;
+import com.google.gson.JsonSyntaxException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +71,73 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false);
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+
+        TextView txtInformRegister = (TextView) view.findViewById(R.id.txtInformRegister);
+        Button btnLogin = (Button) view.findViewById(R.id.btnLogin);
+
+        txtInformRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
+                        ((MainActivity) getActivity()).getRegisterFragment());
+            }
+        });
+
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTextEmail = (EditText) view.findViewById(R.id.editTxtEmail);
+                EditText editTextPassword = (EditText) view.findViewById(R.id.editTxtPassword);
+                String jsonString;
+                try {
+                    jsonString = new JSONObject()
+                            .put("email", editTextEmail.getText())
+                            .put("password", editTextPassword.getText())
+                            .toString();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                SendTask sendTask = new SendTask();
+                sendTask.execute("loginRequest", jsonString);
+            }
+        });
+
+        return view;
+    }
+
+    public void loginResponse(String jsonString) {
+        Log.d("debugResponseClass", "Function from login fragment");
+        try {
+            MainActivity.currentAccount = MainActivity.gson.fromJson(jsonString, Account.class);
+            try {
+                String checkName = MainActivity.currentAccount.getUser().getFirstName();
+                Log.d("debugCheckName", checkName);
+                ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity) getActivity()).
+                                swapFragment(R.id.fragmentContainerViewFullContent,
+                                        ((MainActivity) getActivity()).getMainMenuFragment());
+                    }
+                });
+            } catch (NullPointerException e) {
+                ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((MainActivity) getActivity()).
+                                swapFragment(R.id.fragmentContainerViewFullContent,
+                                        ((MainActivity) getActivity()).getSubRegisterFragment());
+                    }
+                });
+            }
+        } catch (JsonSyntaxException e) {
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(((MainActivity) getActivity()).getApplicationContext(), jsonString, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

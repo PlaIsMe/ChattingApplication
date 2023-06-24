@@ -1,13 +1,15 @@
 package com.chattingapplication.chattingclient.Model;
 
 public class Response {
-    private String responseFunction;
-    private String responseParam;
-
-    public Response(String responseFunction, String responseParam) {
+    public Response(String responseFunction, String responseParam, String responseClass) {
         this.responseFunction = responseFunction;
         this.responseParam = responseParam;
+        this.responseClass = responseClass;
     }
+
+    private String responseFunction;
+    private String responseParam;
+    private String responseClass;
 
     public String getResponseFunction() {
         return responseFunction;
@@ -25,7 +27,12 @@ public class Response {
         this.responseParam = responseParam;
     }
 
+    public String getResponseClass() {
+        return responseClass;
+    }
 
-
+    public void setResponseClass(String responseClass) {
+        this.responseClass = responseClass;
+    }
 
 }
