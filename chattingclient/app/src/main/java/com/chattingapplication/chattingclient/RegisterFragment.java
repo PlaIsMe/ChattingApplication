@@ -35,7 +35,7 @@ public class RegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private final MainActivity mainActivity = (MainActivity) getActivity();
+    private MainActivity mainActivity;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -66,6 +66,7 @@ public class RegisterFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -110,18 +111,17 @@ public class RegisterFragment extends Fragment {
     public void registerResponse(String jsonString) {
         try {
             MainActivity.currentAccount = MainActivity.gson.fromJson(jsonString, Account.class);
-            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+            mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
-                            ((MainActivity) getActivity()).getSubRegisterFragment());
+                    mainActivity.swapFragment(R.id.fragmentContainerViewFullContent, mainActivity.getSubRegisterFragment());
                 }
             });
         } catch (JsonSyntaxException e) {
-            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+            mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(((MainActivity) getActivity()).getApplicationContext(), jsonString, Toast.LENGTH_LONG).show();
+                    Toast.makeText(mainActivity.getApplicationContext(), jsonString, Toast.LENGTH_LONG).show();
                 }
             });
         }
