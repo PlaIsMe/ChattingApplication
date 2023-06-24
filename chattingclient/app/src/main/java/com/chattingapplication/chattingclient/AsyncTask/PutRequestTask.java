@@ -3,6 +3,8 @@ package com.chattingapplication.chattingclient.AsyncTask;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import androidx.fragment.app.Fragment;
+
 import com.chattingapplication.chattingclient.MainActivity;
 
 import java.io.BufferedReader;
@@ -35,19 +37,20 @@ public class PutRequestTask extends AsyncTask<String, String, Void> {
             osw.flush();
             osw.close();
 
-            BufferedReader in;
+            BufferedReader in = (conn.getResponseCode() == HttpURLConnection.HTTP_OK ?
+                    new BufferedReader(new InputStreamReader(conn.getInputStream())) :
+                    new BufferedReader(new InputStreamReader(conn.getErrorStream())));
             Log.d("debugResponseCode", String.valueOf(conn.getResponseCode()));
-            if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                mainActivity.readResponseBody(in);
-            } else {
-                in = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
-                mainActivity.readResponseBody(in);
-            }
+            mainActivity.readResponseBody(in);
 
-            Class<?> c = mainActivity.getClass();
-            Method method = c.getDeclaredMethod(params[2], int.class);
-            method.invoke(mainActivity, conn.getResponseCode());
+            Log.d("debugClassName", String.format("%s.%s", mainActivity.getPackageName(), params[3]));
+            Class<?> mainClass = Class.forName(mainActivity.getPackageName() + ".MainActivity");
+            Method getMethod = mainClass.getDeclaredMethod(String.format("get%s", params[3]));
+            Object getResult = getMethod.invoke(mainActivity);
+
+            Class<?> fragmentClass = Class.forName(String.format("%s.%s", mainActivity.getPackageName(), params[3]));
+            Method responseMethod = fragmentClass.getDeclaredMethod(params[2], int.class);
+            responseMethod.invoke((Fragment) getResult, conn.getResponseCode());
 
         } catch (IOException e) {
         } catch (InvocationTargetException e) {
@@ -55,6 +58,8 @@ public class PutRequestTask extends AsyncTask<String, String, Void> {
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return null;

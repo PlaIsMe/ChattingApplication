@@ -7,6 +7,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.chattingapplication.chattingclient.AsyncTask.SendTask;
+import com.chattingapplication.chattingclient.Model.Account;
+import com.google.gson.JsonSyntaxException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +70,58 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false);
+        View view = inflater.inflate(R.layout.fragment_register, container, false);
+        TextView txtInformLogin = (TextView) view.findViewById(R.id.txtInformLogin);
+        Button btnRegister = (Button) view.findViewById(R.id.btnRegister);
+
+        txtInformLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
+                        ((MainActivity) getActivity()).getLoginFragment());
+            }
+        });
+
+        btnRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText editTextEmail = (EditText) view.findViewById(R.id.editTxtEmail);
+                EditText editTextPassword = (EditText) view.findViewById(R.id.editTxtPassword);
+                String jsonString;
+                try {
+                    jsonString = new JSONObject()
+                            .put("email", editTextEmail.getText())
+                            .put("password", editTextPassword.getText())
+                            .toString();
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                SendTask sendTask = new SendTask();
+                sendTask.execute("registerRequest", jsonString);
+            }
+        });
+
+        return view;
+    }
+
+
+    public void registerResponse(String jsonString) {
+        try {
+            MainActivity.currentAccount = MainActivity.gson.fromJson(jsonString, Account.class);
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
+                            ((MainActivity) getActivity()).getSubRegisterFragment());
+                }
+            });
+        } catch (JsonSyntaxException e) {
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(((MainActivity) getActivity()).getApplicationContext(), jsonString, Toast.LENGTH_LONG).show();
+                }
+            });
+        }
     }
 }

@@ -32,12 +32,13 @@ public class ServerService {
         return null;
     }
 
-    public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam) {
+    public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam, String responseClass) {
         String message;
         try {
             message = new JSONObject()
                     .put("responseFunction", responseName)
                     .put("responseParam", responseParam)
+                    .put("responseClass", responseClass)
                     .toString();
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -54,7 +55,7 @@ public class ServerService {
     public static void chattingRequest(ClientHandleService clientHandleService, String message) {
         for (ClientHandleService client: clientHandlers) {
             if (client.getClientSocket() != clientHandleService.getClientSocket()) {
-                socketSend(client, "chattingResponse", clientHandleService.getClientAccount().getEmail() + ": " + message);
+                // socketSend(client, "chattingResponse", clientHandleService.getClientAccount().getEmail() + ": " + message);
             }
         }
     }
@@ -68,7 +69,7 @@ public class ServerService {
         } catch (JsonSyntaxException e) {
 
         }
-        ServerService.socketSend(clientHandleService, "registerResponse", response);
+        ServerService.socketSend(clientHandleService, "registerResponse", response, "RegisterFragment");
     }
 
     public static void loginRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
@@ -80,7 +81,7 @@ public class ServerService {
         } catch (JsonSyntaxException e) {
 
         }
-        ServerService.socketSend(clientHandleService, "loginResponse", response);
+        ServerService.socketSend(clientHandleService, "loginResponse", response, "LoginFragment");
     }
 
 

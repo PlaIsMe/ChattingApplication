@@ -3,10 +3,12 @@ package com.chattingapplication.chattingclient;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +61,30 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_menu, container, false);
+        View view = inflater.inflate(R.layout.fragment_main_menu, container, false);
+        LinearLayout linearLayoutChats = (LinearLayout) view.findViewById(R.id.linearLayoutChats);
+        LinearLayout linearLayoutPeople = (LinearLayout) view.findViewById(R.id.linearLayoutPeople);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        Fragment chatRoomFragment = fragmentManager.findFragmentById(R.id.fragmentContainerViewMainMenu);
+        Fragment peopleFragment = new PeopleFragment();
+
+        linearLayoutChats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerViewMainMenu, chatRoomFragment)
+                        .commit();
+            }
+        });
+
+        linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragmentContainerViewMainMenu, peopleFragment)
+                        .commit();
+            }
+        });
+        return view;
     }
 }
