@@ -6,15 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".PeopleFragment">
 
-    <ScrollView
+    <ListView
+        android:id="@+id/listViewPeople"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none">
-
-        <ListView
-            android:id="@+id/peopleListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+        android:layout_height="match_parent"/>
 
 <!--        <LinearLayout-->
 <!--            android:id="@+id/linearLayoutUserContainer"-->
@@ -43,6 +38,5 @@
 <!--&lt;!&ndash;                    android:text="TextView" />&ndash;&gt;-->
 <!--&lt;!&ndash;            </LinearLayout>&ndash;&gt;-->
 <!--        </LinearLayout>-->
-    </ScrollView>
 
 </FrameLayout>
