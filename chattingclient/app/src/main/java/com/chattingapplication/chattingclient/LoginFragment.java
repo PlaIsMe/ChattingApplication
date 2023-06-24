@@ -3,6 +3,7 @@ package com.chattingapplication.chattingclient;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ public class LoginFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private final MainActivity mainActivity = (MainActivity) getActivity();
 
     public LoginFragment() {
         // Required empty public constructor
@@ -79,8 +82,8 @@ public class LoginFragment extends Fragment {
         txtInformRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
-                        ((MainActivity) getActivity()).getRegisterFragment());
+                mainActivity.swapFragment(R.id.fragmentContainerViewFullContent,
+                        mainActivity.getRegisterFragment());
             }
         });
 

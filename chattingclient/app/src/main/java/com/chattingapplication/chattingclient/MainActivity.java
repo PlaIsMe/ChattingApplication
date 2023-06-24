@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
     public static Gson gson = new Gson();
     FragmentManager fragmentManager;
     private Fragment loginFragment;
-    private Fragment registerFragment = new RegisterFragment();
-    private Fragment subRegisterFragment = new SubRegisterFragment();
-    private Fragment mainMenuFragment = new MainMenuFragment();
+    private final Fragment registerFragment = new RegisterFragment();
+    private final Fragment subRegisterFragment = new SubRegisterFragment();
+    private final Fragment mainMenuFragment = new MainMenuFragment();
 
     public Fragment getLoginFragment() {
         return loginFragment;

@@ -35,6 +35,8 @@ public class RegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private final MainActivity mainActivity = (MainActivity) getActivity();
+
     public RegisterFragment() {
         // Required empty public constructor
     }
@@ -77,8 +79,8 @@ public class RegisterFragment extends Fragment {
         txtInformLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
-                        ((MainActivity) getActivity()).getLoginFragment());
+                mainActivity.swapFragment(R.id.fragmentContainerViewFullContent,
+                        mainActivity.getLoginFragment());
             }
         });
 

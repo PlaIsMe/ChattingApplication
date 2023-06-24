@@ -43,13 +43,8 @@ public class GetRequestTask extends AsyncTask<String, Void, Void> {
             Method responseMethod = fragmentClass.getDeclaredMethod(params[1], String.class);
             responseMethod.invoke((Fragment) getResult, MainActivity.httpResponse);
         } catch (IOException e) {
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
+        } catch (ClassNotFoundException | InvocationTargetException | NoSuchMethodException |
+                 IllegalAccessException e) {
             throw new RuntimeException(e);
         }
         return null;
