@@ -35,7 +35,7 @@ public class RegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private final MainActivity mainActivity = (MainActivity) getActivity();
+    private final MainActivity mainActivity = (MainActivity) getParentFragment().getActivity();
 
     public RegisterFragment() {
         // Required empty public constructor

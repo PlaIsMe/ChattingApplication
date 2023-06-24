@@ -9,10 +9,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.chattingapplication.chattingclient.Adapter.UserAdapter;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
 import com.chattingapplication.chattingclient.Model.User;
@@ -24,6 +29,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,7 +46,10 @@ public class PeopleFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private LinearLayout linearLayoutUserContainer;
+//    private LinearLayout linearLayoutUserContainer;
+
+    private ListView peopleListView;
+
 
     public PeopleFragment() {
         // Required empty public constructor
@@ -78,8 +87,8 @@ public class PeopleFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_people, container, false);
-        linearLayoutUserContainer = view.findViewById(R.id.linearLayoutUserContainer);
         GetRequestTask getRequestTask = new GetRequestTask((MainActivity) getActivity());
+        peopleListView = view.findViewById(R.id.peopleListView);
         getRequestTask.execute("user", "loadUser", "PeopleFragment");
         return view;
     }
@@ -91,42 +100,51 @@ public class PeopleFragment extends Fragment {
             Type userListType = new TypeToken<List<User>>() {}.getType();
             List<User> userList = MainActivity.gson.fromJson(jsonArray.toString(), userListType);
 
-            for (User user : userList) {
-                if (user.getFirstName() != null && user.getLastName() != null) {
-//                    Log.d("debugUser", user.getFirstName());
-                    ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            appendUser(user);
-                        }
-                    });
-                }
-            }
+            List<String> usersName = userList.stream().map(user ->
+                    String.format("%s %s",
+                            user.getFirstName(),
+                            user.getLastName())
+                    ).collect(Collectors.toList());
+
+            ListAdapter userAdapter = new UserAdapter((MainActivity) getActivity(), usersName);
+            peopleListView.setAdapter(userAdapter);
+
+//            for (User user : userList) {
+//                if (user.getFirstName() != null && user.getLastName() != null) {
+////                    Log.d("debugUser", user.getFirstName());
+//                    ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            appendUser(user);
+//                        }
+//                    });
+//                }
+//            }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void appendUser(User user) {
-        LinearLayout linearLayout = new LinearLayout(this.getContext());
-        linearLayout.setTag(String.format("user_%d", user.getId()));
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100));
-        linearLayout.setPadding(10,10,10,10);
-
-        ImageView imageView = new ImageView(this.getContext());
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.MATCH_PARENT));
-        imageView.setImageResource(R.drawable.default_avatar);
-
-        TextView textView = new TextView(this.getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.gravity = Gravity.CENTER_VERTICAL;
-        textView.setLayoutParams(params);
-        textView.setPadding(10, 0, 0, 0);
-        textView.setText(String.format("%s %s", user.getLastName(), user.getFirstName()));
-
-        linearLayout.addView(imageView);
-        linearLayout.addView(textView);
-        linearLayoutUserContainer.addView(linearLayout);
-    }
+//    public void appendUser(User user) {
+//        LinearLayout linearLayout = new LinearLayout(this.getContext());
+//        linearLayout.setTag(String.format("user_%d", user.getId()));
+//        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+//        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 100));
+//        linearLayout.setPadding(10,10,10,10);
+//
+//        ImageView imageView = new ImageView(this.getContext());
+//        imageView.setLayoutParams(new LinearLayout.LayoutParams(100, LinearLayout.LayoutParams.MATCH_PARENT));
+//        imageView.setImageResource(R.drawable.default_avatar);
+//
+//        TextView textView = new TextView(this.getContext());
+//        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//        params.gravity = Gravity.CENTER_VERTICAL;
+//        textView.setLayoutParams(params);
+//        textView.setPadding(10, 0, 0, 0);
+//        textView.setText(String.format("%s %s", user.getLastName(), user.getFirstName()));
+//
+//        linearLayout.addView(imageView);
+//        linearLayout.addView(textView);
+//        linearLayoutUserContainer.addView(linearLayout);
+//    }
 }
