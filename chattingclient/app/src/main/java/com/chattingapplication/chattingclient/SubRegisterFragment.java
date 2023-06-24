@@ -36,6 +36,8 @@ public class SubRegisterFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private MainActivity mainActivity;
+
     public SubRegisterFragment() {
         // Required empty public constructor
     }
@@ -65,6 +67,7 @@ public class SubRegisterFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mainActivity = (MainActivity) getActivity();
     }
 
     @Override
@@ -103,19 +106,18 @@ public class SubRegisterFragment extends Fragment {
     public void handleResponseSubRegister(int responseCode) {
         if (responseCode == 200) {
             MainActivity.currentAccount.setUser(MainActivity.gson.fromJson(MainActivity.httpResponse, User.class));
-            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+            mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ((MainActivity) getActivity()).swapFragment(R.id.fragmentContainerViewFullContent,
-                            ((MainActivity) getActivity()).getMainMenuFragment());
+                    mainActivity.swapFragment(R.id.fragmentContainerViewFullContent, mainActivity.getMainMenuFragment());
                 }
             });
         } else {
             ExceptionError exceptionError = MainActivity.gson.fromJson(MainActivity.httpResponse, ExceptionError.class);
-            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+            mainActivity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(((MainActivity) getActivity()).getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mainActivity.getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
         }

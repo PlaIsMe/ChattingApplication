@@ -38,11 +38,11 @@ public class MainActivity extends AppCompatActivity {
     public static String httpResponse;
     public static Account currentAccount;
     public static Gson gson = new Gson();
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
     private Fragment loginFragment;
-    private final Fragment registerFragment = new RegisterFragment();
-    private final Fragment subRegisterFragment = new SubRegisterFragment();
-    private final Fragment mainMenuFragment = new MainMenuFragment();
+    private Fragment registerFragment = new RegisterFragment();
+    private Fragment subRegisterFragment = new SubRegisterFragment();
+    private Fragment mainMenuFragment = new MainMenuFragment();
 
     public Fragment getLoginFragment() {
         return loginFragment;
@@ -60,10 +60,9 @@ public class MainActivity extends AppCompatActivity {
         return mainMenuFragment;
     }
 
-//    SOS cứu
-//    public Fragment getPeopleFragment() {
-//        return this.mainMenuFragment.getPeopleFragment();
-//    }
+    public Fragment getPeopleFragment() {
+        return ((MainMenuFragment) mainMenuFragment).getPeopleFragment();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

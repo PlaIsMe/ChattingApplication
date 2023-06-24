@@ -35,9 +35,9 @@ public class GetRequestTask extends AsyncTask<String, Void, Void> {
             mainActivity.readResponseBody(in);
             Log.d("debugGetResponse", MainActivity.httpResponse);
 
-            Class<?> mainClass = Class.forName(mainActivity.getPackageName() + ".MainMenuFragment");
+            Class<?> mainClass = Class.forName(mainActivity.getPackageName() + ".MainActivity");
             Method getMethod = mainClass.getDeclaredMethod(String.format("get%s", params[2]));
-            Object getResult = getMethod.invoke(mainActivity.getMainMenuFragment());
+            Object getResult = getMethod.invoke(mainActivity);
 
             Class<?> fragmentClass = Class.forName(String.format("%s.%s", mainActivity.getPackageName(), params[2]));
             Method responseMethod = fragmentClass.getDeclaredMethod(params[1], String.class);
