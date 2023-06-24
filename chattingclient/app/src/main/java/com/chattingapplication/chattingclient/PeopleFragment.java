@@ -107,10 +107,17 @@ public class PeopleFragment extends Fragment {
                     ).collect(Collectors.toList());
 
 //            ListAdapter userAdapter = new UserAdapter((MainActivity) getActivity(), usersName);
-            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>((MainActivity) getActivity(),
+            ArrayAdapter<String> userAdapter = new ArrayAdapter<String>(this.getContext(),
                     R.layout.user_list_view,
                     R.id.userName, usersName);
-            peopleListView.setAdapter(userAdapter);
+
+            ((MainActivity) getActivity()).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    peopleListView.setAdapter(userAdapter);
+                }
+            });
 
 //            for (User user : userList) {
 //                if (user.getFirstName() != null && user.getLastName() != null) {
