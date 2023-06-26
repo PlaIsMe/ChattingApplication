@@ -2,6 +2,8 @@ package com.chattingapplication.chattingclient.Model;
 
 import androidx.annotation.Nullable;
 
+import com.google.gson.Gson;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -89,5 +91,10 @@ public class User {
     @Override
     public boolean equals(@Nullable Object obj) {
         return Objects.equals(((User) obj).getId(), id);
+    }
+
+    public String toJsonString() {
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 }

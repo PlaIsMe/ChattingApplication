@@ -7,12 +7,14 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.chattingapplication.model.Account;
 import com.chattingapplication.model.Request;
+import com.chattingapplication.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -82,6 +84,18 @@ public class ServerService {
 
         }
         ServerService.socketSend(clientHandleService, "loginResponse", response, "LoginFragment");
+    }
+
+    public static void createPrivateRoomRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
+        Gson gson = new Gson();
+        JSONObject jsonObject = new JSONObject(jsonString);
+        User createUser = gson.fromJson(jsonObject.getString("createUser"), User.class);
+        User targetUser  = gson.fromJson(jsonObject.getString("targetUser"), User.class);
+        RequestService.postRequest("chat_room/create_chat_room", jsonString);
+        List<User> listUsers = new ArrayList<>();
+        listUsers.add(createUser);
+        listUsers.add(targetUser);
+        // RequestService.postRequest("chat_room//add_users", jsonString)
     }
 
 

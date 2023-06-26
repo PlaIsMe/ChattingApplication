@@ -11,11 +11,14 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -99,8 +102,7 @@ public class ChattingFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                getFragmentManager().popBackStack();
+                getFragmentManager().popBackStackImmediate();
             }
         });
 
@@ -134,18 +136,38 @@ public class ChattingFragment extends Fragment {
                     String jsonString;
                     try {
                         jsonString = new JSONObject()
-                                .put("createUser", MainActivity.currentAccount.getUser().getId())
-                                .put("targetUser", targetUser.getId())
+                                .put("createUser", MainActivity.currentAccount.getUser().toJsonString())
+                                .put("targetUser", targetUser.toJsonString())
                                 .toString();
                     } catch (JSONException e) {
                         throw new RuntimeException(e);
                     }
                     SendTask sendTask = new SendTask();
-                    sendTask.execute("createPrivateRoom", jsonString);
+                    sendTask.execute("createPrivateRoomRequest", jsonString);
+                } else {
+                    sendMessage();
                 }
             }
         });
         return view;
+    }
+
+    public void sendMessage() {
+        EditText editTxtMessage = mainActivity.findViewById(R.id.editTxtMessage);
+        String message = editTxtMessage.getText().toString();
+        editTxtMessage.setText("");
+        SendTask sendTask = new SendTask();
+        sendTask.execute("chattingRequest", message);
+        LinearLayout linearLayout = mainActivity.findViewById(R.id.layoutReceive);
+        TextView myMsg = new TextView(this.getContext());
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.RIGHT;
+        layoutParams.setMargins(10, 10, 10, 10); // (left, top, right, bottom)
+        myMsg.setLayoutParams(layoutParams);
+        myMsg.setText(message);
+        myMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        linearLayout.addView(myMsg);
     }
 
     public void joinPrivateRoom(int responseCode, String jsonString) {
