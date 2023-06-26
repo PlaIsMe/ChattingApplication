@@ -99,7 +99,8 @@ public class ChattingFragment extends Fragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+
+                getFragmentManager().popBackStack();
             }
         });
 

@@ -1,44 +1,28 @@
 package com.chattingapplication.chattingclient;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.chattingapplication.chattingclient.AsyncTask.ConnectTask;
-import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
-import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.Account;
-import com.chattingapplication.chattingclient.Model.ExceptionError;
 import com.chattingapplication.chattingclient.Model.Response;
-import com.chattingapplication.chattingclient.Model.User;
 import com.chattingapplication.chattingclient.Utils.Utils;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static String IP;
     public static String apiUrl;
     public static Account currentAccount;
     public static Gson gson = new Gson();
+
     private FragmentManager fragmentManager;
     private Fragment loginFragment;
     private Fragment registerFragment = new RegisterFragment();
@@ -48,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     public void setChattingFragment(Fragment chattingFragment) {
         this.chattingFragment = chattingFragment;
     }
-
 
     public Fragment getLoginFragment() {
         return loginFragment;
