@@ -30,4 +30,10 @@ public class User {
     private LocalDateTime dob;
 
     private Set<ChatRoom> chatRooms;
+
+    public User(Long id, String lastName, String firstName) {
+        this.id = id;
+        this.lastName = lastName;
+        this.firstName = firstName;
+    }
 }

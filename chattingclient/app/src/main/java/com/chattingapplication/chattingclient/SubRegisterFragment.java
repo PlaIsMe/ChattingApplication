@@ -103,23 +103,13 @@ public class SubRegisterFragment extends Fragment {
         return view;
     }
 
-    public void handleResponseSubRegister(int responseCode) {
+    public void handleResponseSubRegister(int responseCode, String responeBody) {
         if (responseCode == 200) {
-            MainActivity.currentAccount.setUser(MainActivity.gson.fromJson(MainActivity.httpResponse, User.class));
-            mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mainActivity.swapFragment(R.id.fragmentContainerViewFullContent, mainActivity.getMainMenuFragment());
-                }
-            });
+            MainActivity.currentAccount.setUser(MainActivity.gson.fromJson(responeBody, User.class));
+            mainActivity.swapFragment(R.id.fragmentContainerViewFullContent, mainActivity.getMainMenuFragment());
         } else {
-            ExceptionError exceptionError = MainActivity.gson.fromJson(MainActivity.httpResponse, ExceptionError.class);
-            mainActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(mainActivity.getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+            ExceptionError exceptionError = MainActivity.gson.fromJson(responeBody, ExceptionError.class);
+            Toast.makeText(mainActivity.getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

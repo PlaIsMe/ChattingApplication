@@ -1,12 +1,32 @@
 package com.chattingapplication.chattingclient;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+
+import androidx.appcompat.widget.Toolbar;
+
+import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
+import com.chattingapplication.chattingclient.AsyncTask.SendTask;
+import com.chattingapplication.chattingclient.Model.ChatRoom;
+import com.chattingapplication.chattingclient.Model.User;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,8 +44,17 @@ public class ChattingFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public ChattingFragment() {
-        // Required empty public constructor
+    private User targetUser;
+    private ChatRoom currentChatRoom;
+    private MainActivity mainActivity;
+    private boolean isRoomAvailable = true;
+
+    public ChattingFragment(User targetUser) {
+        this.targetUser = targetUser;
+    }
+    public User getTargetUser() {
+        Log.d("debugGetTargetUser", targetUser.toString());
+        return targetUser;
     }
 
     /**
@@ -38,7 +67,7 @@ public class ChattingFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static ChattingFragment newInstance(String param1, String param2) {
-        ChattingFragment fragment = new ChattingFragment();
+        ChattingFragment fragment = new ChattingFragment(new User());
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -53,12 +82,76 @@ public class ChattingFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        mainActivity = (MainActivity) getActivity();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_chatting, container, false);
+        View view = inflater.inflate(R.layout.fragment_chatting, container, false);
+
+        GetRequestTask getRequestTask = new GetRequestTask((MainActivity) getActivity());
+        String path = String.format("chat_room/%s/%s/true", MainActivity.currentAccount.getUser().getId(), targetUser.getId());
+        getRequestTask.execute(path, "joinPrivateRoom", "ChattingFragment");
+
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
+
+        TextView txtUserName = view.findViewById(R.id.txtViewUserName);
+        txtUserName.setText(String.format("%s %s", targetUser.getLastName(), targetUser.getFirstName()));
+
+        EditText editTxtMessage = view.findViewById(R.id.editTxtMessage);
+        FrameLayout layoutSend = view.findViewById(R.id.layoutSend);
+
+        editTxtMessage.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                layoutSend.setVisibility(editTxtMessage.getText().toString().trim().length() == 0 ? View.INVISIBLE : View.VISIBLE);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        layoutSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isRoomAvailable) {
+                    String jsonString;
+                    try {
+                        jsonString = new JSONObject()
+                                .put("createUser", MainActivity.currentAccount.getUser().getId())
+                                .put("targetUser", targetUser.getId())
+                                .toString();
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                    SendTask sendTask = new SendTask();
+                    sendTask.execute("createPrivateRoom", jsonString);
+                }
+            }
+        });
+        return view;
+    }
+
+    public void joinPrivateRoom(int responseCode, String jsonString) {
+        if (responseCode == 200) {
+            currentChatRoom = MainActivity.gson.fromJson(jsonString, ChatRoom.class);
+        } else if (responseCode == 500) {
+            isRoomAvailable = false;
+        }
     }
 }

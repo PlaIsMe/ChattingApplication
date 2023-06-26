@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.chattingapplication.springbootserver.model.ChatRoom;
+import com.chattingapplication.springbootserver.model.Message;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.service.interfaces.ChatRoomService;
 
@@ -74,5 +75,23 @@ public class ChatRoomController {
     @GetMapping(path = "{user_id}")
     public Set<ChatRoom> getChatRoomsByUserId(@PathVariable(name = "user_id") Long userId){
         return chatRoomService.getChatRoomsByUserId(userId);
+    }
+
+    @GetMapping(path = "{room_id}/messages")
+    public Set<Message> getMessagesByChatRoomId(@PathVariable(name = "room_id") Long chatRoomId) throws Exception {
+        try {
+            return chatRoomService.getMessagesByChatRoomId(chatRoomId);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @GetMapping(path = "{current_user_id}/{target_user_id}/{is_private}")
+    public ChatRoom getChatRoomByUsers(@PathVariable(name = "current_user_id") Long currentUserId, @PathVariable(name = "target_user_id") Long targetUserId, @PathVariable(name = "is_private") boolean isPrivate) throws Exception {
+        try {
+            return chatRoomService.getChatRoomByUsers(currentUserId, targetUserId, isPrivate);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 }

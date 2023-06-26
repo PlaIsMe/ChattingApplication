@@ -1,5 +1,6 @@
 package com.chattingapplication.springbootserver.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "user")
-public class UserEntity {
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)

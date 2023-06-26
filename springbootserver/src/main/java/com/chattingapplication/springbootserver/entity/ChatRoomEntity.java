@@ -1,5 +1,6 @@
 package com.chattingapplication.springbootserver.entity;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +19,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @Table(name = "chat_room")
-public class ChatRoomEntity {
+public class ChatRoomEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)

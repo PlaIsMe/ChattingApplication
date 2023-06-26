@@ -111,7 +111,6 @@ public class LoginFragment extends Fragment {
     }
 
     public void loginResponse(String jsonString) {
-        Log.d("debugResponseClass", "Function from login fragment");
         try {
             MainActivity.currentAccount = MainActivity.gson.fromJson(jsonString, Account.class);
             try {

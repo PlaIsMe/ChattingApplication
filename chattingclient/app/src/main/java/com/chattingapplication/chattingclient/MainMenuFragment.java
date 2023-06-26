@@ -11,6 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.chattingapplication.chattingclient.Model.User;
+
+import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link MainMenuFragment#newInstance} factory method to
@@ -22,15 +28,15 @@ public class MainMenuFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    private Fragment chatRoomFragment;
     private Fragment peopleFragment = new PeopleFragment();
-    public Fragment getChatRoomFragment() {
-        return chatRoomFragment;
-    }
+    private Fragment chatRoomFragment;
 
     public Fragment getPeopleFragment() {
         return peopleFragment;
+    }
+
+    public Fragment getChatRoomFragment() {
+        return chatRoomFragment;
     }
 
     // TODO: Rename and change types of parameters

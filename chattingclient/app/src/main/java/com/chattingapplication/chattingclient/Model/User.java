@@ -1,6 +1,9 @@
 package com.chattingapplication.chattingclient.Model;
 
+import androidx.annotation.Nullable;
+
 import java.util.Date;
+import java.util.Objects;
 
 public class User {
     private Long id;
@@ -69,5 +72,22 @@ public class User {
 
     public void setGender(String gender) {
         this.gender = gender;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", lastName='" + lastName + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", dob=" + dob +
+                ", avatar='" + avatar + '\'' +
+                ", gender='" + gender + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        return Objects.equals(((User) obj).getId(), id);
     }
 }

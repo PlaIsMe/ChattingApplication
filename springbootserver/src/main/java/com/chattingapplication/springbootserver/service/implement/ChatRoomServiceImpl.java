@@ -1,5 +1,6 @@
 package com.chattingapplication.springbootserver.service.implement;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -7,15 +8,21 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
+import com.chattingapplication.springbootserver.entity.AccountEntity;
 import com.chattingapplication.springbootserver.entity.ChatRoomEntity;
+import com.chattingapplication.springbootserver.entity.MessageEntity;
 import com.chattingapplication.springbootserver.entity.UserEntity;
 import com.chattingapplication.springbootserver.model.ChatRoom;
+import com.chattingapplication.springbootserver.model.Message;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.ChatRoomRepository;
+import com.chattingapplication.springbootserver.repository.MessageRepository;
 import com.chattingapplication.springbootserver.repository.UserRepository;
 import com.chattingapplication.springbootserver.service.interfaces.ChatRoomService;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final MessageRepository messageRepository;
 
     @Override
     public List<ChatRoom> getChatRooms() {
@@ -114,5 +122,32 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             BeanUtils.copyProperties(cr, chatRoom);
             return chatRoom;
         }).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Set<Message> getMessagesByChatRoomId(Long chatRoomId) {
+        Set<MessageEntity> messageEntities =  messageRepository.findByChatRoomId(chatRoomId);
+        return messageEntities
+            .stream().map(message -> new Message(
+                message.getId(),
+                message.getContent(),
+                new User(
+                    message.getUser().getId(),
+                    message.getUser().getFirstName(),
+                    message.getUser().getLastName()
+                )
+            )).collect(Collectors.toSet());        
+    }
+
+    @Override
+    public ChatRoom getChatRoomByUsers(Long currentUserId, Long targetUserId, boolean isPrivate) throws Exception {
+        ChatRoom chatRoom = new ChatRoom();
+        ChatRoomEntity chatRoomEntity = chatRoomRepository.findByUserIds(currentUserId, targetUserId, isPrivate);
+        if (chatRoomEntity == null) {
+            throw new Exception("no room available!");
+        } else {
+            BeanUtils.copyProperties(chatRoomRepository.findByUserIds(currentUserId, targetUserId, isPrivate), chatRoom);
+            return chatRoom;
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.chattingapplication.springbootserver.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -19,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "message")
-public class MessageEntity {
+public class MessageEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)

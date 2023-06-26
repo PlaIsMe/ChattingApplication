@@ -16,14 +16,17 @@ import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class PutRequestTask extends AsyncTask<String, String, Void> {
+public class PutRequestTask extends AsyncTask<String, Void, String> {
     private MainActivity mainActivity;
+    private String functionName;
+    private String className;
+    private int responseCode;
 
     public PutRequestTask(MainActivity activity) {
         mainActivity = activity;
     }
     @Override
-    protected Void doInBackground(String... params) {
+    protected String doInBackground(String... params) {
         try {
             URL url = new URL(MainActivity.apiUrl + params[0]);
             Log.d("debugPutURL", MainActivity.apiUrl + params[0]);
@@ -37,30 +40,44 @@ public class PutRequestTask extends AsyncTask<String, String, Void> {
             osw.flush();
             osw.close();
 
-            BufferedReader in = (conn.getResponseCode() == HttpURLConnection.HTTP_OK ?
+            responseCode = conn.getResponseCode();
+            functionName = params[2];
+            className = params[3];
+            BufferedReader bufferedReader = (responseCode == HttpURLConnection.HTTP_OK ?
                     new BufferedReader(new InputStreamReader(conn.getInputStream())) :
                     new BufferedReader(new InputStreamReader(conn.getErrorStream())));
-            Log.d("debugResponseCode", String.valueOf(conn.getResponseCode()));
-            mainActivity.readResponseBody(in);
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = bufferedReader.readLine()) != null) {
+                response.append(inputLine);
+            }
+            bufferedReader.close();
+            return response.toString();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    @Override
+    protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+        try {
+            Log.d("debugResponseCode", String.valueOf(responseCode));
             Class<?> mainClass = Class.forName(mainActivity.getPackageName() + ".MainActivity");
-            Method getMethod = mainClass.getDeclaredMethod(String.format("get%s", params[3]));
+            Method getMethod = mainClass.getDeclaredMethod(String.format("get%s", className));
             Object getResult = getMethod.invoke(mainActivity);
 
-            Class<?> fragmentClass = Class.forName(String.format("%s.%s", mainActivity.getPackageName(), params[3]));
-            Method responseMethod = fragmentClass.getDeclaredMethod(params[2], int.class);
-            responseMethod.invoke((Fragment) getResult, conn.getResponseCode());
-
-        } catch (IOException e) {
+            Class<?> fragmentClass = Class.forName(String.format("%s.%s", mainActivity.getPackageName(), className));
+            Method responseMethod = fragmentClass.getDeclaredMethod(functionName, int.class, String.class);
+            responseMethod.invoke((Fragment) getResult, responseCode, s);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
-        return null;
     }
 }

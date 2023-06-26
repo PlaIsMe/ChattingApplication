@@ -31,11 +31,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static String IP;
     public static String apiUrl;
-    public static String httpResponse;
     public static Account currentAccount;
     public static Gson gson = new Gson();
     private FragmentManager fragmentManager;
@@ -43,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private Fragment registerFragment = new RegisterFragment();
     private Fragment subRegisterFragment = new SubRegisterFragment();
     private Fragment mainMenuFragment = new MainMenuFragment();
+    private Fragment chattingFragment;
+    public void setChattingFragment(Fragment chattingFragment) {
+        this.chattingFragment = chattingFragment;
+    }
+
 
     public Fragment getLoginFragment() {
         return loginFragment;
@@ -59,10 +65,18 @@ public class MainActivity extends AppCompatActivity {
     public Fragment getMainMenuFragment() {
         return mainMenuFragment;
     }
+    public Fragment getChattingFragment() {
+        return chattingFragment;
+    }
 
     public Fragment getPeopleFragment() {
         return ((MainMenuFragment) mainMenuFragment).getPeopleFragment();
     }
+
+    public Fragment getChatRoomFragment() {
+        return ((MainMenuFragment) mainMenuFragment).getChatRoomFragment();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,18 +99,6 @@ public class MainActivity extends AppCompatActivity {
                 .addToBackStack("name")
                 .commit();
     }
-
-    //    Read response body
-    public void readResponseBody(BufferedReader in) throws IOException {
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-        httpResponse = response.toString();
-    }
-
 
     //    Tách jsonString response từ server
     public void handleResponse(String jsonResponse) {

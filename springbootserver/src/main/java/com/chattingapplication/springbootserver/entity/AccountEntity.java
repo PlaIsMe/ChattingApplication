@@ -1,5 +1,6 @@
 package com.chattingapplication.springbootserver.entity;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -21,7 +22,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @Table(name = "account")
-public class AccountEntity {
+public class AccountEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
