@@ -4,11 +4,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,11 +17,11 @@ import com.chattingapplication.model.Request;
 import com.chattingapplication.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
+
+import lombok.Synchronized;
 
 public class ServerService {
     public static ArrayList<ClientHandleService> clientHandlers = new ArrayList<>();
-    public static ArrayList<String> inProcessApi = new ArrayList<>();
 
     public static String socketReceive(ClientHandleService clientHandleService) {
         try {
@@ -90,21 +88,10 @@ public class ServerService {
         ServerService.socketSend(clientHandleService, "loginResponse", response, "LoginFragment");
     }
 
-    public static List<String> checkRaceCondition(String action, JSONObject requestJson) {
-        return inProcessApi.stream().filter(s -> {
-            JSONObject checkObject = new JSONObject(s);
-            System.out.println(requestJson);
-            return (checkObject.getString("createUser").equals(requestJson.getString("targetUser")) &&
-            checkObject.getString("targetUser").equals(requestJson.getString("createUser")) &&
-            checkObject.getString("action").equals(action));
-        }).toList();
-    }
-
+    @Synchronized
     public static String createPrivateRoomRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
         Gson gson = new Gson();
         JSONObject requestObject = new JSONObject(jsonString);
-
-        List<String> filterList = checkRaceCondition("createPrivateRoom", requestObject);
         User createUser = gson.fromJson(requestObject.getString("createUser"), User.class);
         User targetUser  = gson.fromJson(requestObject.getString("targetUser"), User.class);
 
@@ -114,34 +101,11 @@ public class ServerService {
             System.out.println(checkRoom);
             return checkRoom;
         } catch (JsonSyntaxException ex) {
-            if (filterList.size() == 0) {
-                String api;
-                try {
-                    api = new JSONObject()
-                        .put("action", "createPrivateRoom")
-                        .put("createUser", requestObject.getString("createUser"))
-                        .put("targetUser", requestObject.getString("targetUser"))
-                        .toString();
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
-                inProcessApi.add(api);
-                String responseBody = RequestService.postRequest(String.format("chat_room/create_private_room/%d/%d", createUser.getId(), targetUser.getId()), "");
-                inProcessApi.remove(api);
-                System.out.println(responseBody);
-                return responseBody;
-            } else {
-                // loop until the api done
-                do {
-                    filterList = checkRaceCondition("createPrivateRoom", requestObject);
-                } while (filterList.size() == 0);            
-                String response = RequestService.getRequest(String.format("chat_room/%d/%d/true", createUser.getId(), targetUser.getId()));
-                System.out.println(response);
-                return response;
-            }            
+            String responseBody = RequestService.postRequest(String.format("chat_room/create_private_room/%d/%d", createUser.getId(), targetUser.getId()), "");
+            System.out.println(responseBody);
+            return responseBody;    
         }
     }
-
 
     public static void handleRequest(ClientHandleService clientHandleService, String jsonRequest) throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException {
         System.out.println(jsonRequest);
