@@ -34,7 +34,7 @@ public class AccountController {
         return accountService.getAccountById(accountId);
     }
 
-    @PostMapping(path = "/signin")
+    @PostMapping(path = "/signup")
     public Account createAccount(@Valid @RequestBody Account account, BindingResult result) throws Exception {
         if (result.hasErrors()){
             throw new Exception(result.getAllErrors().get(0).getDefaultMessage());
@@ -42,7 +42,7 @@ public class AccountController {
         return accountService.createAccount(account);
     }
 
-    @PostMapping(path = "/signup")
+    @PostMapping(path = "/signin")
     public Account loginAccount(@Valid @RequestBody Account account, BindingResult result) throws Exception {
         if (result.hasErrors()){
             throw new Exception(result.getAllErrors().get(0).getDefaultMessage());

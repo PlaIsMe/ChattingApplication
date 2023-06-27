@@ -1,7 +1,5 @@
 package com.chattingapplication.springbootserver.model;
 
-import java.util.Set;
-
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -18,4 +16,8 @@ public class ChatRoom {
     @NotBlank
     private String roomName;
     private boolean isPrivate;
+    public ChatRoom(@Size(max = 40) @NotBlank String roomName, boolean isPrivate) {
+        this.roomName = roomName;
+        this.isPrivate = isPrivate;
+    }
 }

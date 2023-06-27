@@ -75,7 +75,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
-    public void addUsers(Long chatRoomId, List<User> users) throws Exception {
+    public String addUsers(Long chatRoomId, List<User> users) throws Exception {
         try {
             ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).get();
             Set<UserEntity> userEntities = users.stream().map(u ->{
@@ -92,6 +92,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
             chatRoomRepository.save(chatRoomEntity);
             userRepository.saveAll(userEntities);
+            return "Success";
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -148,6 +149,24 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         } else {
             BeanUtils.copyProperties(chatRoomRepository.findByUserIds(currentUserId, targetUserId, isPrivate), chatRoom);
             return chatRoom;
+        }
+    }
+
+    @Override
+    public ChatRoom createPrivateRoom(Long user_id_created, Long user_id_targed) throws Exception {
+        try {
+            ChatRoom newChatRoom = createChatRoom(new ChatRoom(String.format("private_%d_%d", user_id_created, user_id_targed), true));
+            ChatRoomEntity newChatRoomEntity = chatRoomRepository.findById(newChatRoom.getId()).get();
+            UserEntity userEntityCreated = userRepository.findById(user_id_created).get();
+            UserEntity userEntityTarget = userRepository.findById(user_id_targed).get();
+            userEntityCreated.getChatRooms().add(newChatRoomEntity);
+            userEntityTarget.getChatRooms().add(newChatRoomEntity);
+            userRepository.save(userEntityCreated);
+            userRepository.save(userEntityTarget);
+            chatRoomRepository.save(newChatRoomEntity);
+            return newChatRoom;
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
         }
     }
 }

@@ -42,10 +42,20 @@ public class ChatRoomController {
     }
 
     @PostMapping(path = "{room_id}/add_users")
-    public void addUsers(@PathVariable(name = "room_id") Long chatRoomId, @RequestBody List<User> users)
+    public String addUsers(@PathVariable(name = "room_id") Long chatRoomId, @RequestBody List<User> users)
             throws Exception {
         try {
-            chatRoomService.addUsers(chatRoomId, users);
+            return chatRoomService.addUsers(chatRoomId, users);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+     @PostMapping(path = "/create_private_room/{user_id_created}/{user_id_targed}")
+    public ChatRoom createPrivateRoom(@PathVariable Long user_id_created, @PathVariable Long user_id_targed)
+            throws Exception {
+        try {
+            return chatRoomService.createPrivateRoom(user_id_created, user_id_targed);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
