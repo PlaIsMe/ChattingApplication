@@ -18,6 +18,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter

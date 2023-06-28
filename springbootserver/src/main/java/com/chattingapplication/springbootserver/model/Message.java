@@ -15,16 +15,17 @@ public class Message {
     private Long id;
 
     @Size(max = 255)
-    @NotBlank
+    @NotBlank(message = "message should not be blank")
     private String content;
 
     private LocalDateTime createAt;
     private User user;
     private ChatRoom chatRoom;
 
-    public Message(Long id, String content, User user) {
+    public Message(Long id, String content, LocalDateTime createAt, User user) {
         this.id = id;
         this.content = content;
+        this.createAt = createAt;
         this.user = user;
     }
 }

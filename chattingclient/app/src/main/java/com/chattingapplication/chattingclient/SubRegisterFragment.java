@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
+import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.ExceptionError;
 import com.chattingapplication.chattingclient.Model.User;
 

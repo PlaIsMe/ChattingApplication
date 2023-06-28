@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import com.chattingapplication.model.Account;
 import com.chattingapplication.model.ChatRoom;
+import com.chattingapplication.model.Message;
 import com.chattingapplication.model.Request;
 import com.chattingapplication.model.User;
 import com.google.gson.Gson;
@@ -56,12 +57,20 @@ public class ServerService {
         }
     }
 
-    public static void chattingRequest(ClientHandleService clientHandleService, String message) {
-        for (ClientHandleService client: clientHandlers) {
-            if (client.getClientSocket() != clientHandleService.getClientSocket()) {
-                // socketSend(client, "chattingResponse", clientHandleService.getClientAccount().getEmail() + ": " + message);
-            }
-        }
+    public static void chattingRequest(ClientHandleService clientHandleService, String jsonString) throws JSONException, IOException, InterruptedException {
+        JSONObject requestObject = new JSONObject(jsonString);
+        saveMessage(clientHandleService, requestObject.getString("content"), requestObject.getLong("roomId"), requestObject.getLong("userId"));
+    }
+
+    public static void sendMessage(ClientHandleService clientHandleService, String jsonString) {
+        Gson gson = new Gson();
+        Message message = gson.fromJson(jsonString, Message.class);
+        clientHandlers.stream()
+        .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
+        c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
+        .forEach(client -> {
+            socketSend(client, "chattingResponse", message.getContent(), "ChattingFragment");
+        });
     }
 
     public static void registerRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
@@ -88,21 +97,33 @@ public class ServerService {
         ServerService.socketSend(clientHandleService, "loginResponse", response, "LoginFragment");
     }
 
+    public static void updateRequest(ClientHandleService clientHandleService, String userId) throws JsonSyntaxException, IOException, InterruptedException {
+        Gson gson = new Gson();
+        User currentUser = gson.fromJson(RequestService.getRequest(String.format("user/%s", userId)), User.class);
+        clientHandleService.getClientAccount().setUser(currentUser);
+    }
+
     public static String createPrivateRoomRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
         Gson gson = new Gson();
         JSONObject requestObject = new JSONObject(jsonString);
         User createUser = gson.fromJson(requestObject.getString("createUser"), User.class);
         User targetUser  = gson.fromJson(requestObject.getString("targetUser"), User.class);
+        String firstMessage = requestObject.getString("message");
+        String newChatRoom;
         try {
             ClientHandleService targetClient = clientHandlers.stream().filter(c -> c.getClientAccount().getUser().getId().equals(targetUser.getId())).findFirst().get();
             ClientHandleService firstClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? clientHandleService: targetClient);
             ClientHandleService secondClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? targetClient: clientHandleService);
-            return synchronizedCreatePrivateRoom(firstClient, secondClient);
+            newChatRoom = synchronizedCreatePrivateRoom(firstClient, secondClient);
+            updateRequest(targetClient, String.format("%d", targetUser.getId()));
         } catch (NoSuchElementException | NullPointerException e) {
-            String responseBody = createPrivateRoom(createUser.getId(), targetUser.getId());
-            System.out.println(responseBody);
-            return responseBody;
+            newChatRoom = createPrivateRoom(createUser.getId(), targetUser.getId());
         }
+        updateRequest(clientHandleService, String.format("%d", createUser.getId()));
+        socketSend(clientHandleService, "createPrivateRoomResponse", newChatRoom, "ChattingFragment");
+        ChatRoom newRoom = gson.fromJson(newChatRoom, ChatRoom.class);
+        saveMessage(clientHandleService, firstMessage, newRoom.getId(), createUser.getId());
+        return "";
     }
 
     public static String synchronizedCreatePrivateRoom(ClientHandleService firstClient, ClientHandleService secondClient) throws IOException, InterruptedException {
@@ -115,8 +136,8 @@ public class ServerService {
 
     public static String createPrivateRoom(Long firstId, Long secondId) throws IOException, InterruptedException {
         String checkRoom = RequestService.getRequest(String.format("chat_room/%d/%d/true", firstId, secondId));
+        Gson gson = new Gson();
         try {
-            Gson gson = new Gson();
             ChatRoom checkChatRoom = gson.fromJson(checkRoom, ChatRoom.class);
             return checkRoom;
         } catch (JsonSyntaxException ex) {
@@ -125,8 +146,20 @@ public class ServerService {
         }
     }
 
+    public static void saveMessage(ClientHandleService clientHandleService, String content, Long roomId, Long userId) throws IOException, InterruptedException {
+        String message;
+        try {
+            message = new JSONObject()
+                .put("content", content)
+                .toString();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        String messageResponse = RequestService.postRequest(String.format("message/%d/%d", roomId, userId), message);
+        sendMessage(clientHandleService, messageResponse);
+    }
+
     public static void handleRequest(ClientHandleService clientHandleService, String jsonRequest) throws NoSuchMethodException, SecurityException, IllegalAccessException, InvocationTargetException {
-        System.out.println(jsonRequest);
         Gson gson = new Gson();
         Request request = gson.fromJson(jsonRequest, Request.class);
         Method method = ServerService.class.getMethod(request.getRequestFunction(), ClientHandleService.class ,String.class);

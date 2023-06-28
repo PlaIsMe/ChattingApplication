@@ -87,15 +87,6 @@ public class ChatRoomController {
         return chatRoomService.getChatRoomsByUserId(userId);
     }
 
-    @GetMapping(path = "{room_id}/messages")
-    public Set<Message> getMessagesByChatRoomId(@PathVariable(name = "room_id") Long chatRoomId) throws Exception {
-        try {
-            return chatRoomService.getMessagesByChatRoomId(chatRoomId);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
     @GetMapping(path = "{current_user_id}/{target_user_id}/{is_private}")
     public ChatRoom getChatRoomByUsers(@PathVariable(name = "current_user_id") Long currentUserId, @PathVariable(name = "target_user_id") Long targetUserId, @PathVariable(name = "is_private") boolean isPrivate) throws Exception {
         try {

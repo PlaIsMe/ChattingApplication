@@ -111,6 +111,7 @@ public class AccountServiceImpl implements AccountService {
             Account account = new Account();
             User user = new User();
             BeanUtils.copyProperties(accountEntity.getUser(), user);
+            user.setChatRooms(chatRoomService.getChatRoomsByUserId(user.getId()));
             BeanUtils.copyProperties(accountEntity, account);
             account.setUser(user);
             return account;
@@ -131,6 +132,7 @@ public class AccountServiceImpl implements AccountService {
                     BeanUtils.copyProperties(accountEntity, account);
                     User user = new User();
                     BeanUtils.copyProperties(accountEntity.getUser(), user);
+                    user.setChatRooms(chatRoomService.getChatRoomsByUserId(user.getId()));
                     account.setUser(user);
                     return account;
                 } else {

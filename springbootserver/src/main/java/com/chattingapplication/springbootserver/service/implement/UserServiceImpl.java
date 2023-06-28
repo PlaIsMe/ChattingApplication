@@ -83,6 +83,7 @@ public class UserServiceImpl implements UserService {
             UserEntity userEntity = userRepository.findById(userId).get();
             User user = new User();
             BeanUtils.copyProperties(userEntity, user);
+            user.setChatRooms(chatRoomService.getChatRoomsByUserId(user.getId()));
             return user;
         } catch (NoSuchElementException e) {
             throw new Exception("User not found!");
