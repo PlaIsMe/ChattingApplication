@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,8 +19,6 @@ import com.chattingapplication.model.Request;
 import com.chattingapplication.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-
-import lombok.Synchronized;
 
 public class ServerService {
     public static ArrayList<ClientHandleService> clientHandlers = new ArrayList<>();
@@ -88,22 +88,40 @@ public class ServerService {
         ServerService.socketSend(clientHandleService, "loginResponse", response, "LoginFragment");
     }
 
-    @Synchronized
     public static String createPrivateRoomRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
         Gson gson = new Gson();
         JSONObject requestObject = new JSONObject(jsonString);
         User createUser = gson.fromJson(requestObject.getString("createUser"), User.class);
         User targetUser  = gson.fromJson(requestObject.getString("targetUser"), User.class);
-
-        String checkRoom = RequestService.getRequest(String.format("chat_room/%d/%d/true", createUser.getId(), targetUser.getId()));
         try {
+            ClientHandleService targetClient = clientHandlers.stream().filter(c -> c.getClientAccount().getUser().getId().equals(targetUser.getId())).findFirst().get();
+            ClientHandleService firstClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? clientHandleService: targetClient);
+            ClientHandleService secondClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? targetClient: clientHandleService);
+            return synchronizedCreatePrivateRoom(firstClient, secondClient);
+        } catch (NoSuchElementException | NullPointerException e) {
+            String responseBody = createPrivateRoom(createUser.getId(), targetUser.getId());
+            System.out.println(responseBody);
+            return responseBody;
+        }
+    }
+
+    public static String synchronizedCreatePrivateRoom(ClientHandleService firstClient, ClientHandleService secondClient) throws IOException, InterruptedException {
+        synchronized (firstClient) {
+            synchronized (secondClient) {
+                return createPrivateRoom(firstClient.getClientAccount().getUser().getId(), secondClient.getClientAccount().getUser().getId());
+            }
+        }
+    }
+
+    public static String createPrivateRoom(Long firstId, Long secondId) throws IOException, InterruptedException {
+        String checkRoom = RequestService.getRequest(String.format("chat_room/%d/%d/true", firstId, secondId));
+        try {
+            Gson gson = new Gson();
             ChatRoom checkChatRoom = gson.fromJson(checkRoom, ChatRoom.class);
-            System.out.println(checkRoom);
             return checkRoom;
         } catch (JsonSyntaxException ex) {
-            String responseBody = RequestService.postRequest(String.format("chat_room/create_private_room/%d/%d", createUser.getId(), targetUser.getId()), "");
-            System.out.println(responseBody);
-            return responseBody;    
+            String responseBody = RequestService.postRequest(String.format("chat_room/create_private_room/%d/%d", firstId, secondId), "");
+            return responseBody;
         }
     }
 
