@@ -1,5 +1,6 @@
 package com.chattingapplication.chattingclient;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,6 +23,7 @@ import com.chattingapplication.chattingclient.Adapter.UserAdapter;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
 import com.chattingapplication.chattingclient.Model.User;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -39,16 +41,7 @@ import java.util.stream.Collectors;
  * create an instance of this fragment.
  */
 public class PeopleFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-//    private LinearLayout linearLayoutUserContainer;
+    //    private LinearLayout linearLayoutUserContainer;
 
     private ListView listViewPeople;
     private MainActivity mainActivity;
@@ -57,20 +50,10 @@ public class PeopleFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment PeopleFragment.
-     */
     // TODO: Rename and change types and number of parameters
-    public static PeopleFragment newInstance(String param1, String param2) {
+    public static PeopleFragment newInstance() {
         PeopleFragment fragment = new PeopleFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -78,10 +61,6 @@ public class PeopleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         mainActivity = (MainActivity) getActivity();
     }
 
@@ -92,21 +71,21 @@ public class PeopleFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_people, container, false);
         listViewPeople = view.findViewById(R.id.listViewPeople);
         GetRequestTask getRequestTask = new GetRequestTask((MainActivity) getActivity());
-        getRequestTask.execute("user", "loadUser", "PeopleFragment");
+        getRequestTask.execute("user", "loadUser", "PeopleFragment", "MainActivity");
         return view;
     }
 
     public void loadUser(int responseCode, String jsonString) {
-        Log.d("debugLoadUser", "loading user");
+        Gson gson = new Gson();
         try {
             JSONArray jsonArray = new JSONArray(jsonString);
 
             Type userListType = new TypeToken<List<User>>() {}.getType();
-            List<User> rawUserList = MainActivity.gson.fromJson(jsonArray.toString(), userListType);
+            List<User> rawUserList = gson.fromJson(jsonArray.toString(), userListType);
             List<User> userList = rawUserList.stream().filter(user ->
                     (user.getLastName() != null
                             && user.getFirstName() != null
-                    && !Objects.equals(user.getId(), MainActivity.currentAccount.getUser().getId())))
+                    && !Objects.equals(user.getId(), AuthenticationActivity.currentAccount.getUser().getId())))
                     .collect(Collectors.toList());
 
             UserAdapter userAdapter = new UserAdapter(this.getContext(), userList);
@@ -114,9 +93,11 @@ public class PeopleFragment extends Fragment {
             listViewPeople.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Gson gson = new Gson();
                     User clickedUser = (User) listViewPeople.getItemAtPosition(position);
-                    mainActivity.setChattingFragment(new ChattingFragment(clickedUser));
-                    mainActivity.swapFragment(R.id.fragmentContainerViewFullContent, mainActivity.getChattingFragment());
+                    Intent chattingActivity = new Intent(((MainActivity) mainActivity).getApplicationContext(), ChattingActivity.class);
+                    chattingActivity.putExtra("targetUser",gson.toJson(clickedUser));
+                    startActivity(chattingActivity);
                 }
             });
         } catch (JSONException e) {

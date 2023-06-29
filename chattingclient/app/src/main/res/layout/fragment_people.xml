@@ -10,33 +10,4 @@
         android:id="@+id/listViewPeople"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/linearLayoutUserContainer"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:orientation="vertical" >-->
-
-<!--&lt;!&ndash;            <LinearLayout&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_width="match_parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:layout_height="50dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:padding="5dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                android:orientation="horizontal">&ndash;&gt;-->
-
-<!--&lt;!&ndash;                <ImageView&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:id="@+id/imageView"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_width="50dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_height="match_parent"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:src="@drawable/default_avatar" />&ndash;&gt;-->
-
-<!--&lt;!&ndash;                <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:id="@+id/textView3"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_gravity="center_vertical"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:paddingLeft="5dp"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:text="TextView" />&ndash;&gt;-->
-<!--&lt;!&ndash;            </LinearLayout>&ndash;&gt;-->
-<!--        </LinearLayout>-->
-
 </FrameLayout>

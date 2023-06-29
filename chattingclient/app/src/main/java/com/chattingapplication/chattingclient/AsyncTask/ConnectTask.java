@@ -1,8 +1,12 @@
 package com.chattingapplication.chattingclient.AsyncTask;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.chattingapplication.chattingclient.AuthenticationActivity;
+import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.MainActivity;
 import com.chattingapplication.chattingclient.Utils.Utils;
 
@@ -12,23 +16,20 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ConnectTask extends AsyncTask<Void, Void, Void> {
-    private static String SERVER_IP;
-    private static int SERVER_PORT = 8081;
     public static Socket clientFd;
     public static DataOutputStream dOut;
     public static DataInputStream dIn;
     private String socketResponse;
-    private MainActivity mainActivity;
+    private Activity activity;
 
-    public ConnectTask(MainActivity activity) {
-        mainActivity = activity;
+    public ConnectTask(Activity activity) {
+        this.activity = activity;
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         try {
-            SERVER_IP = MainActivity.IP;
-            clientFd = new Socket(SERVER_IP, SERVER_PORT);
+            clientFd = new Socket(LoadActivity.IP, LoadActivity.PORT);
             dOut = new DataOutputStream(clientFd.getOutputStream());
             dIn = new DataInputStream(clientFd.getInputStream());
         } catch (IOException e) {
@@ -40,6 +41,8 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void unused) {
         super.onPostExecute(unused);
+        Intent authenticationActivity = new Intent(this.activity, AuthenticationActivity.class);
+        activity.startActivity(authenticationActivity);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -48,7 +51,7 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                         // Luồng luôn đọc từ client
                         socketResponse = dIn.readUTF();
                         Log.d("debugReceived", socketResponse);
-                        mainActivity.handleResponse(socketResponse);
+                        ((LoadActivity) activity).handleSocketResponse(socketResponse);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

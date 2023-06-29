@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
     private Long id;
@@ -14,6 +15,15 @@ public class User {
     private Date dob;
     private String avatar;
     private String gender;
+    private Set<ChatRoom> chatRooms;
+
+    public Set<ChatRoom> getChatRooms() {
+        return chatRooms;
+    }
+
+    public void setChatRooms(Set<ChatRoom> chatRooms) {
+        this.chatRooms = chatRooms;
+    }
 
     public User() {
 

@@ -37,13 +37,14 @@ public class ServerService {
         return null;
     }
 
-    public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam, String responseClass) {
+    public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam, String responseClass, String responseContext) {
         String message;
         try {
             message = new JSONObject()
                     .put("responseFunction", responseName)
                     .put("responseParam", responseParam)
                     .put("responseClass", responseClass)
+                    .put("responseContext", responseContext)
                     .toString();
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -69,37 +70,19 @@ public class ServerService {
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
         c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
         .forEach(client -> {
-            socketSend(client, "chattingResponse", message.getContent(), "ChattingFragment");
+            socketSend(client, "chattingResponse", message.getContent(), "ChattingFragment", "ChattingContext");
         });
     }
 
-    public static void registerRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
-        String response = RequestService.postRequest("account/signup", jsonString);
+    public static void updateRequest(ClientHandleService clientHandleService, String accountJson) throws JsonSyntaxException, IOException, InterruptedException {
         Gson gson = new Gson();
-        try {
-            Account currentAccount = gson.fromJson(response, Account.class);
-            clientHandleService.setClientAccount(currentAccount);
-        } catch (JsonSyntaxException e) {
-
-        }
-        ServerService.socketSend(clientHandleService, "registerResponse", response, "RegisterFragment");
+        clientHandleService.setClientAccount(gson.fromJson(accountJson, Account.class));
+        System.out.println(clientHandleService.getClientAccount().toString());
     }
 
-    public static void loginRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {
-        String response = RequestService.postRequest("account/signin", jsonString);
+    public static void updateCurrentClient(ClientHandleService clientHandleService) throws JsonSyntaxException, IOException, InterruptedException {
         Gson gson = new Gson();
-        try {
-            Account currentAccount = gson.fromJson(response, Account.class);
-            clientHandleService.setClientAccount(currentAccount);
-        } catch (JsonSyntaxException e) {
-
-        }
-        ServerService.socketSend(clientHandleService, "loginResponse", response, "LoginFragment");
-    }
-
-    public static void updateRequest(ClientHandleService clientHandleService, String userId) throws JsonSyntaxException, IOException, InterruptedException {
-        Gson gson = new Gson();
-        User currentUser = gson.fromJson(RequestService.getRequest(String.format("user/%s", userId)), User.class);
+        User currentUser = gson.fromJson(RequestService.getRequest(String.format("user/%d", clientHandleService.getClientAccount().getUser().getId())), User.class);
         clientHandleService.getClientAccount().setUser(currentUser);
     }
 
@@ -115,12 +98,12 @@ public class ServerService {
             ClientHandleService firstClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? clientHandleService: targetClient);
             ClientHandleService secondClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? targetClient: clientHandleService);
             newChatRoom = synchronizedCreatePrivateRoom(firstClient, secondClient);
-            updateRequest(targetClient, String.format("%d", targetUser.getId()));
+            updateCurrentClient(targetClient);
         } catch (NoSuchElementException | NullPointerException e) {
             newChatRoom = createPrivateRoom(createUser.getId(), targetUser.getId());
         }
-        updateRequest(clientHandleService, String.format("%d", createUser.getId()));
-        socketSend(clientHandleService, "createPrivateRoomResponse", newChatRoom, "ChattingFragment");
+        updateCurrentClient(clientHandleService);
+        socketSend(clientHandleService, "createPrivateRoomResponse", newChatRoom, "ChattingFragment", "ChattingContext");
         ChatRoom newRoom = gson.fromJson(newChatRoom, ChatRoom.class);
         saveMessage(clientHandleService, firstMessage, newRoom.getId(), createUser.getId());
         return "";

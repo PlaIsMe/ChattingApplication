@@ -1,10 +1,6 @@
 package com.chattingapplication.chattingclient;
 
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -22,12 +18,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.Toolbar;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
-import com.chattingapplication.chattingclient.Model.User;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,44 +33,13 @@ import org.json.JSONObject;
  * create an instance of this fragment.
  */
 public class ChattingFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    private User targetUser;
-    private ChatRoom currentChatRoom;
-    private MainActivity mainActivity;
-    private boolean isRoomAvailable = true;
+    private ChattingActivity chattingActivity;
     private EditText editTxtMessage;
 
-    public ChattingFragment(User targetUser) {
-        this.targetUser = targetUser;
-    }
-    public User getTargetUser() {
-        Log.d("debugGetTargetUser", targetUser.toString());
-        return targetUser;
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChattingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChattingFragment newInstance(String param1, String param2) {
-        ChattingFragment fragment = new ChattingFragment(new User());
+    public ChattingFragment() {}
+    public static ChattingFragment newInstance() {
+        ChattingFragment fragment = new ChattingFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -83,14 +47,7 @@ public class ChattingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-        mainActivity = (MainActivity) getActivity();
-        GetRequestTask getRequestTask = new GetRequestTask((MainActivity) getActivity());
-        String path = String.format("chat_room/%s/%s/true", MainActivity.currentAccount.getUser().getId(), targetUser.getId());
-        getRequestTask.execute(path, "joinPrivateRoom", "ChattingFragment");
+        chattingActivity = (ChattingActivity) getActivity();
     }
 
     @Override
@@ -99,17 +56,6 @@ public class ChattingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chatting, container, false);
         editTxtMessage = view.findViewById(R.id.editTxtMessage);
-
-        Toolbar toolbar = view.findViewById(R.id.toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getFragmentManager().popBackStackImmediate();
-            }
-        });
-
-        TextView txtUserName = view.findViewById(R.id.txtViewUserName);
-        txtUserName.setText(String.format("%s %s", targetUser.getLastName(), targetUser.getFirstName()));
 
         EditText editTxtMessage = view.findViewById(R.id.editTxtMessage);
         FrameLayout layoutSend = view.findViewById(R.id.layoutSend);
@@ -134,12 +80,12 @@ public class ChattingFragment extends Fragment {
         layoutSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!isRoomAvailable) {
+                if (!chattingActivity.isRoomAvailable()) {
                     String jsonString;
                     try {
                         jsonString = new JSONObject()
-                                .put("createUser", MainActivity.currentAccount.getUser().toJsonString())
-                                .put("targetUser", targetUser.toJsonString())
+                                .put("createUser", AuthenticationActivity.currentAccount.getUser().toJsonString())
+                                .put("targetUser", chattingActivity.getTargetUser().toJsonString())
                                 .put("message", editTxtMessage.getText())
                                 .toString();
                     } catch (JSONException e) {
@@ -161,8 +107,8 @@ public class ChattingFragment extends Fragment {
         try {
             messageJson = new JSONObject()
                     .put("content", editTxtMessage.getText().toString())
-                    .put("roomId", currentChatRoom.getId())
-                    .put("userId", MainActivity.currentAccount.getUser().getId())
+                    .put("roomId", chattingActivity.getCurrentChatRoom().getId())
+                    .put("userId", AuthenticationActivity.currentAccount.getUser().getId())
                     .toString();
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -173,17 +119,18 @@ public class ChattingFragment extends Fragment {
     }
 
     public void joinPrivateRoom(int responseCode, String jsonString) {
+        Gson gson = new Gson();
         if (responseCode == 200) {
-            Log.d("debugGetCurrentRoom", jsonString);
-            currentChatRoom = MainActivity.gson.fromJson(jsonString, ChatRoom.class);
+            chattingActivity.setCurrentChatRoom(gson.fromJson(jsonString, ChatRoom.class));
+            chattingActivity.setRoomAvailable(true);
         } else if (responseCode == 500) {
-            isRoomAvailable = false;
+            chattingActivity.setRoomAvailable(false);
         }
     }
 
     public void appendOtherMsg(String message) {
         try {
-            LinearLayout linearLayout = mainActivity.findViewById(R.id.layoutReceive);
+            LinearLayout linearLayout = chattingActivity.findViewById(R.id.layoutReceive);
             TextView otherMsg = new TextView(this.getContext());
             otherMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -198,7 +145,7 @@ public class ChattingFragment extends Fragment {
 
     public void appendMyMsg(String message) {
         editTxtMessage.setText("");
-        LinearLayout linearLayout = mainActivity.findViewById(R.id.layoutReceive);
+        LinearLayout linearLayout = chattingActivity.findViewById(R.id.layoutReceive);
         TextView myMsg = new TextView(this.getContext());
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -208,18 +155,5 @@ public class ChattingFragment extends Fragment {
         myMsg.setText(message);
         myMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         linearLayout.addView(myMsg);
-    }
-
-    public void chattingResponse(String message) {
-        mainActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                appendOtherMsg(message);
-            }
-        });
-    }
-
-    public void createPrivateRoomResponse(String chatRoom) {
-        currentChatRoom = MainActivity.gson.fromJson(chatRoom, ChatRoom.class);
     }
 }
