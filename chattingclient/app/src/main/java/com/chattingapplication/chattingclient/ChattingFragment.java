@@ -27,6 +27,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import Service.NotificationService;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link ChattingFragment#newInstance} factory method to
@@ -139,7 +141,7 @@ public class ChattingFragment extends Fragment {
             otherMsg.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
             linearLayout.addView(otherMsg);
         } catch (NullPointerException e) {
-
+            NotificationService.sendNotification(this.getContext(), message);
         }
     }
 

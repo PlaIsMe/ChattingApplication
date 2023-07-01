@@ -16,14 +16,14 @@ import java.time.LocalDateTime;
 
 public class NotificationService {
 
-    public static void sendNotification(Context context, String messageBody) {
+    public static void sendNotification(Context context, String messageBody, String fromUser) {
 
         String channelId = "my notification channel";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.baseline_notifications_24)
-                        .setContentTitle("My notification message")
+                        .setContentTitle(fromUser)
                         .setContentText(messageBody)
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri);
