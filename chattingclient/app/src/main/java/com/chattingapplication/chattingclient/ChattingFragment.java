@@ -22,10 +22,17 @@ import android.widget.TextView;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
+import com.chattingapplication.chattingclient.Model.Message;
+import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -123,6 +130,8 @@ public class ChattingFragment extends Fragment {
         if (responseCode == 200) {
             chattingActivity.setCurrentChatRoom(gson.fromJson(jsonString, ChatRoom.class));
             chattingActivity.setRoomAvailable(true);
+            GetRequestTask getRequestTask = new GetRequestTask(chattingActivity);
+            getRequestTask.execute(String.format("message/%s", chattingActivity.getCurrentChatRoom().getId()), "loadMessage", "ChattingFragment", "ChattingActivity");
         } else if (responseCode == 500) {
             chattingActivity.setRoomAvailable(false);
         }
@@ -155,5 +164,20 @@ public class ChattingFragment extends Fragment {
         myMsg.setText(message);
         myMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         linearLayout.addView(myMsg);
+    }
+
+    public void loadMessage(int responseCode, String jsonString) throws JSONException {
+        Gson gson = new Gson();
+        JSONArray jsonArray = new JSONArray(jsonString);
+        Type userListType = new TypeToken<List<Message>>() {}.getType();
+        List<Message> listMessages = gson.fromJson(jsonArray.toString(), userListType);
+        listMessages.stream().forEach(message -> {
+            if (message.getUser().getId().equals(AuthenticationActivity.currentAccount.getUser().getId())) {
+                appendMyMsg(message.getContent());
+            } else {
+                appendOtherMsg(message.getContent());
+            }
+        });
+        Log.d("debugListMessage", String.valueOf(listMessages.size()));
     }
 }

@@ -1,16 +1,6 @@
 package com.chattingapplication.chattingclient.Model;
 
 public class ChatRoom {
-    public ChatRoom(Long id, String roomName, boolean isPrivate) {
-        this.id = id;
-        this.roomName = roomName;
-        this.isPrivate = isPrivate;
-    }
-
-    private Long id;
-    private String roomName;
-    private boolean isPrivate;
-
     public Long getId() {
         return id;
     }
@@ -35,5 +25,45 @@ public class ChatRoom {
         isPrivate = aPrivate;
     }
 
+    public Message getLatestMessage() {
+        return latestMessage;
+    }
 
+    public void setLatestMessage(Message latestMessage) {
+        this.latestMessage = latestMessage;
+    }
+
+    public User getTargetUser() {
+        return targetUser;
+    }
+
+    public void setTargetUser(User targetUser) {
+        this.targetUser = targetUser;
+    }
+
+    private Long id;
+    private String roomName;
+    private boolean isPrivate;
+    private Message latestMessage;
+    private User targetUser;
+
+
+    public ChatRoom(Long id, String roomName, boolean isPrivate, Message latestMessage, User targetUser) {
+        this.id = id;
+        this.roomName = roomName;
+        this.isPrivate = isPrivate;
+        this.latestMessage = latestMessage;
+        this.targetUser = targetUser;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatRoom{" +
+                "id=" + id +
+                ", roomName='" + roomName + '\'' +
+                ", isPrivate=" + isPrivate +
+                ", latestMessage=" + latestMessage +
+                ", targetUser=" + targetUser +
+                '}';
+    }
 }

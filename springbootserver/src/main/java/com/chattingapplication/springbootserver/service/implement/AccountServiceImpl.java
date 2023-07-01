@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.chattingapplication.springbootserver.entity.AccountEntity;
 import com.chattingapplication.springbootserver.entity.UserEntity;
 import com.chattingapplication.springbootserver.model.Account;
+import com.chattingapplication.springbootserver.model.ChatRoom;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.AccountRepository;
 import com.chattingapplication.springbootserver.service.interfaces.AccountService;

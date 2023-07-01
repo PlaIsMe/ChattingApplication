@@ -16,6 +16,8 @@ public class ChatRoom {
     @NotBlank
     private String roomName;
     private boolean isPrivate;
+    private User targetUser;
+    private Message latestMessage;
     public ChatRoom(@Size(max = 40) @NotBlank String roomName, boolean isPrivate) {
         this.roomName = roomName;
         this.isPrivate = isPrivate;

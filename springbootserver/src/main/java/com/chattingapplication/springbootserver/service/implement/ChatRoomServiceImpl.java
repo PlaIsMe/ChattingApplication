@@ -1,6 +1,5 @@
 package com.chattingapplication.springbootserver.service.implement;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,10 +10,12 @@ import org.springframework.stereotype.Service;
 import com.chattingapplication.springbootserver.entity.ChatRoomEntity;
 import com.chattingapplication.springbootserver.entity.UserEntity;
 import com.chattingapplication.springbootserver.model.ChatRoom;
+import com.chattingapplication.springbootserver.model.Message;
 import com.chattingapplication.springbootserver.model.User;
 import com.chattingapplication.springbootserver.repository.ChatRoomRepository;
 import com.chattingapplication.springbootserver.repository.UserRepository;
 import com.chattingapplication.springbootserver.service.interfaces.ChatRoomService;
+import com.chattingapplication.springbootserver.service.interfaces.MessageService;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 public class ChatRoomServiceImpl implements ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final MessageService messageService;
 
     @Override
     public List<ChatRoom> getChatRooms() {
@@ -33,6 +35,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             room.setId(r.getId());
             room.setPrivate(r.isPrivate());
             room.setRoomName(r.getRoomName());
+            List<Message> messages = messageService.getAllMessages(r.getId());
+            if (messages.size() != 0) {
+                room.setLatestMessage(messages.get(messages.size() - 1));
+            }
             return room;
         }).collect(Collectors.toList());
     }
@@ -114,6 +120,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return userEntity.getChatRooms().stream().map(cr -> {
             ChatRoom chatRoom = new ChatRoom();
             BeanUtils.copyProperties(cr, chatRoom);
+            List<Message> messages = messageService.getAllMessages(cr.getId());
+            if (messages.size() != 0) {
+                chatRoom.setLatestMessage(messages.get(messages.size() - 1));
+            }
+            if (cr.isPrivate()) {
+                User targetUser = new User();
+                BeanUtils.copyProperties(chatRoomRepository.findTargetUser(cr.getId(), userId), targetUser);
+                chatRoom.setTargetUser(targetUser);
+            }
             return chatRoom;
         }).collect(Collectors.toSet());
     }
@@ -126,6 +141,10 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new Exception("no room available!");
         } else {
             BeanUtils.copyProperties(chatRoomRepository.findByUserIds(currentUserId, targetUserId, isPrivate), chatRoom);
+            List<Message> messages = messageService.getAllMessages(chatRoomEntity.getId());
+            if (messages.size() != 0) {
+                chatRoom.setLatestMessage(messages.get(messages.size() - 1));
+            }
             return chatRoom;
         }
     }
