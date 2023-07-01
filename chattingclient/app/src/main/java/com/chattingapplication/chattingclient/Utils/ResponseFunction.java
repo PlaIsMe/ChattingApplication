@@ -12,6 +12,8 @@ import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.R;
 import com.google.gson.Gson;
 
+import Service.NotificationService;
+
 public class ResponseFunction {
     private Context context;
 
@@ -24,6 +26,7 @@ public class ResponseFunction {
         ((ChattingActivity) context).runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                NotificationService.sendNotification(context, message);
                 ((ChattingFragment) ((ChattingActivity) context).getChattingFragment()).appendOtherMsg(message);
             }
         });
