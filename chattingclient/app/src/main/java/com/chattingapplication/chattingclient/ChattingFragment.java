@@ -138,18 +138,14 @@ public class ChattingFragment extends Fragment {
     }
 
     public void appendOtherMsg(Message message) {
-        try {
-            LinearLayout linearLayout = chattingActivity.findViewById(R.id.layoutReceive);
-            TextView otherMsg = new TextView(this.getContext());
-            otherMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            otherMsg.setText(message.getContent());
-            otherMsg.setBackgroundColor(Color.parseColor("#808080"));
-            otherMsg.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
-            linearLayout.addView(otherMsg);
-        } catch (NullPointerException e) {
-            NotificationService.sendNotification(this.getContext(), message);
-        }
+        LinearLayout linearLayout = chattingActivity.findViewById(R.id.layoutReceive);
+        TextView otherMsg = new TextView(this.getContext());
+        otherMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        otherMsg.setText(message.getContent());
+        otherMsg.setBackgroundColor(Color.parseColor("#808080"));
+        otherMsg.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
+        linearLayout.addView(otherMsg);
     }
 
     public void appendMyMsg(String message) {

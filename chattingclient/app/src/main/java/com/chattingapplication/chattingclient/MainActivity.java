@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        init for avoiding null pointer
+        LoadActivity.chattingContext = this;
+
         SendTask sendTask = new SendTask();
         Gson gson = new Gson();
         sendTask.execute("updateRequest", String.format("%s", gson.toJson(AuthenticationActivity.currentAccount)));
