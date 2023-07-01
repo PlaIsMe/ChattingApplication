@@ -42,6 +42,8 @@ public class LoadActivity extends AppCompatActivity {
         apiUrl = String.format("http://%s:8080/api/", IP);
         init();
         progressBar.setVisibility(View.VISIBLE);
+//        init for avoiding null pointer exception
+        chattingContext = this;
         ConnectTask connectTask = new ConnectTask(this);
         connectTask.execute();
     }

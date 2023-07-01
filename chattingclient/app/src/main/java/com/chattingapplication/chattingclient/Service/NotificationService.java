@@ -1,4 +1,4 @@
-package Service;
+package com.chattingapplication.chattingclient.Service;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,21 +10,22 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.chattingapplication.chattingclient.MainActivity;
+import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.R;
 
 import java.time.LocalDateTime;
 
 public class NotificationService {
 
-    public static void sendNotification(Context context, String messageBody) {
+    public static void sendNotification(Context context, Message message) {
 
         String channelId = "my notification channel";
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(context, channelId)
                         .setSmallIcon(R.drawable.baseline_notifications_24)
-                        .setContentTitle("My notification message")
-                        .setContentText(messageBody)
+                        .setContentTitle(String.format("%s %s", message.getUser().getFirstName(), message.getUser().getLastName()))
+                        .setContentText(message.getContent())
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri);
 

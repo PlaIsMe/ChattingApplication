@@ -63,14 +63,14 @@ public class ServerService {
         saveMessage(clientHandleService, requestObject.getString("content"), requestObject.getLong("roomId"), requestObject.getLong("userId"));
     }
 
-    public static void sendMessage(ClientHandleService clientHandleService, String jsonString) {
+    public static void sendMessage(ClientHandleService clientHandleService, String messageJson) {
         Gson gson = new Gson();
-        Message message = gson.fromJson(jsonString, Message.class);
+        Message message = gson.fromJson(messageJson, Message.class);
         clientHandlers.stream()
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
         c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
         .forEach(client -> {
-            socketSend(client, "chattingResponse", message.getContent(), "ChattingFragment", "ChattingContext");
+            socketSend(client, "chattingResponse", messageJson, "ChattingFragment", "ChattingContext");
         });
     }
 
