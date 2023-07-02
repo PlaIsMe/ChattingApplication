@@ -1,5 +1,6 @@
 package com.chattingapplication.chattingclient;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Fragment peopleFragment = new PeopleFragment();
     private Fragment chatRoomFragment;
+    public static Context mainContext;
 
     public Fragment getPeopleFragment() {
         return peopleFragment;
@@ -41,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainContext = this;
+        LoadActivity.currentContext = this;
+
         SendTask sendTask = new SendTask();
         Gson gson = new Gson();
         sendTask.execute("updateRequest", String.format("%s", gson.toJson(AuthenticationActivity.currentAccount)));

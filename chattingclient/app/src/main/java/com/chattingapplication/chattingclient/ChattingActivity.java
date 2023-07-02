@@ -15,6 +15,10 @@ import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSyntaxException;
+
+import org.json.JSONException;
 
 public class ChattingActivity extends AppCompatActivity {
     private User targetUser;
@@ -51,19 +55,29 @@ public class ChattingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting);
 
-        LoadActivity.chattingContext = this;
+        LoadActivity.currentContext = this;
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         chattingFragment = fragmentManager.findFragmentById(R.id.fragmentContainerChatting);
 
         Intent prevIntent = getIntent();
-        Log.d("debugIntent", prevIntent.getStringExtra("targetUser"));
         Gson gson = new Gson();
-        targetUser = gson.fromJson(prevIntent.getStringExtra("targetUser"), User.class);
-
-        GetRequestTask getRequestTask = new GetRequestTask(this);
-        String path = String.format("chat_room/%s/%s/true", AuthenticationActivity.currentAccount.getUser().getId(), targetUser.getId());
-        getRequestTask.execute(path, "joinPrivateRoom", "ChattingFragment", "ChattingActivity");
+        try {
+//            From chat room fragment
+            currentChatRoom = gson.fromJson(prevIntent.getStringExtra("currentChatRoom"), ChatRoom.class);
+            Log.d("debugIntent", prevIntent.getStringExtra("currentChatRoom"));
+            targetUser = currentChatRoom.getTargetUser();
+            isRoomAvailable = true;
+            GetRequestTask getRequestTask = new GetRequestTask(this);
+            getRequestTask.execute(String.format("message/%s", currentChatRoom.getId()), "loadMessage", "ChattingFragment", "ChattingActivity");
+        } catch (NullPointerException e) {
+//            From people fragment
+            targetUser = gson.fromJson(prevIntent.getStringExtra("targetUser"), User.class);
+            Log.d("debugIntent", prevIntent.getStringExtra("targetUser"));
+            GetRequestTask getRequestTask = new GetRequestTask(this);
+            String path = String.format("chat_room/%s/%s/true", AuthenticationActivity.currentAccount.getUser().getId(), targetUser.getId());
+            getRequestTask.execute(path, "joinPrivateRoom", "ChattingFragment", "ChattingActivity");
+        }
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
@@ -75,7 +89,8 @@ public class ChattingActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if(item.getItemId() == android.R.id.home) {
+            LoadActivity.currentContext = MainActivity.mainContext;
             this.finish();
         }
         return super.onOptionsItemSelected(item);

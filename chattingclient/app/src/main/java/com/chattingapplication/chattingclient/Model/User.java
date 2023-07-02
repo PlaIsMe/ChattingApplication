@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -15,13 +16,13 @@ public class User {
     private Date dob;
     private String avatar;
     private String gender;
-    private Set<ChatRoom> chatRooms;
+    private List<ChatRoom> chatRooms;
 
-    public Set<ChatRoom> getChatRooms() {
+    public List<ChatRoom> getChatRooms() {
         return chatRooms;
     }
 
-    public void setChatRooms(Set<ChatRoom> chatRooms) {
+    public void setChatRooms(List<ChatRoom> chatRooms) {
         this.chatRooms = chatRooms;
     }
 
@@ -95,6 +96,7 @@ public class User {
                 ", dob=" + dob +
                 ", avatar='" + avatar + '\'' +
                 ", gender='" + gender + '\'' +
+                ", chatRooms=" + chatRooms +
                 '}';
     }
 

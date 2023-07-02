@@ -41,8 +41,6 @@ import java.util.stream.Collectors;
  * create an instance of this fragment.
  */
 public class PeopleFragment extends Fragment {
-    //    private LinearLayout linearLayoutUserContainer;
-
     private ListView listViewPeople;
     private MainActivity mainActivity;
 

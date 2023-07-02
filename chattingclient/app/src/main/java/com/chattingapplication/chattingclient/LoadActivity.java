@@ -27,12 +27,8 @@ public class LoadActivity extends AppCompatActivity {
     public static int PORT = 8081;
     public static String apiUrl;
 
-    public static Context chattingContext;
+    public static Context currentContext;
     private ResponseFunction responseFunction;
-
-    public static Context getChattingContext() {
-        return chattingContext;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +50,9 @@ public class LoadActivity extends AppCompatActivity {
         Gson gson = new Gson();
         Response response = gson.fromJson(jsonResponse, Response.class);
         try {
-            Method getMethod = LoadActivity.class.getDeclaredMethod(String.format("get%s", response.getResponseContext()));
-            Object contextResult = getMethod.invoke(this);
-
-            responseFunction = new ResponseFunction((Context) contextResult);
-
+            Log.d("debugCurrentContext", currentContext.toString());
             Method responseMethod = ResponseFunction.class.getDeclaredMethod(response.getResponseFunction(), String.class);
-            responseMethod.invoke(responseFunction, response.getResponseParam());
+            responseMethod.invoke(new ResponseFunction(currentContext), response.getResponseParam());
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {

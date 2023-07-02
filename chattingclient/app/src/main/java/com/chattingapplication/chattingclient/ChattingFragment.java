@@ -22,12 +22,17 @@ import android.widget.TextView;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
+import com.chattingapplication.chattingclient.Model.Message;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import Service.NotificationService;
+import java.lang.reflect.Type;
+import java.util.List;
+import com.chattingapplication.chattingclient.Service.NotificationService;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -125,24 +130,22 @@ public class ChattingFragment extends Fragment {
         if (responseCode == 200) {
             chattingActivity.setCurrentChatRoom(gson.fromJson(jsonString, ChatRoom.class));
             chattingActivity.setRoomAvailable(true);
+            GetRequestTask getRequestTask = new GetRequestTask(chattingActivity);
+            getRequestTask.execute(String.format("message/%s", chattingActivity.getCurrentChatRoom().getId()), "loadMessage", "ChattingFragment", "ChattingActivity");
         } else if (responseCode == 500) {
             chattingActivity.setRoomAvailable(false);
         }
     }
 
-    public void appendOtherMsg(String message) {
-        try {
-            LinearLayout linearLayout = chattingActivity.findViewById(R.id.layoutReceive);
-            TextView otherMsg = new TextView(this.getContext());
-            otherMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT));
-            otherMsg.setText(message);
-            otherMsg.setBackgroundColor(Color.parseColor("#808080"));
-            otherMsg.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
-            linearLayout.addView(otherMsg);
-        } catch (NullPointerException e) {
-            NotificationService.sendNotification(this.getContext(), message);
-        }
+    public void appendOtherMsg(Message message) {
+        LinearLayout linearLayout = chattingActivity.findViewById(R.id.layoutReceive);
+        TextView otherMsg = new TextView(this.getContext());
+        otherMsg.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT));
+        otherMsg.setText(message.getContent());
+        otherMsg.setBackgroundColor(Color.parseColor("#808080"));
+        otherMsg.setPadding(20, 20, 20, 20);// in pixels (left, top, right, bottom)
+        linearLayout.addView(otherMsg);
     }
 
     public void appendMyMsg(String message) {
@@ -157,5 +160,20 @@ public class ChattingFragment extends Fragment {
         myMsg.setText(message);
         myMsg.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         linearLayout.addView(myMsg);
+    }
+
+    public void loadMessage(int responseCode, String jsonString) throws JSONException {
+        Gson gson = new Gson();
+        JSONArray jsonArray = new JSONArray(jsonString);
+        Type userListType = new TypeToken<List<Message>>() {}.getType();
+        List<Message> listMessages = gson.fromJson(jsonArray.toString(), userListType);
+        listMessages.stream().forEach(message -> {
+            if (message.getUser().getId().equals(AuthenticationActivity.currentAccount.getUser().getId())) {
+                appendMyMsg(message.getContent());
+            } else {
+                appendOtherMsg(message);
+            }
+        });
+        Log.d("debugListMessage", String.valueOf(listMessages.size()));
     }
 }
