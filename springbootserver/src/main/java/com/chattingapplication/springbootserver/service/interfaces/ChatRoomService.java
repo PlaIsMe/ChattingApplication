@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.chattingapplication.springbootserver.model.ChatRoom;
+import com.chattingapplication.springbootserver.model.Message;
 import com.chattingapplication.springbootserver.model.User;
 
 public interface ChatRoomService {
@@ -14,5 +15,5 @@ public interface ChatRoomService {
     User addUser(Long chatRoomId, User user) throws Exception;
     Set<ChatRoom> getChatRoomsByUserId(Long userId);
     ChatRoom getChatRoomByUsers(Long currentUserId, Long targetUserId, boolean isPrivate) throws Exception;
-    ChatRoom createPrivateRoom(Long user_id_created, Long user_id_targed) throws Exception;
+    ChatRoom createPrivateRoom(Long user_id_created, Long user_id_targed, Message message) throws Exception;
 }

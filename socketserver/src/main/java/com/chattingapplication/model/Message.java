@@ -11,4 +11,9 @@ public class Message {
     // private LocalDateTime createAt;
     private User user;
     private ChatRoom chatRoom;
+
+    public Message(User user, String content) {
+        this.user = user;
+        this.content = content;
+    }
 }

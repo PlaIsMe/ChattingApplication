@@ -3,6 +3,7 @@ package com.chattingapplication.chattingclient.Utils;
 import android.content.Context;
 import android.util.Log;
 
+import com.chattingapplication.chattingclient.AuthenticationActivity;
 import com.chattingapplication.chattingclient.ChatRoomFragment;
 import com.chattingapplication.chattingclient.ChattingActivity;
 import com.chattingapplication.chattingclient.ChattingFragment;
@@ -13,6 +14,8 @@ import com.chattingapplication.chattingclient.PeopleFragment;
 import com.google.gson.Gson;
 
 import com.chattingapplication.chattingclient.Service.NotificationService;
+
+import java.util.List;
 
 public class ResponseFunction {
     private Context context;
@@ -51,9 +54,17 @@ public class ResponseFunction {
     }
 
     public void createPrivateRoomResponse(String chatRoom) {
+        Gson gson = new Gson();
+        ChatRoom room = gson.fromJson(chatRoom, ChatRoom.class);
+        ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ChatRoomFragment.chatRoomList.add(0, room);
+                ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+            }
+        });
+
         if (context instanceof ChattingActivity) {
-            Gson gson = new Gson();
-            ChatRoom room = gson.fromJson(chatRoom, ChatRoom.class);
             ((ChattingActivity) context).setCurrentChatRoom(room);
             ((ChattingActivity) context).setRoomAvailable(true);
         }

@@ -31,8 +31,8 @@ import java.util.Set;
 public class ChatRoomFragment extends Fragment {
     private ListView listViewChatRoom;
     private MainActivity mainActivity;
-    private ChatRoomAdapter chatRoomAdapter;
-    private List<ChatRoom> chatRoomList;
+    public static ChatRoomAdapter chatRoomAdapter;
+    public static List<ChatRoom> chatRoomList;
 
     public ChatRoomFragment() {
         // Required empty public constructor
@@ -59,6 +59,7 @@ public class ChatRoomFragment extends Fragment {
 
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
         chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
+        Log.d("debugList", chatRoomList.toString());
         chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
         listViewChatRoom.setAdapter(chatRoomAdapter);
 

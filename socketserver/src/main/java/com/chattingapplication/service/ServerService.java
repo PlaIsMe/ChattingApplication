@@ -63,7 +63,9 @@ public class ServerService {
 
     public static void sendMessage(ClientHandleService clientHandleService, String messageJson) {
         Gson gson = new Gson();
+        System.out.println(messageJson);
         Message message = gson.fromJson(messageJson, Message.class);
+        System.out.println(message.toString());
         clientHandlers.stream()
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
         c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
@@ -95,34 +97,44 @@ public class ServerService {
             ClientHandleService targetClient = clientHandlers.stream().filter(c -> c.getClientAccount().getUser().getId().equals(targetUser.getId())).findFirst().get();
             ClientHandleService firstClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? clientHandleService: targetClient);
             ClientHandleService secondClient = (clientHandleService.getClientAccount().getUser().getId() < targetClient.getClientAccount().getUser().getId() ? targetClient: clientHandleService);
-            newChatRoom = synchronizedCreatePrivateRoom(firstClient, secondClient);
+            newChatRoom = synchronizedCreatePrivateRoom(targetUser, createUser, clientHandleService, firstClient, secondClient, firstMessage);
             updateCurrentClient(targetClient);
+            String responseRoom = RequestService.getRequest(String.format("chat_room/%d/%d/true", targetUser.getId(), createUser.getId()));
+            socketSend(targetClient, "createPrivateRoomResponse", responseRoom);
         } catch (NoSuchElementException | NullPointerException e) {
-            newChatRoom = createPrivateRoom(createUser.getId(), targetUser.getId());
+            newChatRoom = createPrivateRoom(targetUser, createUser, clientHandleService, createUser.getId(), targetUser.getId(), firstMessage);
         }
         updateCurrentClient(clientHandleService);
-        socketSend(clientHandleService, "createPrivateRoomResponse", newChatRoom);
-        ChatRoom newRoom = gson.fromJson(newChatRoom, ChatRoom.class);
-        saveMessage(clientHandleService, firstMessage, newRoom.getId(), createUser.getId());
         return "";
     }
 
-    public static String synchronizedCreatePrivateRoom(ClientHandleService firstClient, ClientHandleService secondClient) throws IOException, InterruptedException {
+    public static String synchronizedCreatePrivateRoom(User targetUser, User createUser, ClientHandleService clientHandleService ,ClientHandleService firstClient, ClientHandleService secondClient, String firstMessage) throws IOException, InterruptedException {
         synchronized (firstClient) {
             synchronized (secondClient) {
-                return createPrivateRoom(firstClient.getClientAccount().getUser().getId(), secondClient.getClientAccount().getUser().getId());
+                return createPrivateRoom(targetUser, createUser, clientHandleService ,firstClient.getClientAccount().getUser().getId(), secondClient.getClientAccount().getUser().getId(), firstMessage);
             }
         }
     }
 
-    public static String createPrivateRoom(Long firstId, Long secondId) throws IOException, InterruptedException {
+    public static String createPrivateRoom(User targetUser, User createUser, ClientHandleService clientHandleService, Long firstId, Long secondId, String firstMessage) throws IOException, InterruptedException {
         String checkRoom = RequestService.getRequest(String.format("chat_room/%d/%d/true", firstId, secondId));
         Gson gson = new Gson();
         try {
             ChatRoom checkChatRoom = gson.fromJson(checkRoom, ChatRoom.class);
+            socketSend(clientHandleService, "createPrivateRoomResponse", checkRoom);
+            saveMessage(clientHandleService, firstMessage, checkChatRoom.getId(), createUser.getId());
             return checkRoom;
         } catch (JsonSyntaxException ex) {
-            String responseBody = RequestService.postRequest(String.format("chat_room/create_private_room/%d/%d", firstId, secondId), "");
+            String messageJson;
+            try {
+                messageJson = new JSONObject()
+                        .put("content", firstMessage)
+                        .toString();
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            String responseBody = RequestService.postRequest(String.format("chat_room/create_private_room/%d/%d", createUser.getId(), targetUser.getId()), messageJson);
+            socketSend(clientHandleService, "createPrivateRoomResponse", responseBody);
             return responseBody;
         }
     }

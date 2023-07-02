@@ -100,9 +100,7 @@ public class ChattingFragment extends Fragment {
                     String jsonString;
                     Gson gson = new Gson();
                     User currentUser = AuthenticationActivity.currentAccount.getUser();
-                    currentUser.setChatRooms(null);
                     User targetUser = chattingActivity.getTargetUser();
-                    targetUser.setChatRooms(null);
                     try {
                         jsonString = new JSONObject()
                                 .put("createUser", gson.toJson(currentUser))
@@ -117,10 +115,10 @@ public class ChattingFragment extends Fragment {
                     adapter = new MessageAdapter(MainActivity.mainContext, listMessages);
                     listViewMessage.setAdapter(adapter);
                     appendMessage(new Message(editTxtMessage.getText().toString(), AuthenticationActivity.currentAccount.getUser()));
-                    editTxtMessage.setText("");
                 } else {
                     sendMessage();
                 }
+                editTxtMessage.setText("");
             }
         });
         return view;
