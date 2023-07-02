@@ -16,15 +16,18 @@ import com.chattingapplication.chattingclient.ChattingActivity;
 import com.chattingapplication.chattingclient.MainActivity;
 import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.R;
+import com.google.gson.Gson;
 
 import java.time.LocalDateTime;
 
 public class NotificationService {
 
     public static void sendNotification(Context context, Message message) {
+        Gson gson = new Gson();
         Intent chattingIntent = new Intent(context, ChattingActivity.class);
-        chattingIntent.putExtra("targetUser", message.getUser().toJsonString());
-//        chattingIntent.putExtra("currentChatRoom", message.get)
+//        chattingIntent.putExtra("targetUser", message.getUser().toJsonString());
+        message.getChatRoom().setTargetUser(message.getUser());
+        chattingIntent.putExtra("currentChatRoom", gson.toJson(message.getChatRoom()));
         TaskStackBuilder builder = TaskStackBuilder.create(context);
         builder.addNextIntentWithParentStack(chattingIntent);
 

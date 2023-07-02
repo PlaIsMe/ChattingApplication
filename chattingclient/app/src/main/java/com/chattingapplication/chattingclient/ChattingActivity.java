@@ -67,6 +67,7 @@ public class ChattingActivity extends AppCompatActivity {
             currentChatRoom = gson.fromJson(prevIntent.getStringExtra("currentChatRoom"), ChatRoom.class);
             Log.d("debugIntent", prevIntent.getStringExtra("currentChatRoom"));
             targetUser = currentChatRoom.getTargetUser();
+            Log.d("debugIntentUser", String.valueOf(targetUser));
             isRoomAvailable = true;
             GetRequestTask getRequestTask = new GetRequestTask(this);
             getRequestTask.execute(String.format("message/%s", currentChatRoom.getId()), "loadMessage", "ChattingFragment", "ChattingActivity");
