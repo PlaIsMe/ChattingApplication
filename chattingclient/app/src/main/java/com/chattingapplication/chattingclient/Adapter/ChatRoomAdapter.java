@@ -50,7 +50,7 @@ public class ChatRoomAdapter extends BaseAdapter {
         TextView message = convertView.findViewById(R.id.txtMessage);
         userName.setText(String.format("%s %s", currentChatRoom.getTargetUser().getLastName(), currentChatRoom.getTargetUser().getFirstName()));
         message.setText(currentChatRoom.getLatestMessage().getUser().getId().equals(AuthenticationActivity.currentAccount.getUser().getId()) ?
-                String.format("%s: %s", "Mày: ", currentChatRoom.getLatestMessage().getContent()) :
+                String.format("%s: %s", "Mày", currentChatRoom.getLatestMessage().getContent()) :
                 String.format("%s: %s", currentChatRoom.getTargetUser().getFirstName(), currentChatRoom.getLatestMessage().getContent()));
 
         return convertView;

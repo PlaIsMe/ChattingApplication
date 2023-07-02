@@ -1,6 +1,7 @@
 package com.chattingapplication.chattingclient.Utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.chattingapplication.chattingclient.ChattingActivity;
 import com.chattingapplication.chattingclient.ChattingFragment;
@@ -20,6 +21,7 @@ public class ResponseFunction {
 
 //    ChattingContext --------------------------------------------------------------------------------------------------------------------
     public void chattingResponse(String message) {
+        Log.d("debugFunction", "hello from chatting response");
         Gson gson = new Gson();
         Message receivedMessage = gson.fromJson(message, Message.class);
         if (context instanceof ChattingActivity) {

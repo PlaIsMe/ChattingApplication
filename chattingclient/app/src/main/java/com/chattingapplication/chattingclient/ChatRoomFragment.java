@@ -1,5 +1,6 @@
 package com.chattingapplication.chattingclient;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,12 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.chattingapplication.chattingclient.Adapter.ChatRoomAdapter;
 import com.chattingapplication.chattingclient.Adapter.UserAdapter;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
+import com.chattingapplication.chattingclient.Model.User;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.Set;
@@ -48,11 +52,23 @@ public class ChatRoomFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_room, container, false);
-        listViewChatRoom = view.findViewById(R.id.listChatRoom);
+        LoadActivity.currentContext = this.getContext();
 
+        listViewChatRoom = view.findViewById(R.id.listChatRoom);
         List<ChatRoom> chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
         ChatRoomAdapter chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
         listViewChatRoom.setAdapter(chatRoomAdapter);
+
+        listViewChatRoom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Gson gson = new Gson();
+                ChatRoom clickedChatRoom = (ChatRoom) listViewChatRoom.getItemAtPosition(position);
+                Intent chattingActivity = new Intent(((MainActivity) mainActivity).getApplicationContext(), ChattingActivity.class);
+                chattingActivity.putExtra("currentChatRoom", gson.toJson(clickedChatRoom));
+                startActivity(chattingActivity);
+            }
+        });
 
         return view;
     }

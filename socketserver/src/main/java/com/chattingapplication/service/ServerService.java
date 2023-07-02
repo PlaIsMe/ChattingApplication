@@ -37,14 +37,12 @@ public class ServerService {
         return null;
     }
 
-    public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam, String responseClass, String responseContext) {
+    public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam) {
         String message;
         try {
             message = new JSONObject()
                     .put("responseFunction", responseName)
                     .put("responseParam", responseParam)
-                    .put("responseClass", responseClass)
-                    .put("responseContext", responseContext)
                     .toString();
         } catch (JSONException e) {
             throw new RuntimeException(e);
@@ -70,7 +68,7 @@ public class ServerService {
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
         c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
         .forEach(client -> {
-            socketSend(client, "chattingResponse", messageJson, "ChattingFragment", "ChattingContext");
+            socketSend(client, "chattingResponse", messageJson);
         });
     }
 
@@ -103,7 +101,7 @@ public class ServerService {
             newChatRoom = createPrivateRoom(createUser.getId(), targetUser.getId());
         }
         updateCurrentClient(clientHandleService);
-        socketSend(clientHandleService, "createPrivateRoomResponse", newChatRoom, "ChattingFragment", "ChattingContext");
+        socketSend(clientHandleService, "createPrivateRoomResponse", newChatRoom);
         ChatRoom newRoom = gson.fromJson(newChatRoom, ChatRoom.class);
         saveMessage(clientHandleService, firstMessage, newRoom.getId(), createUser.getId());
         return "";
