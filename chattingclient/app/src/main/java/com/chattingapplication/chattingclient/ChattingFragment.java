@@ -71,7 +71,6 @@ public class ChattingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chatting, container, false);
         listViewMessage = (ListView) view.findViewById(R.id.listViewMessage);
-
         editTxtMessage = view.findViewById(R.id.editTxtMessage);
 
         EditText editTxtMessage = view.findViewById(R.id.editTxtMessage);
@@ -101,11 +100,13 @@ public class ChattingFragment extends Fragment {
                     String jsonString;
                     Gson gson = new Gson();
                     User currentUser = AuthenticationActivity.currentAccount.getUser();
+                    currentUser.setChatRooms(null);
                     User targetUser = chattingActivity.getTargetUser();
+                    targetUser.setChatRooms(null);
                     try {
                         jsonString = new JSONObject()
-                                .put("createUser", new User(currentUser.getId(), currentUser.getLastName(), currentUser.getFirstName()))
-                                .put("targetUser", new User(targetUser.getId(), targetUser.getLastName(), targetUser.getFirstName()))
+                                .put("createUser", gson.toJson(currentUser))
+                                .put("targetUser", gson.toJson(targetUser))
                                 .put("message", editTxtMessage.getText())
                                 .toString();
                     } catch (JSONException e) {
@@ -113,13 +114,15 @@ public class ChattingFragment extends Fragment {
                     }
                     SendTask sendTask = new SendTask();
                     sendTask.execute("createPrivateRoomRequest", jsonString);
+                    adapter = new MessageAdapter(MainActivity.mainContext, listMessages);
+                    listViewMessage.setAdapter(adapter);
                     appendMessage(new Message(editTxtMessage.getText().toString(), AuthenticationActivity.currentAccount.getUser()));
+                    editTxtMessage.setText("");
                 } else {
                     sendMessage();
                 }
             }
         });
-        editTxtMessage.setText("");
         return view;
     }
 

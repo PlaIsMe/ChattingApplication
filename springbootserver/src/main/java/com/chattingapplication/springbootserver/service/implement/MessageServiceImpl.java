@@ -73,6 +73,9 @@ public class MessageServiceImpl implements MessageService {
                 ChatRoom returnChatRoom = new ChatRoom();
                 BeanUtils.copyProperties(userEntity, returnUser);
                 BeanUtils.copyProperties(chatRoomEntity, returnChatRoom);
+                // User targetUser = new User();
+                // BeanUtils.copyProperties(chatRoomRepository.findTargetUser(chatRoomId, userId), targetUser);
+                // returnChatRoom.setTargetUser(targetUser);
                 message.setChatRoom(returnChatRoom);
                 message.setUser(returnUser);
                 return message;

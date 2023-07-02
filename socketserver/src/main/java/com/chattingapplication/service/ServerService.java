@@ -88,11 +88,8 @@ public class ServerService {
         Gson gson = new Gson();
         JSONObject requestObject = new JSONObject(jsonString);
         User createUser = gson.fromJson(requestObject.getString("createUser"), User.class);
-        System.out.println(createUser.toString());
         User targetUser  = gson.fromJson(requestObject.getString("targetUser"), User.class);
-        System.out.println(targetUser.toString());
         String firstMessage = requestObject.getString("message");
-        System.out.println(firstMessage);
         String newChatRoom;
         try {
             ClientHandleService targetClient = clientHandlers.stream().filter(c -> c.getClientAccount().getUser().getId().equals(targetUser.getId())).findFirst().get();
