@@ -55,4 +55,14 @@ public class ChatRoomAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    public int getPositionByChatRoom(ChatRoom chatRoom) {
+        for (int i = 0; i < getCount(); i++) {
+            ChatRoom currentChatRoom = (ChatRoom) getItem(i);
+            if (currentChatRoom.getId().equals(chatRoom.getId())) {
+                return i;
+            }
+        }
+        return -1; // Return -1 if the attribute is not found
+    }
 }

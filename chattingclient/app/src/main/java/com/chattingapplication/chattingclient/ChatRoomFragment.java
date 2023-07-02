@@ -16,6 +16,7 @@ import com.chattingapplication.chattingclient.Adapter.ChatRoomAdapter;
 import com.chattingapplication.chattingclient.Adapter.UserAdapter;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
+import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
 
@@ -30,6 +31,8 @@ import java.util.Set;
 public class ChatRoomFragment extends Fragment {
     private ListView listViewChatRoom;
     private MainActivity mainActivity;
+    private ChatRoomAdapter chatRoomAdapter;
+    private List<ChatRoom> chatRoomList;
 
     public ChatRoomFragment() {
         // Required empty public constructor
@@ -55,8 +58,8 @@ public class ChatRoomFragment extends Fragment {
         LoadActivity.currentContext = this.getContext();
 
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
-        List<ChatRoom> chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
-        ChatRoomAdapter chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
+        chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
+        chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
         listViewChatRoom.setAdapter(chatRoomAdapter);
 
         listViewChatRoom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -71,5 +74,15 @@ public class ChatRoomFragment extends Fragment {
         });
 
         return view;
+    }
+
+    public void realTimeUiChatRoom(Message message) {
+//        C++ swap
+        int oldPosition = chatRoomAdapter.getPositionByChatRoom(message.getChatRoom());
+        ChatRoom updatedChatRoom = (ChatRoom) listViewChatRoom.getItemAtPosition(oldPosition);
+        updatedChatRoom.setLatestMessage(message);
+        chatRoomList.remove(oldPosition);
+        chatRoomList.add(0, updatedChatRoom);
+        chatRoomAdapter.notifyDataSetChanged();
     }
 }

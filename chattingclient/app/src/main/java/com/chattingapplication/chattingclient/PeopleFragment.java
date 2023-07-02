@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.chattingapplication.chattingclient.Adapter.UserAdapter;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
+import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
