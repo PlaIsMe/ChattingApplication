@@ -3,11 +3,13 @@ package com.chattingapplication.chattingclient.Utils;
 import android.content.Context;
 import android.util.Log;
 
+import com.chattingapplication.chattingclient.ChatRoomFragment;
 import com.chattingapplication.chattingclient.ChattingActivity;
 import com.chattingapplication.chattingclient.ChattingFragment;
 import com.chattingapplication.chattingclient.MainActivity;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.Message;
+import com.chattingapplication.chattingclient.PeopleFragment;
 import com.google.gson.Gson;
 
 import com.chattingapplication.chattingclient.Service.NotificationService;
@@ -29,7 +31,7 @@ public class ResponseFunction {
                 ((ChattingActivity) context).runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ((ChattingFragment) ((ChattingActivity) context).getChattingFragment()).appendOtherMsg(receivedMessage);
+                        ((ChattingFragment) ((ChattingActivity) context).getChattingFragment()).appendMessage(receivedMessage);
                     }
                 });
             } else {
@@ -39,6 +41,12 @@ public class ResponseFunction {
         } else if (context instanceof MainActivity) {
 //            Chưa vào giao diện chat
             NotificationService.sendNotification(context, receivedMessage);
+            ((MainActivity) context).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ((ChatRoomFragment) ((MainActivity) context).getChatRoomFragment()).realTimeUiChatRoom(receivedMessage);
+                }
+            });
         }
     }
 

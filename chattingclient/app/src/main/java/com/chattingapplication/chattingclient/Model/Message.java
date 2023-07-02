@@ -6,8 +6,31 @@ public class Message {
     // private LocalDateTime createAt;
     private User user;
 
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
+
+    private ChatRoom chatRoom;
+
+    public Message(Long id, String content, User user, ChatRoom chatRoom) {
+        this.id = id;
+        this.content = content;
+        this.user = user;
+        this.chatRoom = chatRoom;
+    }
+
 
     public Message(Long id, String content, User user) {
+        this.id = id;
+        this.content = content;
+        this.user = user;
+    }
+
+    public Message(String content, User user) {
         this.id = id;
         this.content = content;
         this.user = user;

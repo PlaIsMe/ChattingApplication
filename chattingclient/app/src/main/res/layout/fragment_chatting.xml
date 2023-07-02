@@ -10,13 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <LinearLayout
-            android:id="@+id/layoutReceive"
+        <ListView
+            android:id="@+id/listViewMessage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical">
-        </LinearLayout>
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:transcriptMode="alwaysScroll"
+            android:stackFromBottom="true"/>
 
         <LinearLayout
             android:layout_width="match_parent"

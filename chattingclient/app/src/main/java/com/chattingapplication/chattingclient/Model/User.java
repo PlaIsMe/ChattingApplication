@@ -30,6 +30,12 @@ public class User {
 
     }
 
+    public User(Long id, String lastName, String firstName) {
+        this.id = id;
+        this.lastName = lastName;
+        this.firstName = firstName;
+    }
+
     public User(Long id, String lastName, String firstName, Date dob, String avatar, String gender) {
         this.id = id;
         this.lastName = lastName;
