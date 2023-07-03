@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         SendTask sendTask = new SendTask();
         Gson gson = new Gson();
         sendTask.execute("updateRequest", String.format("%s", gson.toJson(AuthenticationActivity.currentAccount)));
+
         LinearLayout linearLayoutChats = findViewById(R.id.linearLayoutChats);
         LinearLayout linearLayoutPeople = findViewById(R.id.linearLayoutPeople);
         fragmentManager = getSupportFragmentManager();

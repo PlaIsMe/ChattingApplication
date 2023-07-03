@@ -1,6 +1,7 @@
 package com.chattingapplication.model;
 
 import java.sql.Date;
+import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
@@ -13,5 +14,5 @@ public class User {
     private Date dob;
     private String avatar;
     private String gender;
-    private Set<ChatRoom> chatRooms;
+    private List<ChatRoom> chatRooms;
 }

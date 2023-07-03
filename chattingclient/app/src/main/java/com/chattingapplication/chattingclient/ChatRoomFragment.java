@@ -20,6 +20,7 @@ import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -59,7 +60,6 @@ public class ChatRoomFragment extends Fragment {
 
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
         chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
-        Log.d("debugList", chatRoomList.toString());
         chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
         listViewChatRoom.setAdapter(chatRoomAdapter);
 

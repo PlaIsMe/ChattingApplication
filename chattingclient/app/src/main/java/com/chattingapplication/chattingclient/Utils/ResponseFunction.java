@@ -24,7 +24,6 @@ public class ResponseFunction {
         this.context = context;
     }
 
-//    ChattingContext --------------------------------------------------------------------------------------------------------------------
     public void chattingResponse(String message) {
         Log.d("debugFunction", "hello from chatting response");
         Gson gson = new Gson();
@@ -69,5 +68,4 @@ public class ResponseFunction {
             ((ChattingActivity) context).setRoomAvailable(true);
         }
     }
-//----------------------------------------------------------------------------------------------------------------------------------------------
 }

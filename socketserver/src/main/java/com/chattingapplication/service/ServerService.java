@@ -7,8 +7,10 @@ import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Set;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,11 +65,10 @@ public class ServerService {
 
     public static void sendMessage(ClientHandleService clientHandleService, String messageJson) {
         Gson gson = new Gson();
-        System.out.println(messageJson);
         Message message = gson.fromJson(messageJson, Message.class);
-        System.out.println(message.toString());
         clientHandlers.stream()
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
+        c.getClientAccount().getUser() != null &&
         c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
         .forEach(client -> {
             socketSend(client, "chattingResponse", messageJson);

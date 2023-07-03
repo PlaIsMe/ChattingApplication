@@ -23,6 +23,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SubRegisterFragment#newInstance} factory method to
@@ -83,7 +85,9 @@ public class SubRegisterFragment extends Fragment {
     public void handleResponseSubRegister(int responseCode, String responeBody) {
         Gson gson = new Gson();
         if (responseCode == 200) {
-            AuthenticationActivity.currentAccount.setUser(gson.fromJson(responeBody, User.class));
+            User newUser = gson.fromJson(responeBody, User.class);
+            newUser.setChatRooms(new ArrayList<>());
+            AuthenticationActivity.currentAccount.setUser(newUser);
             Intent mainActivity = new Intent(this.getContext(), MainActivity.class);
             startActivity(mainActivity);
         } else {
