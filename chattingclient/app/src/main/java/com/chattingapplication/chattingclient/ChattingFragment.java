@@ -155,6 +155,7 @@ public class ChattingFragment extends Fragment {
     public void appendMessage(Message message) {
         listMessages.add(message);
         adapter.notifyDataSetChanged();
+//        ((ChatRoomFragment) ((MainActivity) getActivity()).getChatRoomFragment()).realTimeUiChatRoom(message);
     }
 
     public void loadMessage(int responseCode, String jsonString) throws JSONException {

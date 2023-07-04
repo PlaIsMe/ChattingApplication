@@ -46,7 +46,7 @@ public class ResponseFunction {
             ((MainActivity) context).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ((ChatRoomFragment) ((MainActivity) context).getChatRoomFragment()).realTimeUiChatRoom(receivedMessage);
+                    ((ChatRoomFragment) ((MainActivity) context).getChatRoomFragment()).realTimeUiChatRoom(receivedMessage, true);
                 }
             });
         }
@@ -55,17 +55,24 @@ public class ResponseFunction {
     public void createPrivateRoomResponse(String chatRoom) {
         Gson gson = new Gson();
         ChatRoom room = gson.fromJson(chatRoom, ChatRoom.class);
-        ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ChatRoomFragment.chatRoomList.add(0, room);
-                ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
-            }
-        });
+        ChatRoomFragment.chatRoomList.add(0, room);
 
         if (context instanceof ChattingActivity) {
             ((ChattingActivity) context).setCurrentChatRoom(room);
             ((ChattingActivity) context).setRoomAvailable(true);
+        } else if (context instanceof MainActivity) {
+            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        Message pushMessage = room.getLatestMessage();
+        if (!pushMessage.getUser().getId().equals(AuthenticationActivity.currentAccount.getUser().getId())) {
+            pushMessage.setChatRoom(new ChatRoom(room.getId(), room.getRoomName(), room.isPrivate()));
+            NotificationService.sendNotification(context, pushMessage);
         }
     }
 }

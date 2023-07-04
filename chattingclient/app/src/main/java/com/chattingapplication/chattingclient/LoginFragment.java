@@ -95,6 +95,7 @@ public class LoginFragment extends Fragment {
             authenticationActivity.currentAccount = gson.fromJson(jsonResponse, Account.class);
             try {
                 String checkName = AuthenticationActivity.currentAccount.getUser().getFirstName();
+                Log.d("debugCheckName", checkName);
                 Intent mainActivity = new Intent(this.getContext(), MainActivity.class);
                 startActivity(mainActivity);
             } catch (NullPointerException e) {
