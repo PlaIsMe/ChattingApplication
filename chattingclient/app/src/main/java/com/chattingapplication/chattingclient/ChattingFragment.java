@@ -51,6 +51,32 @@ public class ChattingFragment extends Fragment {
     private List<Message> listMessages = new ArrayList<>();
     private MessageAdapter adapter;
 
+
+    public void setListViewMessage(ListView listViewMessage) {
+        this.listViewMessage = listViewMessage;
+    }
+
+    public void setListMessages(List<Message> listMessages) {
+        this.listMessages = listMessages;
+    }
+
+    public void setAdapter(MessageAdapter adapter) {
+        this.adapter = adapter;
+    }
+
+    public ListView getListViewMessage() {
+        return listViewMessage;
+    }
+
+    public List<Message> getListMessages() {
+        return listMessages;
+    }
+
+    public MessageAdapter getAdapter() {
+        return adapter;
+    }
+
+
     public ChattingFragment() {}
     public static ChattingFragment newInstance() {
         ChattingFragment fragment = new ChattingFragment();
@@ -99,7 +125,7 @@ public class ChattingFragment extends Fragment {
                 if (!chattingActivity.isRoomAvailable()) {
                     String jsonString;
                     Gson gson = new Gson();
-                    User currentUser = AuthenticationActivity.currentAccount.getUser();
+                    User currentUser = LoadActivity.currentAccount.getUser();
                     User targetUser = chattingActivity.getTargetUser();
                     try {
                         jsonString = new JSONObject()
@@ -114,7 +140,7 @@ public class ChattingFragment extends Fragment {
                     sendTask.execute("createPrivateRoomRequest", jsonString);
                     adapter = new MessageAdapter(MainActivity.mainContext, listMessages);
                     listViewMessage.setAdapter(adapter);
-                    appendMessage(new Message(editTxtMessage.getText().toString(), AuthenticationActivity.currentAccount.getUser()));
+                    appendMessage(new Message(editTxtMessage.getText().toString(), LoadActivity.currentAccount.getUser()));
                 } else {
                     sendMessage();
                 }
@@ -130,41 +156,19 @@ public class ChattingFragment extends Fragment {
             messageJson = new JSONObject()
                     .put("content", editTxtMessage.getText().toString())
                     .put("roomId", chattingActivity.getCurrentChatRoom().getId())
-                    .put("userId", AuthenticationActivity.currentAccount.getUser().getId())
+                    .put("userId", LoadActivity.currentAccount.getUser().getId())
                     .toString();
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
         SendTask sendTask = new SendTask();
         sendTask.execute("chattingRequest", messageJson);
-        appendMessage(new Message(editTxtMessage.getText().toString(), AuthenticationActivity.currentAccount.getUser()));
-    }
-
-    public void joinPrivateRoom(int responseCode, String jsonString) {
-        Gson gson = new Gson();
-        if (responseCode == 200) {
-            chattingActivity.setCurrentChatRoom(gson.fromJson(jsonString, ChatRoom.class));
-            chattingActivity.setRoomAvailable(true);
-            GetRequestTask getRequestTask = new GetRequestTask(chattingActivity);
-            getRequestTask.execute(String.format("message/%s", chattingActivity.getCurrentChatRoom().getId()), "loadMessage", "ChattingFragment", "ChattingActivity");
-        } else if (responseCode == 500) {
-            chattingActivity.setRoomAvailable(false);
-        }
+        appendMessage(new Message(editTxtMessage.getText().toString(), LoadActivity.currentAccount.getUser()));
     }
 
     public void appendMessage(Message message) {
         listMessages.add(message);
         adapter.notifyDataSetChanged();
-//        ((ChatRoomFragment) ((MainActivity) getActivity()).getChatRoomFragment()).realTimeUiChatRoom(message);
-    }
-
-    public void loadMessage(int responseCode, String jsonString) throws JSONException {
-        Gson gson = new Gson();
-        JSONArray jsonArray = new JSONArray(jsonString);
-        Type userListType = new TypeToken<List<Message>>() {}.getType();
-        listMessages = gson.fromJson(jsonArray.toString(), userListType);
-        adapter = new MessageAdapter(this.getContext(), listMessages);
-        listViewMessage.setAdapter(adapter);
-        Log.d("debugListMessage", String.valueOf(listMessages.size()));
+//        ((ChatRoomFragment) ((MainActivity) getActivity()).getChatRoomFragment()).realTimeUiChatRoom(message, false);
     }
 }

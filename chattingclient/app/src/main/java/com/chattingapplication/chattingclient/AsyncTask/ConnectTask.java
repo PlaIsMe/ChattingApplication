@@ -8,7 +8,10 @@ import android.util.Log;
 import com.chattingapplication.chattingclient.AuthenticationActivity;
 import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.MainActivity;
+import com.chattingapplication.chattingclient.Model.Account;
+import com.chattingapplication.chattingclient.R;
 import com.chattingapplication.chattingclient.Utils.Utils;
+import com.google.gson.Gson;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -41,8 +44,6 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void unused) {
         super.onPostExecute(unused);
-        Intent authenticationActivity = new Intent(this.activity, AuthenticationActivity.class);
-        activity.startActivity(authenticationActivity);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -58,5 +59,24 @@ public class ConnectTask extends AsyncTask<Void, Void, Void> {
                 }
             }
         }).start();
+
+        String loginSuccess = LoadActivity.preferencesCheck.getString("check", "false");
+        if (loginSuccess.equals("true")) {
+            Gson gson = new Gson();
+            LoadActivity.currentAccount = gson.fromJson(LoadActivity.preferencesAccount.getString("account", ""), Account.class);
+            try {
+                String checkName = LoadActivity.currentAccount.getUser().getFirstName();
+                Log.d("debugCheckName", checkName);
+                SendTask sendTask = new SendTask();
+                sendTask.execute("updateRequest", String.format("%s", gson.toJson(LoadActivity.currentAccount)));
+            } catch (NullPointerException e) {
+                Intent authenticationActivity = new Intent(this.activity, AuthenticationActivity.class);
+                authenticationActivity.putExtra("navigate", "true");
+                activity.startActivity(authenticationActivity);
+            }
+        } else {
+            Intent authenticationActivity = new Intent(this.activity, AuthenticationActivity.class);
+            activity.startActivity(authenticationActivity);
+        }
     }
 }

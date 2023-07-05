@@ -4,6 +4,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +24,7 @@ import com.chattingapplication.model.Request;
 import com.chattingapplication.model.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 
 public class ServerService {
     public static ArrayList<ClientHandleService> clientHandlers = new ArrayList<>();
@@ -78,13 +81,17 @@ public class ServerService {
     public static void updateRequest(ClientHandleService clientHandleService, String accountJson) throws JsonSyntaxException, IOException, InterruptedException {
         Gson gson = new Gson();
         clientHandleService.setClientAccount(gson.fromJson(accountJson, Account.class));
+        updateCurrentClient(clientHandleService);
+        socketSend(clientHandleService, "updateResponse", gson.toJson(clientHandleService.getClientAccount()));
         System.out.println(clientHandleService.getClientAccount().toString());
     }
 
     public static void updateCurrentClient(ClientHandleService clientHandleService) throws JsonSyntaxException, IOException, InterruptedException {
         Gson gson = new Gson();
-        User currentUser = gson.fromJson(RequestService.getRequest(String.format("user/%d", clientHandleService.getClientAccount().getUser().getId())), User.class);
-        clientHandleService.getClientAccount().setUser(currentUser);
+        String roomJson = RequestService.getRequest(String.format("chat_room/%d", clientHandleService.getClientAccount().getUser().getId()));
+        JSONArray jsonArray = new JSONArray(roomJson);
+        List<ChatRoom> listChat = gson.fromJson(jsonArray.toString(), new TypeToken<List<ChatRoom>>() {}.getType());
+        clientHandleService.getClientAccount().getUser().setChatRooms(listChat);
     }
 
     public static String createPrivateRoomRequest(ClientHandleService clientHandleService, String jsonString) throws IOException, InterruptedException {

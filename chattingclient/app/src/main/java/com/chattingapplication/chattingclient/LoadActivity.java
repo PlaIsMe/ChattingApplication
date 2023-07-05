@@ -1,39 +1,48 @@
 package com.chattingapplication.chattingclient;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.chattingapplication.chattingclient.AsyncTask.ConnectTask;
+import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.Response;
-import com.chattingapplication.chattingclient.Utils.ResponseFunction;
+import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.Utils.SocketResponse;
 import com.chattingapplication.chattingclient.Utils.Utils;
 import com.google.gson.Gson;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class LoadActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     public static String IP;
     public static int PORT = 8081;
     public static String apiUrl;
-
     public static Context currentContext;
-    private ResponseFunction responseFunction;
+    public static Account currentAccount;
+
+    public static SharedPreferences preferencesCheck;
+    public static SharedPreferences preferencesAccount;
+    private SocketResponse responseFunction;
+    public static List<User> listPeople;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
+
+        preferencesCheck = getSharedPreferences("check", MODE_PRIVATE);
+        preferencesAccount = getSharedPreferences("account", MODE_PRIVATE);
+        currentContext = this;
+
         IP = Utils.getIpV4(this, "my_ipv4.json");
         apiUrl = String.format("http://%s:8080/api/", IP);
 //        IP = "34.101.168.64";
@@ -53,8 +62,8 @@ public class LoadActivity extends AppCompatActivity {
         Response response = gson.fromJson(jsonResponse, Response.class);
         try {
             Log.d("debugCurrentContext", currentContext.toString());
-            Method responseMethod = ResponseFunction.class.getDeclaredMethod(response.getResponseFunction(), String.class);
-            responseMethod.invoke(new ResponseFunction(currentContext), response.getResponseParam());
+            Method responseMethod = SocketResponse.class.getDeclaredMethod(response.getResponseFunction(), String.class);
+            responseMethod.invoke(new SocketResponse(currentContext), response.getResponseParam());
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {

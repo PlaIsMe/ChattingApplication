@@ -49,7 +49,7 @@ public class ChatRoomFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = (MainActivity) getActivity();
-        chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
+        chatRoomList = LoadActivity.currentAccount.getUser().getChatRooms();
         chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
     }
 
@@ -78,15 +78,14 @@ public class ChatRoomFragment extends Fragment {
         return view;
     }
 
-    public void realTimeUiChatRoom(Message message, boolean updateDirectly) {
+    public void realTimeUiChatRoom(Message message) {
 //        C++ swap
         int oldPosition = chatRoomAdapter.getPositionByChatRoom(message.getChatRoom());
         ChatRoom updatedChatRoom = (ChatRoom) listViewChatRoom.getItemAtPosition(oldPosition);
         updatedChatRoom.setLatestMessage(message);
         chatRoomList.remove(oldPosition);
         chatRoomList.add(0, updatedChatRoom);
-        if (updateDirectly) {
-            chatRoomAdapter.notifyDataSetChanged();
-        }
+        LoadActivity.currentAccount.getUser().setChatRooms(chatRoomList);
+        chatRoomAdapter.notifyDataSetChanged();
     }
 }

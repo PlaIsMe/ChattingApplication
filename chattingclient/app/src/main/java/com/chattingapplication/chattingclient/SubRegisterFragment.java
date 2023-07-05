@@ -18,6 +18,7 @@ import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.ExceptionError;
 import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.Utils.HttpResponse;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -63,8 +64,8 @@ public class SubRegisterFragment extends Fragment {
                 EditText editTxtLastName = (EditText) view.findViewById(R.id.editTxtLastName);
                 EditText editTxtGender = (EditText) view.findViewById(R.id.editTxtGender);
 
-                PutRequestTask putRequestTask = new PutRequestTask(authenticationActivity);
-                String path = String.format("user/%s", AuthenticationActivity.currentAccount.getUser().getId());
+                PutRequestTask putRequestTask = new PutRequestTask(new HttpResponse(authenticationActivity));
+                String path = String.format("user/%s", LoadActivity.currentAccount.getUser().getId());
 
                 try {
                     String jsonString = new JSONObject()
@@ -72,7 +73,7 @@ public class SubRegisterFragment extends Fragment {
                             .put("lastName", editTxtLastName.getText())
                             .put("gender", editTxtGender.getText())
                             .toString();
-                    putRequestTask.execute(path, jsonString, "handleResponseSubRegister", "SubRegisterFragment", "AuthenticationActivity");
+                    putRequestTask.execute(path, jsonString, "handleResponseSubRegister");
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
@@ -80,19 +81,5 @@ public class SubRegisterFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public void handleResponseSubRegister(int responseCode, String responeBody) {
-        Gson gson = new Gson();
-        if (responseCode == 200) {
-            User newUser = gson.fromJson(responeBody, User.class);
-            newUser.setChatRooms(new ArrayList<>());
-            AuthenticationActivity.currentAccount.setUser(newUser);
-            Intent mainActivity = new Intent(this.getContext(), MainActivity.class);
-            startActivity(mainActivity);
-        } else {
-            ExceptionError exceptionError = gson.fromJson(responeBody, ExceptionError.class);
-            Toast.makeText(authenticationActivity.getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
-        }
     }
 }

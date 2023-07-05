@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import com.chattingapplication.chattingclient.AuthenticationActivity;
 import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.MainActivity;
+import com.chattingapplication.chattingclient.Utils.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,9 +24,11 @@ import java.net.URL;
 public class PostRequestTask extends AsyncTask<String, Void, String> {
     private Activity activity;
     private String functionName;
-    private String className;
     private int responseCode;
-    private String activityName;
+    private HttpResponse httpResponse;
+    public PostRequestTask(HttpResponse httpResponse) {
+        this.httpResponse = httpResponse;
+    }
 
     public PostRequestTask(Activity activity) {
         this.activity = activity;
@@ -47,8 +50,6 @@ public class PostRequestTask extends AsyncTask<String, Void, String> {
 
             responseCode = conn.getResponseCode();
             functionName = params[2];
-            className = params[3];
-            activityName = params[4];
 
             BufferedReader bufferedReader = (responseCode == HttpURLConnection.HTTP_OK ?
                     new BufferedReader(new InputStreamReader(conn.getInputStream())) :
@@ -69,16 +70,9 @@ public class PostRequestTask extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         try {
-            Log.d("debugResponseCode", String.valueOf(responseCode));
-            Class<?> mainClass = Class.forName(String.format("%s.%s", activity.getPackageName(), activityName));
-            Method getMethod = mainClass.getDeclaredMethod(String.format("get%s", className));
-            Object getResult = getMethod.invoke(activity);
-
-            Class<?> fragmentClass = Class.forName(String.format("%s.%s", activity.getPackageName(), className));
-            Method responseMethod = fragmentClass.getDeclaredMethod(functionName, int.class, String.class);
-            responseMethod.invoke((Fragment) getResult, responseCode, s);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            Log.d("debugGetResponse", s);
+            Method responseMethod = HttpResponse.class.getDeclaredMethod(functionName, int.class, String.class);
+            responseMethod.invoke(httpResponse, responseCode, s);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
