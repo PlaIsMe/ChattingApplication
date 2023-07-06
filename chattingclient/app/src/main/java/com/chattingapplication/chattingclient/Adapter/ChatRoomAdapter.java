@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chattingapplication.chattingclient.AuthenticationActivity;
+import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.User;
 import com.chattingapplication.chattingclient.R;
@@ -49,7 +50,7 @@ public class ChatRoomAdapter extends BaseAdapter {
         TextView userName = convertView.findViewById(R.id.userName);
         TextView message = convertView.findViewById(R.id.txtMessage);
         userName.setText(String.format("%s %s", currentChatRoom.getTargetUser().getLastName(), currentChatRoom.getTargetUser().getFirstName()));
-        message.setText(currentChatRoom.getLatestMessage().getUser().getId().equals(AuthenticationActivity.currentAccount.getUser().getId()) ?
+        message.setText(currentChatRoom.getLatestMessage().getUser().getId().equals(LoadActivity.currentAccount.getUser().getId()) ?
                 String.format("%s: %s", "Mày", currentChatRoom.getLatestMessage().getContent()) :
                 String.format("%s: %s", currentChatRoom.getTargetUser().getFirstName(), currentChatRoom.getLatestMessage().getContent()));
 

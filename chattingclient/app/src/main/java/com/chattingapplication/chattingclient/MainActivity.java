@@ -1,28 +1,28 @@
 package com.chattingapplication.chattingclient;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.chattingapplication.chattingclient.AsyncTask.ConnectTask;
-import com.chattingapplication.chattingclient.AsyncTask.SendTask;
-import com.chattingapplication.chattingclient.Model.Account;
-import com.chattingapplication.chattingclient.Model.Response;
-import com.chattingapplication.chattingclient.Utils.Utils;
-import com.google.gson.Gson;
+import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
+import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.Utils.HttpResponse;
 
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment peopleFragment = new PeopleFragment();
     private Fragment chatRoomFragment;
     public static Context mainContext;
+    public static List<User> listPeople;
 
     public Fragment getPeopleFragment() {
         return peopleFragment;
@@ -47,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         mainContext = this;
         LoadActivity.currentContext = this;
 
-        SendTask sendTask = new SendTask();
-        Gson gson = new Gson();
-        sendTask.execute("updateRequest", String.format("%s", gson.toJson(AuthenticationActivity.currentAccount)));
+        GetRequestTask getRequestTask = new GetRequestTask(new HttpResponse(this));
+        getRequestTask.execute("user", "loadUser");
+
         LinearLayout linearLayoutChats = findViewById(R.id.linearLayoutChats);
         LinearLayout linearLayoutPeople = findViewById(R.id.linearLayoutPeople);
         fragmentManager = getSupportFragmentManager();
@@ -71,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
                         .commit();
             }
         });
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setLogo(R.drawable.default_avatar);
+        actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setTitle(String.format("%s %s", LoadActivity.currentAccount.getUser().getFirstName(), LoadActivity.currentAccount.getUser().getLastName()));
     }
 
     @Override
@@ -78,6 +85,21 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chatting_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.logOut) {
+            Log.d("debugLogout", "logging out");
+            LoadActivity.currentAccount = null;
+            SharedPreferences.Editor editorCheck = LoadActivity.preferencesCheck.edit();
+            editorCheck.putString("check", "false");
+            editorCheck.apply();
+            Intent authenticationActivity = new Intent(this, AuthenticationActivity.class);
+            startActivity(authenticationActivity);
+            this.finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

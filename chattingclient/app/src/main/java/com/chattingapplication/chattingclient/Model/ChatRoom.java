@@ -56,6 +56,12 @@ public class ChatRoom {
         this.targetUser = targetUser;
     }
 
+    public ChatRoom(Long id, String roomName, boolean isPrivate) {
+        this.id = id;
+        this.roomName = roomName;
+        this.isPrivate = isPrivate;
+    }
+
     @Override
     public String toString() {
         return "ChatRoom{" +

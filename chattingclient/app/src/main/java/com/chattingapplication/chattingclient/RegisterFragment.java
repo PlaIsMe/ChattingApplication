@@ -17,6 +17,7 @@ import com.chattingapplication.chattingclient.AsyncTask.PostRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ExceptionError;
+import com.chattingapplication.chattingclient.Utils.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -67,8 +68,8 @@ public class RegisterFragment extends Fragment {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText editTextEmail = (EditText) view.findViewById(R.id.editTxtEmail);
-                EditText editTextPassword = (EditText) view.findViewById(R.id.editTxtPassword);
+                EditText editTextEmail = (EditText) view.findViewById(R.id.editTxtEmailRegister);
+                EditText editTextPassword = (EditText) view.findViewById(R.id.editTxtPasswordRegister);
                 String jsonString;
                 try {
                     jsonString = new JSONObject()
@@ -78,23 +79,11 @@ public class RegisterFragment extends Fragment {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                PostRequestTask postRequestTask = new PostRequestTask((AuthenticationActivity) getActivity());
-                postRequestTask.execute("account/signup", jsonString, "registerResponse", "RegisterFragment", "AuthenticationActivity");
+                PostRequestTask postRequestTask = new PostRequestTask(new HttpResponse(authenticationActivity));
+                postRequestTask.execute("account/signup", jsonString, "registerResponse");
             }
         });
 
         return view;
-    }
-
-
-    public void registerResponse(int responseCode, String jsonResponse) {
-        Gson gson = new Gson();
-        if (responseCode == 200) {
-            authenticationActivity.currentAccount = gson.fromJson(jsonResponse, Account.class);
-            authenticationActivity.swapFragment(R.id.fragmentContainerAuthentication, authenticationActivity.getSubRegisterFragment());
-        } else {
-            ExceptionError exceptionError = gson.fromJson(jsonResponse, ExceptionError.class);
-            Toast.makeText(authenticationActivity.getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
-        }
     }
 }

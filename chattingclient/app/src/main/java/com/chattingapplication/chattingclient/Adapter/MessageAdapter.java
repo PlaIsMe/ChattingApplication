@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chattingapplication.chattingclient.AuthenticationActivity;
+import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.R;
@@ -59,6 +60,6 @@ public class MessageAdapter extends BaseAdapter {
     @Override
     public int getItemViewType(int position) {
         Message message = messages.get(position);
-        return (message.getUser().getId().equals(AuthenticationActivity.currentAccount.getUser().getId()) ? 0 : 1);
+        return (message.getUser().getId().equals(LoadActivity.currentAccount.getUser().getId()) ? 0 : 1);
     }
 }

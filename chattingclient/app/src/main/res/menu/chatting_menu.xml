@@ -2,6 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/logOut"
+        app:showAsAction="never"
+        android:title="Logout" />
+    <item
         android:id="@+id/searchBar"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"

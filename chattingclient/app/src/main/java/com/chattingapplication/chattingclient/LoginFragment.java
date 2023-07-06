@@ -1,6 +1,8 @@
 package com.chattingapplication.chattingclient;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -11,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +23,7 @@ import com.chattingapplication.chattingclient.AsyncTask.PostRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ExceptionError;
+import com.chattingapplication.chattingclient.Utils.HttpResponse;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -32,6 +37,7 @@ import org.json.JSONObject;
  */
 public class LoginFragment extends Fragment {
     private AuthenticationActivity authenticationActivity;
+    private CheckBox remember;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -58,6 +64,7 @@ public class LoginFragment extends Fragment {
 
         TextView txtInformRegister = (TextView) view.findViewById(R.id.txtInformRegister);
         Button btnLogin = (Button) view.findViewById(R.id.btnLogin);
+        remember = view.findViewById(R.id.cbRememberMeLogin);
 
         txtInformRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +77,8 @@ public class LoginFragment extends Fragment {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText editTextEmail = (EditText) view.findViewById(R.id.editTxtEmail);
-                EditText editTextPassword = (EditText) view.findViewById(R.id.editTxtPassword);
+                EditText editTextEmail = (EditText) view.findViewById(R.id.editTxtEmailLogin);
+                EditText editTextPassword = (EditText) view.findViewById(R.id.editTxtPasswordLogin);
                 String jsonString;
                 try {
                     jsonString = new JSONObject()
@@ -81,28 +88,10 @@ public class LoginFragment extends Fragment {
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
-                PostRequestTask postRequestTask = new PostRequestTask((AuthenticationActivity) getActivity());
-                postRequestTask.execute("account/signin", jsonString, "loginResponse", "LoginFragment", "AuthenticationActivity");
+                PostRequestTask postRequestTask = new PostRequestTask(new HttpResponse(authenticationActivity));
+                postRequestTask.execute("account/signin", jsonString, "loginResponse");
             }
         });
-
         return view;
-    }
-
-    public void loginResponse(int responseCode, String jsonResponse) {
-        Gson gson = new Gson();
-        if (responseCode == 200) {
-            authenticationActivity.currentAccount = gson.fromJson(jsonResponse, Account.class);
-            try {
-                String checkName = AuthenticationActivity.currentAccount.getUser().getFirstName();
-                Intent mainActivity = new Intent(this.getContext(), MainActivity.class);
-                startActivity(mainActivity);
-            } catch (NullPointerException e) {
-                authenticationActivity.swapFragment(R.id.fragmentContainerAuthentication, authenticationActivity.getSubRegisterFragment());
-            }
-        } else {
-            ExceptionError exceptionError = gson.fromJson(jsonResponse, ExceptionError.class);
-            Toast.makeText(authenticationActivity.getApplicationContext(), exceptionError.getMessage(), Toast.LENGTH_LONG).show();
-        }
     }
 }

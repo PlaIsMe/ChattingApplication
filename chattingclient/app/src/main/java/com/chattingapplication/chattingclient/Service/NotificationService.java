@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
@@ -25,7 +26,7 @@ public class NotificationService {
     public static void sendNotification(Context context, Message message) {
         Gson gson = new Gson();
         Intent chattingIntent = new Intent(context, ChattingActivity.class);
-//        chattingIntent.putExtra("targetUser", message.getUser().toJsonString());
+        Log.d("debugSetTargetUser", message.getUser().toString());
         message.getChatRoom().setTargetUser(message.getUser());
         chattingIntent.putExtra("currentChatRoom", gson.toJson(message.getChatRoom()));
         TaskStackBuilder builder = TaskStackBuilder.create(context);

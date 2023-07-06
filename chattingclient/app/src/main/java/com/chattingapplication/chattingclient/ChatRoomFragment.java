@@ -20,6 +20,7 @@ import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.Model.User;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ import java.util.Set;
  * create an instance of this fragment.
  */
 public class ChatRoomFragment extends Fragment {
-    private ListView listViewChatRoom;
+    public static ListView listViewChatRoom;
     private MainActivity mainActivity;
     public static ChatRoomAdapter chatRoomAdapter;
     public static List<ChatRoom> chatRoomList;
@@ -48,6 +49,8 @@ public class ChatRoomFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = (MainActivity) getActivity();
+        chatRoomList = LoadActivity.currentAccount.getUser().getChatRooms();
+        chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
     }
 
     @Override
@@ -58,10 +61,8 @@ public class ChatRoomFragment extends Fragment {
         LoadActivity.currentContext = this.getContext();
 
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
-        chatRoomList = AuthenticationActivity.currentAccount.getUser().getChatRooms();
-        Log.d("debugList", chatRoomList.toString());
-        chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
         listViewChatRoom.setAdapter(chatRoomAdapter);
+        chatRoomAdapter.notifyDataSetChanged();
 
         listViewChatRoom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -84,6 +85,7 @@ public class ChatRoomFragment extends Fragment {
         updatedChatRoom.setLatestMessage(message);
         chatRoomList.remove(oldPosition);
         chatRoomList.add(0, updatedChatRoom);
+        LoadActivity.currentAccount.getUser().setChatRooms(chatRoomList);
         chatRoomAdapter.notifyDataSetChanged();
     }
 }

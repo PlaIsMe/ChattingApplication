@@ -1,30 +1,28 @@
 package com.chattingapplication.chattingclient.Utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
-import com.chattingapplication.chattingclient.AuthenticationActivity;
 import com.chattingapplication.chattingclient.ChatRoomFragment;
 import com.chattingapplication.chattingclient.ChattingActivity;
 import com.chattingapplication.chattingclient.ChattingFragment;
+import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.MainActivity;
+import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.Message;
-import com.chattingapplication.chattingclient.PeopleFragment;
 import com.google.gson.Gson;
 
 import com.chattingapplication.chattingclient.Service.NotificationService;
 
-import java.util.List;
-
-public class ResponseFunction {
+public class SocketResponse {
     private Context context;
 
-    public ResponseFunction(Context context) {
+    public SocketResponse(Context context) {
         this.context = context;
     }
 
-//    ChattingContext --------------------------------------------------------------------------------------------------------------------
     public void chattingResponse(String message) {
         Log.d("debugFunction", "hello from chatting response");
         Gson gson = new Gson();
@@ -56,18 +54,33 @@ public class ResponseFunction {
     public void createPrivateRoomResponse(String chatRoom) {
         Gson gson = new Gson();
         ChatRoom room = gson.fromJson(chatRoom, ChatRoom.class);
-        ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ChatRoomFragment.chatRoomList.add(0, room);
-                ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
-            }
-        });
+        ChatRoomFragment.chatRoomList.add(0, room);
+        LoadActivity.currentAccount.getUser().setChatRooms(ChatRoomFragment.chatRoomList);
 
         if (context instanceof ChattingActivity) {
             ((ChattingActivity) context).setCurrentChatRoom(room);
             ((ChattingActivity) context).setRoomAvailable(true);
+        } else if (context instanceof MainActivity) {
+            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+                }
+            });
+        }
+
+        Message pushMessage = room.getLatestMessage();
+        if (!pushMessage.getUser().getId().equals(LoadActivity.currentAccount.getUser().getId())) {
+            pushMessage.setChatRoom(new ChatRoom(room.getId(), room.getRoomName(), room.isPrivate()));
+            NotificationService.sendNotification(context, pushMessage);
         }
     }
-//----------------------------------------------------------------------------------------------------------------------------------------------
+
+    public void updateResponse(String account) {
+        Gson gson = new Gson();
+        LoadActivity.currentAccount = gson.fromJson(account, Account.class);
+        Log.d("debugAcc", LoadActivity.currentAccount.toString());
+        Intent mainActivity = new Intent(context, MainActivity.class);
+        context.startActivity(mainActivity);
+    }
 }
