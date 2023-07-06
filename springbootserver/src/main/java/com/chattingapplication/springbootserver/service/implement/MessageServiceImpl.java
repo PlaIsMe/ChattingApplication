@@ -59,11 +59,11 @@ public class MessageServiceImpl implements MessageService {
         } else {
             ChatRoomEntity chatRoomEntity = chatRoomEntityOptional.get();
             UserEntity userEntity = userEntityOptional.get();
-            if (chatRoomEntity.getUsers().contains(userEntity)) {
+            if (userEntity.getChatRooms().contains(chatRoomEntity)) {
                 MessageEntity messageEntity = new MessageEntity();
                 message.setCreateAt(LocalDateTime.now());
                 BeanUtils.copyProperties(message, messageEntity);
-                chatRoomEntity.getMessages().add(messageEntity);
+                // chatRoomEntity.getMessages().add(messageEntity);
                 messageEntity.setChatRoom(chatRoomEntity);
                 messageEntity.setUser(userEntity);
                 messageEntity.setCreateAt(LocalDateTime.now());
