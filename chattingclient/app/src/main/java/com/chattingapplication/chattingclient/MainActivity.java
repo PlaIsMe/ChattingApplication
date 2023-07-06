@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.logOut) {
-            Log.d("debugLogout", "logging out");
             LoadActivity.currentAccount = null;
             SharedPreferences.Editor editorCheck = LoadActivity.preferencesCheck.edit();
             editorCheck.putString("check", "false");
