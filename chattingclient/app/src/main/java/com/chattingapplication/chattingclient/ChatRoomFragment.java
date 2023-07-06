@@ -59,6 +59,7 @@ public class ChatRoomFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_room, container, false);
         LoadActivity.currentContext = this.getContext();
+        Log.d("debugCreate", "createView");
 
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
         listViewChatRoom.setAdapter(chatRoomAdapter);

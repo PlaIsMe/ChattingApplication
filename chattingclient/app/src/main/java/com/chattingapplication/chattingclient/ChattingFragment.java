@@ -169,6 +169,10 @@ public class ChattingFragment extends Fragment {
     public void appendMessage(Message message) {
         listMessages.add(message);
         adapter.notifyDataSetChanged();
-//        ((ChatRoomFragment) ((MainActivity) getActivity()).getChatRoomFragment()).realTimeUiChatRoom(message, false);
+        ChatRoom updatedChatRoom = chattingActivity.getCurrentChatRoom();
+        updatedChatRoom.setLatestMessage(message);
+        chattingActivity.setCurrentChatRoom(updatedChatRoom);
+        message.setChatRoom(updatedChatRoom);
+//        chattingActivity.updateUiChatRoom(message);
     }
 }

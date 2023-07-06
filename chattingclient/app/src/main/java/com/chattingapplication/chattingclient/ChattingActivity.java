@@ -13,6 +13,7 @@ import android.view.MenuItem;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
+import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.Model.User;
 import com.chattingapplication.chattingclient.Utils.HttpResponse;
 import com.google.gson.Gson;
@@ -20,6 +21,9 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONException;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ChattingActivity extends AppCompatActivity {
     private User targetUser;
@@ -96,5 +100,16 @@ public class ChattingActivity extends AppCompatActivity {
             this.finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateUiChatRoom(Message message) {
+        List<ChatRoom> chatRoomList = LoadActivity.currentAccount.getUser().getChatRooms();
+        ChatRoom updatedChatRoom = chatRoomList.stream().
+                filter(c -> c.getId().equals(message.getChatRoom().getId())).
+                findFirst().get();
+        LoadActivity.currentAccount.getUser().getChatRooms().remove(updatedChatRoom);
+        updatedChatRoom.setLatestMessage(message);
+        chatRoomList.add(0, updatedChatRoom);
+        LoadActivity.currentAccount.getUser().setChatRooms(chatRoomList);
     }
 }
