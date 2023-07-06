@@ -16,11 +16,11 @@ public class User {
     private Long id;
 
     @NotBlank(message = "last name must not be blank")
-    @Size(max = 40, min = 1, message = "last name must be between 3 and 40 characters")
+    @Size(max = 40, min = 1, message = "last name must be between 1 and 40 characters")
     private String lastName;
 
     @NotBlank(message = "first name must not be blank")
-    @Size(max = 40, min = 1, message = "first name must be between 3 and 40 characters")
+    @Size(max = 40, min = 1, message = "first name must be between 1 and 40 characters")
     private String firstName;
 
     private String avatar;

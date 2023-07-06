@@ -54,6 +54,6 @@ public class UserEntity implements Serializable {
     )
     private Set<ChatRoomEntity> chatRooms;
 
-    @OneToOne(mappedBy = "user")
-    private AccountEntity account;
+    // @OneToOne(mappedBy = "user")
+    // private AccountEntity account;
 }
