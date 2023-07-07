@@ -41,9 +41,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             room.setId(r.getId());
             room.setPrivate(r.isPrivate());
             room.setRoomName(r.getRoomName());
-            List<Message> messages = messageService.getAllMessages(r.getId());
-            if (messages.size() != 0) {
-                room.setLatestMessage(messages.get(messages.size() - 1));
+            MessageEntity latestMessageEntity = messageRepository.findTopByChatRoomEntityById(room.getId());
+            if (latestMessageEntity != null) {
+                Message latestMessage = new Message();
+                User latestUser = new User();
+                BeanUtils.copyProperties(latestMessageEntity.getUser(), latestUser);
+                BeanUtils.copyProperties(latestMessageEntity, latestMessage);
+                latestMessage.setUser(latestUser);
+                room.setLatestMessage(latestMessage);
             }
             return room;
         }).collect(Collectors.toList());
@@ -67,12 +72,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     public void deleteChatRoom(Long chatRoomId) throws Exception {
         try {
             ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).get();
-            chatRoomEntity.getUsers().stream().forEach(u -> {
-                u.getChatRooms().remove(chatRoomEntity);
-                userRepository.save(u);
-            });
-            chatRoomEntity.getUsers().clear();
-            chatRoomRepository.save(chatRoomEntity);
             chatRoomRepository.delete(chatRoomEntity);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -87,10 +86,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
                 return userRepository.findById(u.getId()).get();
             }).collect(Collectors.toSet());
 
-            // adding user entities to a chat room
-            chatRoomEntity.setUsers(userEntities);
-
-            // adding chat room to each user 
+            // adding chat room to each user
             userEntities.stream().forEach(us -> {
                 us.getChatRooms().add(chatRoomEntity);
             });
@@ -109,7 +105,6 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         try {
             ChatRoomEntity chatRoomEntity = chatRoomRepository.findById(chatRoomId).get();
             UserEntity userEntity = userRepository.findById(user.getId()).get();
-            chatRoomEntity.getUsers().add(userEntity);
             userEntity.getChatRooms().add(chatRoomEntity);
             chatRoomRepository.save(chatRoomEntity);
             userRepository.save(userEntity);
@@ -126,9 +121,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
         return userEntity.getChatRooms().stream().map(cr -> {
             ChatRoom chatRoom = new ChatRoom();
             BeanUtils.copyProperties(cr, chatRoom);
-            List<Message> messages = messageService.getAllMessages(cr.getId());
-            if (messages.size() != 0) {
-                chatRoom.setLatestMessage(messages.get(messages.size() - 1));
+
+            MessageEntity latestMessageEntity = messageRepository.findTopByChatRoomEntityById(cr.getId());
+            if (latestMessageEntity != null) {
+                Message latestMessage = new Message();
+                User latestUser = new User();
+                BeanUtils.copyProperties(latestMessageEntity.getUser(), latestUser);
+                BeanUtils.copyProperties(latestMessageEntity, latestMessage);
+                latestMessage.setUser(latestUser);
+                chatRoom.setLatestMessage(latestMessage);
             }
             if (cr.isPrivate()) {
                 User targetUser = new User();
@@ -147,9 +148,14 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             throw new Exception("no room available!");
         } else {
             BeanUtils.copyProperties(chatRoomRepository.findByUserIds(currentUserId, targetUserId, isPrivate), chatRoom);
-            List<Message> messages = messageService.getAllMessages(chatRoomEntity.getId());
-            if (messages.size() != 0) {
-                chatRoom.setLatestMessage(messages.get(messages.size() - 1));
+            MessageEntity latestMessageEntity = messageRepository.findTopByChatRoomEntityById(chatRoomEntity.getId());
+            if (latestMessageEntity != null) {
+                Message latestMessage = new Message();
+                User latestUser = new User();
+                BeanUtils.copyProperties(latestMessageEntity.getUser(), latestUser);
+                BeanUtils.copyProperties(latestMessageEntity, latestMessage);
+                latestMessage.setUser(latestUser);
+                chatRoom.setLatestMessage(latestMessage);
             }
             User targetUser = new User();
             BeanUtils.copyProperties(userRepository.findById(targetUserId).get(), targetUser);
@@ -173,21 +179,8 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             BeanUtils.copyProperties(userEntityTarget, targetUser);
             newChatRoom.setTargetUser(targetUser);
 
-            MessageEntity messageEntity = new MessageEntity();
-            message.setCreateAt(LocalDateTime.now());
-            BeanUtils.copyProperties(message, messageEntity);
-            List<MessageEntity> messageEntities = new ArrayList<>();
-            messageEntity.setChatRoom(newChatRoomEntity);
-            messageEntity.setUser(userEntityCreated);
-            messageEntity.setCreateAt(LocalDateTime.now());
-            messageEntities.add(messageEntity);
-            chatRoomRepository.save(newChatRoomEntity);
-            message.setId(messageRepository.save(messageEntity).getId());
-
-            User createdUser = new User();
-            BeanUtils.copyProperties(userEntityCreated, createdUser);
-            message.setUser(createdUser);
-            newChatRoom.setLatestMessage(message);
+            Message latestMessage = messageService.createMessage(newChatRoom.getId(), user_id_created, message);
+            newChatRoom.setLatestMessage(latestMessage);
             return newChatRoom;
         } catch (Exception e) {
             throw new Exception(e.getMessage());

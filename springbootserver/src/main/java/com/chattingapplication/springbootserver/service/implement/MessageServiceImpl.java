@@ -43,7 +43,9 @@ public class MessageServiceImpl implements MessageService {
                 new User(
                     message.getUser().getId(),
                     message.getUser().getFirstName(),
-                    message.getUser().getLastName()
+                    message.getUser().getLastName(),
+                    message.getUser().getGender(),
+                    message.getUser().getDob()
                 )
             )).collect(Collectors.toList());
     }
@@ -66,7 +68,6 @@ public class MessageServiceImpl implements MessageService {
                 // chatRoomEntity.getMessages().add(messageEntity);
                 messageEntity.setChatRoom(chatRoomEntity);
                 messageEntity.setUser(userEntity);
-                messageEntity.setCreateAt(LocalDateTime.now());
                 chatRoomRepository.save(chatRoomEntity);
                 message.setId(messageRepository.save(messageEntity).getId());
                 User returnUser = new User();

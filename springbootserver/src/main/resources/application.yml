@@ -6,12 +6,12 @@ spring:
     # password: ${DB_PASSWORD}
     url: jdbc:mysql://localhost:3306/chattingdatabase
     username: root
-    password: thanh2306
-    # password: IamPhong89
+    # password: thanh2306
+    password: IamPhong89
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
 
 server:
   error:

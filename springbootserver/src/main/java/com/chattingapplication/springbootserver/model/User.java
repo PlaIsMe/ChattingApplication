@@ -31,9 +31,11 @@ public class User {
 
     private Set<ChatRoom> chatRooms;
 
-    public User(Long id, String lastName, String firstName) {
+    public User(Long id, String lastName, String firstName, String gender, LocalDateTime dob) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
+        this.gender = gender;
+        this.dob = dob;
     }
 }

@@ -32,8 +32,8 @@ public class ChatRoomEntity implements Serializable {
     @Column(name = "is_private", nullable = false)
     private boolean isPrivate;
 
-    // @ManyToMany(mappedBy = "chatRooms")
-    // private Set<UserEntity> users;
+    @ManyToMany(mappedBy = "chatRooms")
+    private Set<UserEntity> users;
 
     // @OneToMany(mappedBy = "chatRoom")
     // private List<MessageEntity> messages;
