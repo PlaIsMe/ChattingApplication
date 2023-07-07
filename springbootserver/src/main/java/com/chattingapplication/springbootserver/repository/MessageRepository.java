@@ -12,6 +12,6 @@ public interface MessageRepository extends JpaRepository<MessageEntity, Long> {
     @Query("SELECT m FROM MessageEntity m JOIN m.chatRoom c WHERE c.id = ?1")
     Set<MessageEntity> findByChatRoomId(Long chatRoomId);
 
-    @Query("SELECT LIMIT 1 m FROM MessageEntity m JOIN m.chatRoom c WHERE c.id = ?1 DESC")
+    @Query("SELECT m FROM MessageEntity m JOIN m.chatRoom c WHERE c.id = ?1 ORDER BY m DESC LIMIT 1")
     MessageEntity findTopByChatRoomEntityById(Long chatRoomId);
 }
