@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
+import com.chattingapplication.chattingclient.AsyncTask.PatchRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.ExceptionError;
@@ -64,7 +65,7 @@ public class SubRegisterFragment extends Fragment {
                 EditText editTxtLastName = (EditText) view.findViewById(R.id.editTxtLastName);
                 EditText editTxtGender = (EditText) view.findViewById(R.id.editTxtGender);
 
-                PutRequestTask putRequestTask = new PutRequestTask(new HttpResponse(authenticationActivity));
+                PatchRequestTask patchRequestTask = new PatchRequestTask(new HttpResponse(authenticationActivity));
                 String path = String.format("user/%s", LoadActivity.currentAccount.getUser().getId());
 
                 try {
@@ -73,7 +74,7 @@ public class SubRegisterFragment extends Fragment {
                             .put("lastName", editTxtLastName.getText())
                             .put("gender", editTxtGender.getText())
                             .toString();
-                    putRequestTask.execute(path, jsonString, "handleResponseSubRegister");
+                    patchRequestTask.execute(path, jsonString, "handleResponseSubRegister");
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
