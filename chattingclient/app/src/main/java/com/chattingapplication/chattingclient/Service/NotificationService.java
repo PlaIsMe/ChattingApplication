@@ -1,5 +1,6 @@
 package com.chattingapplication.chattingclient.Service;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -20,6 +21,7 @@ import com.chattingapplication.chattingclient.R;
 import com.google.gson.Gson;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public class NotificationService {
 
@@ -37,31 +39,44 @@ public class NotificationService {
         PendingIntent pendingIntent = builder.getPendingIntent(0,
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
 
-        String channelId = "my notification channel";
+//        String channelId = "Chat Application Channel Id";
+
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(context, channelId)
-                        .setSmallIcon(R.drawable.baseline_notifications_24)
+                new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_ID_DEFAULT)
+                        .setSmallIcon(R.drawable.chat_application_logo)
                         .setContentTitle(String.format("%s %s", message.getUser().getFirstName(), message.getUser().getLastName()))
                         .setContentText(message.getContent())
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
                         .setContentIntent(pendingIntent)
-                        .setGroup(MESSAGE_GROUP);
+                        .setGroup(NotificationChannels.CHANNEL_GROUP_ID);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
         // Since android Oreo notification channel is needed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            notificationManager.createNotificationChannel(channel);
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            NotificationChannel channel = new NotificationChannel(channelId,
+//                    "Channel human readable title",
+//                    NotificationManager.IMPORTANCE_DEFAULT);
+//            notificationManager.createNotificationChannel(channel);
+//        }
+
+        NotificationCompat.Builder summaryBuilder =
+                new NotificationCompat.Builder(context, NotificationChannels.CHANNEL_ID_DEFAULT)
+                        .setContentTitle("OU Messenger")
+                        // Set content text to support devices running API level < 24.
+                        .setContentText("New message")
+                        .setSmallIcon(R.drawable.chat_application_logo)
+                        // Specify which group this notification belongs to.
+                        .setGroup(NotificationChannels.CHANNEL_GROUP_ID)
+                        // Set this notification as the summary for the group.
+                        .setGroupSummary(true);
 
         notificationManager.notify(getNotificationId() /* ID of notification */,
                 notificationBuilder.build());
+        notificationManager.notify(0, summaryBuilder.build());
     }
 
     private static int getNotificationId(){
