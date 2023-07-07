@@ -23,6 +23,8 @@ import java.time.LocalDateTime;
 
 public class NotificationService {
 
+    private static final String MESSAGE_GROUP = "com.chattingapplication.chattingclient.MESSAGE_GROUP";
+
     public static void sendNotification(Context context, Message message) {
         Gson gson = new Gson();
         Intent chattingIntent = new Intent(context, ChattingActivity.class);
@@ -44,7 +46,8 @@ public class NotificationService {
                         .setContentText(message.getContent())
                         .setAutoCancel(true)
                         .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
+                        .setContentIntent(pendingIntent)
+                        .setGroup(MESSAGE_GROUP);
 
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
