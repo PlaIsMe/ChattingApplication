@@ -43,8 +43,8 @@ public class AccountServiceImpl implements AccountService {
                     account.getUser().getId(),
                     account.getUser().getFirstName(),
                     account.getUser().getLastName(),
-                    account.getUser().getGender(),
                     account.getUser().getAvatar(),
+                    account.getUser().getGender(),
                     account.getUser().getDob(),
                     chatRoomService.getChatRoomsByUserId(account.getUser().getId())
                 )

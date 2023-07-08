@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.Service.NotificationChannels;
 import com.chattingapplication.chattingclient.Utils.HttpResponse;
 
 import java.util.List;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        NotificationChannels.createNotificationChannels(this);
 
         mainContext = this;
         LoadActivity.currentContext = this;

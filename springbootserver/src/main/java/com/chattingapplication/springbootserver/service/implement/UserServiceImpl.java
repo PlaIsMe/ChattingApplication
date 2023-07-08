@@ -64,13 +64,13 @@ public class UserServiceImpl implements UserService {
     public User updateUser(Long userId, User user) throws Exception {
         try {
             UserEntity userEntity = userRepository.findById(userId).get();
-            userEntity.setAvatar(user.getAvatar());
             userEntity.setDob(user.getDob());
             userEntity.setFirstName(user.getFirstName());
             userEntity.setGender(user.getGender());
             userEntity.setLastName(user.getLastName());
             userRepository.save(userEntity);
             user.setId(userId);
+
             return user;
         } catch (NoSuchElementException e) {
             throw new Exception("User not found!");
