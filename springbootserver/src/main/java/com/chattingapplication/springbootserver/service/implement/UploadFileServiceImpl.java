@@ -28,9 +28,9 @@ public class UploadFileServiceImpl implements UploadFileService {
     private UserRepository userRepository;
 
     @Override
-    public ResponseEntity<String> uploadAvatar(User user) throws IOException {
+    public ResponseEntity<String> uploadAvatar(Long id, User user) throws IOException {
         try {
-            Optional<UserEntity> userEntityOptional = userRepository.findById(user.getId());
+            Optional<UserEntity> userEntityOptional = userRepository.findById(id);
             System.out.println("OVER HEREREEEEEEEEEEEEEEEEEEE: " + userEntityOptional.get());
             if (userEntityOptional.isPresent()) {
                 String secure_url = serverCloudinary.uploader()

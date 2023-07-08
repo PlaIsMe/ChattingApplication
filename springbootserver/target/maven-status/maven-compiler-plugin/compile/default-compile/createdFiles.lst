@@ -14,6 +14,7 @@ com\chattingapplication\springbootserver\service\interfaces\ChatRoomService.clas
 com\chattingapplication\springbootserver\service\interfaces\MessageService.class
 com\chattingapplication\springbootserver\model\Message.class
 com\chattingapplication\springbootserver\repository\UserRepository.class
+com\chattingapplication\springbootserver\configs\CloudinaryConfig.class
 com\chattingapplication\springbootserver\entity\UserEntity.class
 com\chattingapplication\springbootserver\service\implement\AccountServiceImpl.class
 com\chattingapplication\springbootserver\model\User.class
@@ -21,5 +22,7 @@ com\chattingapplication\springbootserver\SpringbootserverApplication.class
 com\chattingapplication\springbootserver\service\interfaces\AccountService.class
 com\chattingapplication\springbootserver\controller\ChatRoomController.class
 com\chattingapplication\springbootserver\model\ChatRoom.class
+com\chattingapplication\springbootserver\service\implement\UploadFileServiceImpl.class
 com\chattingapplication\springbootserver\repository\MessageRepository.class
+com\chattingapplication\springbootserver\service\interfaces\UploadFileService.class
 com\chattingapplication\springbootserver\controller\UserController.class

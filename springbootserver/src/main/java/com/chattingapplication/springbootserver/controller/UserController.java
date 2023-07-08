@@ -62,9 +62,9 @@ public class UserController {
         return userService.updateUser(userId, user);        
     }
 
-    @PostMapping(path = "upload_avatar")
-    public ResponseEntity<String> uploadAvatar(User user) throws IOException{
-        System.out.println(user);
-        return uploadFileService.uploadAvatar(user);
+    @PostMapping(path = "upload_avatar/{userId}")
+    public ResponseEntity<String> uploadAvatar(@PathVariable(name = "userId") Long id, User user) throws IOException{
+        System.out.println("=====================================\nUSER" + user);
+        return uploadFileService.uploadAvatar(id, user);
     }
 }

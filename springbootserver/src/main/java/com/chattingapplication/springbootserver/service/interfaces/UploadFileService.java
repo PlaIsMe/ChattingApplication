@@ -7,5 +7,5 @@ import org.springframework.http.ResponseEntity;
 import com.chattingapplication.springbootserver.model.User;
 
 public interface UploadFileService {
-    ResponseEntity<String> uploadAvatar(User user) throws IOException;
+    ResponseEntity<String> uploadAvatar(Long id, User user) throws IOException;
 }
