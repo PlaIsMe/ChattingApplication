@@ -1,8 +1,11 @@
 package com.chattingapplication.chattingclient;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -11,21 +14,26 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageView;
 
-import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.AsyncTask.PatchRequestTask;
-import com.chattingapplication.chattingclient.AsyncTask.PutRequestTask;
-import com.chattingapplication.chattingclient.AsyncTask.SendTask;
-import com.chattingapplication.chattingclient.Model.ExceptionError;
-import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.AsyncTask.PostRequestTask;
+import com.chattingapplication.chattingclient.AsyncTask.UploadFileTask;
 import com.chattingapplication.chattingclient.Utils.HttpResponse;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLConnection;
+import java.nio.file.Files;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,6 +42,9 @@ import java.util.ArrayList;
  */
 public class SubRegisterFragment extends Fragment {
     private AuthenticationActivity authenticationActivity;
+    private static final int REQUEST_IMAGE_SELECT = 100;
+    private Uri uploadAvatar;
+    private ImageView userAvatar;
     public SubRegisterFragment() {
         // Required empty public constructor
     }
@@ -57,6 +68,8 @@ public class SubRegisterFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_sub_register, container, false);
         Button btnSubmitSubRegister = (Button) view.findViewById(R.id.btnSubmitSubRegister);
+        Button btnAvatar = view.findViewById(R.id.btnChangeAvatar);
+        userAvatar = view.findViewById(R.id.uploadAvatar);
 
         btnSubmitSubRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +79,19 @@ public class SubRegisterFragment extends Fragment {
                 EditText editTxtGender = (EditText) view.findViewById(R.id.editTxtGender);
 
                 PatchRequestTask patchRequestTask = new PatchRequestTask(new HttpResponse(authenticationActivity));
+                UploadFileTask uploadFileTask = new UploadFileTask(getContext(), uploadAvatar);
                 String path = String.format("user/%s", LoadActivity.currentAccount.getUser().getId());
+                String uploadAvatarPath = "user/upload_avatar/" + LoadActivity.currentAccount.getUser().getId();
+
+                Log.d("AvatarURI", uploadAvatar.getPath());
+                File file = new File(uploadAvatar.getPath());
+                Log.d("AvatarURI", file.getName());
+
+                try {
+                    uploadFileTask.execute(uploadAvatarPath, file.getName());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
 
                 try {
                     String jsonString = new JSONObject()
@@ -81,6 +106,26 @@ public class SubRegisterFragment extends Fragment {
             }
         });
 
+        // Upload avatar here
+        btnAvatar.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK,
+                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+            startActivityForResult(intent, REQUEST_IMAGE_SELECT);
+        });
+
         return view;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_SELECT && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                uploadAvatar = data.getData();
+                userAvatar.setImageURI(uploadAvatar);
+            }
+        }
+    }
+
 }

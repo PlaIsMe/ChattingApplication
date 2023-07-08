@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +16,7 @@ public class User {
     private String firstName;
     private Date dob;
     private String avatar;
+    private File uploadAvatar;
     private String gender;
     private List<ChatRoom> chatRooms;
 
@@ -114,5 +116,13 @@ public class User {
     public String toJsonString() {
         Gson gson = new Gson();
         return gson.toJson(this);
+    }
+
+    public File getUploadAvatar() {
+        return uploadAvatar;
+    }
+
+    public void setUploadAvatar(File uploadAvatar) {
+        this.uploadAvatar = uploadAvatar;
     }
 }
