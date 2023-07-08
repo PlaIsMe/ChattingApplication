@@ -33,11 +33,13 @@ public class SocketResponse {
                     @Override
                     public void run() {
                         ((ChattingFragment) ((ChattingActivity) context).getChattingFragment()).appendMessage(receivedMessage);
+                        ((ChattingActivity) context).updateUiChatRoom(receivedMessage);
                     }
                 });
             } else {
 //                Ở giao diện chat khác
                 NotificationService.sendNotification(context, receivedMessage);
+                ((ChattingActivity) context).updateUiChatRoom(receivedMessage);
             }
         } else if (context instanceof MainActivity) {
 //            Chưa vào giao diện chat

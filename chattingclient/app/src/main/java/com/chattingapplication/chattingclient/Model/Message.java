@@ -1,20 +1,20 @@
 package com.chattingapplication.chattingclient.Model;
 
+import android.util.Log;
+
 public class Message {
     private Long id;
     private String content;
     // private LocalDateTime createAt;
     private User user;
+    private ChatRoom chatRoom;
 
-    public ChatRoom getChatRoom() {
-        return chatRoom;
-    }
-
-    public void setChatRoom(ChatRoom chatRoom) {
+    public Message(String content, User user, ChatRoom chatRoom) {
+        this.content = content;
+        this.user = user;
         this.chatRoom = chatRoom;
     }
 
-    private ChatRoom chatRoom;
 
     public Message(Long id, String content, User user, ChatRoom chatRoom) {
         this.id = id;
@@ -59,12 +59,21 @@ public class Message {
         this.user = user;
     }
 
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
                 ", user=" + user +
+                ", chatRoom=" + chatRoom +
                 '}';
     }
 }

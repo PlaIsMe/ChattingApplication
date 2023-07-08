@@ -163,7 +163,9 @@ public class ChattingFragment extends Fragment {
         }
         SendTask sendTask = new SendTask();
         sendTask.execute("chattingRequest", messageJson);
-        appendMessage(new Message(editTxtMessage.getText().toString(), LoadActivity.currentAccount.getUser()));
+        Message newMessage = new Message(editTxtMessage.getText().toString(), LoadActivity.currentAccount.getUser(), chattingActivity.getCurrentChatRoom());
+        appendMessage(newMessage);
+        chattingActivity.updateUiChatRoom(newMessage);
     }
 
     public void appendMessage(Message message) {

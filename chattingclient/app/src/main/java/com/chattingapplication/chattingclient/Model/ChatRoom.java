@@ -48,6 +48,7 @@ public class ChatRoom {
     private User targetUser;
 
 
+    public ChatRoom() {}
     public ChatRoom(Long id, String roomName, boolean isPrivate, Message latestMessage, User targetUser) {
         this.id = id;
         this.roomName = roomName;

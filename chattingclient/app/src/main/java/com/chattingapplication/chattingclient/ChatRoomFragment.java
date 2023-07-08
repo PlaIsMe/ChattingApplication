@@ -49,8 +49,6 @@ public class ChatRoomFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mainActivity = (MainActivity) getActivity();
-        chatRoomList = LoadActivity.currentAccount.getUser().getChatRooms();
-        chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
     }
 
     @Override
@@ -59,7 +57,10 @@ public class ChatRoomFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_room, container, false);
         LoadActivity.currentContext = this.getContext();
-        Log.d("debugCreate", "createView");
+
+        chatRoomList = LoadActivity.currentAccount.getUser().getChatRooms();
+        Log.d("debugChatRoomList", chatRoomList.toString());
+        chatRoomAdapter = new ChatRoomAdapter(this.getContext(), chatRoomList);
 
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
         listViewChatRoom.setAdapter(chatRoomAdapter);
@@ -70,6 +71,7 @@ public class ChatRoomFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Gson gson = new Gson();
                 ChatRoom clickedChatRoom = (ChatRoom) listViewChatRoom.getItemAtPosition(position);
+                Log.d("debugClickedChatRoom", clickedChatRoom.toString());
                 Intent chattingActivity = new Intent(((MainActivity) mainActivity).getApplicationContext(), ChattingActivity.class);
                 chattingActivity.putExtra("currentChatRoom", gson.toJson(clickedChatRoom));
                 startActivity(chattingActivity);
@@ -80,7 +82,6 @@ public class ChatRoomFragment extends Fragment {
     }
 
     public void realTimeUiChatRoom(Message message) {
-//        C++ swap
         int oldPosition = chatRoomAdapter.getPositionByChatRoom(message.getChatRoom());
         ChatRoom updatedChatRoom = (ChatRoom) listViewChatRoom.getItemAtPosition(oldPosition);
         updatedChatRoom.setLatestMessage(message);
