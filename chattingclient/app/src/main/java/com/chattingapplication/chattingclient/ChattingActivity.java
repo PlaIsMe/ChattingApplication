@@ -8,10 +8,12 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.MenuItem;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
+import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.Message;
 import com.chattingapplication.chattingclient.Model.User;
@@ -30,6 +32,7 @@ public class ChattingActivity extends AppCompatActivity {
     private ChatRoom currentChatRoom;
     private Fragment chattingFragment;
     private boolean isRoomAvailable = true;
+    private int pos;
 
     public void setCurrentChatRoom(ChatRoom currentChatRoom) {
         this.currentChatRoom = currentChatRoom;
@@ -70,16 +73,16 @@ public class ChattingActivity extends AppCompatActivity {
         try {
 //            From chat room fragment
             currentChatRoom = gson.fromJson(prevIntent.getStringExtra("currentChatRoom"), ChatRoom.class);
-            Log.d("debugIntent", prevIntent.getStringExtra("currentChatRoom"));
+            Log.d("debugIntentCurrentChatRoom", currentChatRoom.toString());
             targetUser = currentChatRoom.getTargetUser();
-            Log.d("debugIntentUser", String.valueOf(targetUser));
+            Log.d("debugIntentUser", targetUser.toString());
             isRoomAvailable = true;
             GetRequestTask getRequestTask = new GetRequestTask(new HttpResponse(this));
             getRequestTask.execute(String.format("message/%s", currentChatRoom.getId()), "loadMessage");
         } catch (NullPointerException e) {
 //            From people fragment
             targetUser = gson.fromJson(prevIntent.getStringExtra("targetUser"), User.class);
-            Log.d("debugIntent", prevIntent.getStringExtra("targetUser"));
+            Log.d("debugIntent", targetUser.toString());
             GetRequestTask getRequestTask = new GetRequestTask(new HttpResponse(this));
             String path = String.format("chat_room/%s/%s/true", LoadActivity.currentAccount.getUser().getId(), targetUser.getId());
             getRequestTask.execute(path, "joinPrivateRoom");
@@ -102,14 +105,22 @@ public class ChattingActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void updateUiChatRoom(Message message) {
+    public synchronized void updateUiChatRoom(Message message) {
         List<ChatRoom> chatRoomList = LoadActivity.currentAccount.getUser().getChatRooms();
-        ChatRoom updatedChatRoom = chatRoomList.stream().
-                filter(c -> c.getId().equals(message.getChatRoom().getId())).
-                findFirst().get();
-        LoadActivity.currentAccount.getUser().getChatRooms().remove(updatedChatRoom);
-        updatedChatRoom.setLatestMessage(message);
-        chatRoomList.add(0, updatedChatRoom);
+        ChatRoom currentChatRoom = chatRoomList.stream().filter(c -> c.getId().equals(message.getChatRoom().getId())).findFirst().get();
+        LoadActivity.currentAccount.getUser().getChatRooms().remove(currentChatRoom);
+        message.setChatRoom(null);
+        User messageUser = new User(
+                message.getUser().getId(),
+                message.getUser().getLastName(),
+                message.getUser().getFirstName(),
+                message.getUser().getDob(),
+                message.getUser().getAvatar(),
+                message.getUser().getGender()
+        );
+        message.setUser(messageUser);
+        currentChatRoom.setLatestMessage(message);
+        chatRoomList.add(0, currentChatRoom);
         LoadActivity.currentAccount.getUser().setChatRooms(chatRoomList);
     }
 }

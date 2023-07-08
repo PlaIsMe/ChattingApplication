@@ -177,6 +177,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             newChatRoom.setTargetUser(targetUser);
 
             Message latestMessage = messageService.createMessage(newChatRoom.getId(), user_id_created, message);
+            latestMessage.setChatRoom(null);
             newChatRoom.setLatestMessage(latestMessage);
             return newChatRoom;
         } catch (Exception e) {
