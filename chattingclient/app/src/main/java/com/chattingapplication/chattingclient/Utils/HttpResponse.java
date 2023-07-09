@@ -149,7 +149,7 @@ public class HttpResponse {
         JSONArray jsonArray = new JSONArray(jsonString);
         Type userListType = new TypeToken<List<Message>>() {}.getType();
         ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).setListMessages(gson.fromJson(jsonArray.toString(), userListType));
-        ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).setAdapter(new MessageAdapter(activity.getApplicationContext(), ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getListMessages()));
+        ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).setAdapter(new MessageAdapter((ChattingActivity) activity, activity.getApplicationContext(), ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getListMessages()));
         ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getListViewMessage().setAdapter(((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getAdapter());
     }
 }

@@ -138,7 +138,7 @@ public class ChattingFragment extends Fragment {
                     }
                     SendTask sendTask = new SendTask();
                     sendTask.execute("createPrivateRoomRequest", jsonString);
-                    adapter = new MessageAdapter(MainActivity.mainContext, listMessages);
+                    adapter = new MessageAdapter(getActivity(), MainActivity.mainContext, listMessages);
                     listViewMessage.setAdapter(adapter);
                     appendMessage(new Message(editTxtMessage.getText().toString(), LoadActivity.currentAccount.getUser()));
                 } else {
