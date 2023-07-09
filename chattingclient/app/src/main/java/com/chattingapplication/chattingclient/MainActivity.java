@@ -3,6 +3,9 @@ package com.chattingapplication.chattingclient;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -77,7 +80,8 @@ public class MainActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setLogo(R.drawable.default_avatar);
+//        actionBar.setLogo(R.drawable.default_avatar);
+//        Drawable drawable = new BitmapDrawable()
         actionBar.setDisplayUseLogoEnabled(true);
         actionBar.setTitle(String.format("%s %s", LoadActivity.currentAccount.getUser().getFirstName(), LoadActivity.currentAccount.getUser().getLastName()));
     }

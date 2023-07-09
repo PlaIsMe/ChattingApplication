@@ -11,7 +11,11 @@ import android.os.Bundle;
 import android.os.Debug;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.chattingapplication.chattingclient.AsyncTask.DownloadFromURLTask;
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
 import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
@@ -90,9 +94,20 @@ public class ChattingActivity extends AppCompatActivity {
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setLogo(R.drawable.default_avatar);
+//        actionBar.setLogo(R.drawable.default_avatar);
         actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setTitle(String.format("%s %s", targetUser.getFirstName(), targetUser.getLastName()));
+//        actionBar.setTitle(String.format("%s %s", targetUser.getFirstName(), targetUser.getLastName()));
+        View customView = getLayoutInflater().inflate(R.layout.chat_room_menu, null);
+        TextView fullName = customView.findViewById(R.id.chatRoomFullName);
+        fullName.setText(String.format("%s %s", targetUser.getFirstName(), targetUser.getLastName()));
+        ImageView imageView = customView.findViewById(R.id.chatRoomAvatar);
+        if(targetUser.getDownloadAvatar() == null){
+            new DownloadFromURLTask(targetUser, imageView);
+        } else {
+            imageView.setImageBitmap(targetUser.getDownloadAvatar());
+        }
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        actionBar.setCustomView(customView);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 

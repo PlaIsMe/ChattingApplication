@@ -1,6 +1,8 @@
 package com.chattingapplication.chattingclient.Adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,10 +10,14 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chattingapplication.chattingclient.AsyncTask.DownloadFromURLTask;
 import com.chattingapplication.chattingclient.Model.User;
 import com.chattingapplication.chattingclient.R;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UserAdapter extends BaseAdapter {
     private Context context;
@@ -46,6 +52,19 @@ public class UserAdapter extends BaseAdapter {
         ImageView avatar = convertView.findViewById(R.id.userAvatar);
         TextView userName = convertView.findViewById(R.id.userName);
         userName.setText(String.format("%s %s", currentUser.getLastName(), currentUser.getFirstName()));
+        // if the current user avatar is null will get the deafult avatar instead
+        // otherwise using user avatar
+        if(currentUser.getDownloadAvatar() == null){
+            if(currentUser.getAvatar() == null || currentUser.getAvatar().isEmpty()){
+                currentUser.setAvatar(context.getResources().getString(R.string.default_avatar_url));
+                Log.d("DefaultURL", context.getResources().getString(R.string.default_avatar_url));
+            }
+            new DownloadFromURLTask(currentUser, avatar).execute(currentUser.getAvatar());
+        }
+        else{
+            avatar.setImageBitmap(currentUser.getDownloadAvatar());
+        }
+
         return convertView;
     }
 }

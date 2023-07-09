@@ -2,4 +2,7 @@
     <string name="app_name">ChattingApplication</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_avatar_url">
+        https://res.cloudinary.com/dxjkpbzmo/image/upload/v1669639320/aukutc1ioxrflkionglc.png
+    </string>
 </resources>
