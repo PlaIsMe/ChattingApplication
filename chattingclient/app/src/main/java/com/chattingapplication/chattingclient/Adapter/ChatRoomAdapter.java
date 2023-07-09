@@ -1,6 +1,7 @@
 package com.chattingapplication.chattingclient.Adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.chattingapplication.chattingclient.AsyncTask.DownloadFromURLTask;
 import com.chattingapplication.chattingclient.AuthenticationActivity;
 import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
@@ -53,7 +55,21 @@ public class ChatRoomAdapter extends BaseAdapter {
         message.setText(currentChatRoom.getLatestMessage().getUser().getId().equals(LoadActivity.currentAccount.getUser().getId()) ?
                 String.format("%s: %s", "Mày", currentChatRoom.getLatestMessage().getContent()) :
                 String.format("%s: %s", currentChatRoom.getTargetUser().getFirstName(), currentChatRoom.getLatestMessage().getContent()));
-
+        if(currentChatRoom.getTargetUser().getDownloadAvatar() == null){
+            if(currentChatRoom.getTargetUser().getAvatar() == null ||
+                    currentChatRoom.getTargetUser().getAvatar().isEmpty()){
+                currentChatRoom.getTargetUser().setAvatar(context.getResources().
+                                getString(R.string.default_avatar_url)
+                );
+                Log.d("DefaultURL", context.getResources()
+                        .getString(R.string.default_avatar_url));
+            }
+            new DownloadFromURLTask(currentChatRoom.getTargetUser(), avatar)
+                    .execute(currentChatRoom.getTargetUser().getAvatar());
+        }
+        else{
+            avatar.setImageBitmap(currentChatRoom.getTargetUser().getDownloadAvatar());
+        }
         return convertView;
     }
 

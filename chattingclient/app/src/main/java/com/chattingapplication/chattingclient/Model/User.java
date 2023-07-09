@@ -1,5 +1,7 @@
 package com.chattingapplication.chattingclient.Model;
 
+import android.graphics.Bitmap;
+
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
@@ -16,7 +18,7 @@ public class User {
     private String firstName;
     private Date dob;
     private String avatar;
-    private File uploadAvatar;
+    private Bitmap downloadAvatar;
     private String gender;
     private List<ChatRoom> chatRooms;
 
@@ -118,11 +120,11 @@ public class User {
         return gson.toJson(this);
     }
 
-    public File getUploadAvatar() {
-        return uploadAvatar;
+    public Bitmap getDownloadAvatar() {
+        return downloadAvatar;
     }
 
-    public void setUploadAvatar(File uploadAvatar) {
-        this.uploadAvatar = uploadAvatar;
+    public void setDownloadAvatar(Bitmap downloadAvatar) {
+        this.downloadAvatar = downloadAvatar;
     }
 }

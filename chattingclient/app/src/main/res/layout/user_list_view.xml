@@ -8,7 +8,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:id="@+id/userAvatar"
-        android:src="@drawable/default_avatar"
         android:layout_weight="0"
         android:scaleType="fitCenter"/>
 
