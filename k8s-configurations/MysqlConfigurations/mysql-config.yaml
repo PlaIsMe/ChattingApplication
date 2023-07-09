@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: mysql-config
 data:
- host: 10.86.131.107
+ host: mysql
  dbName: chattingdatabase

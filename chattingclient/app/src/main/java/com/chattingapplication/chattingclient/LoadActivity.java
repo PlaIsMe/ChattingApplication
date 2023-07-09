@@ -42,11 +42,11 @@ public class LoadActivity extends AppCompatActivity {
         preferencesCheck = getSharedPreferences("check", MODE_PRIVATE);
         preferencesAccount = getSharedPreferences("account", MODE_PRIVATE);
         currentContext = this;
-
-        IP = Utils.getIpV4(this, "my_ipv4.json");
-        apiUrl = String.format("http://%s:8080/api/", IP);
-//        IP = "34.101.168.64";
-//        apiUrl = String.format("http://%s:8080/api/", "34.101.148.89");
+//
+//        IP = Utils.getIpV4(this, "my_ipv4.json");
+//        apiUrl = String.format("http://%s:8080/api/", IP);
+        IP = "34.128.120.19";
+        apiUrl = String.format("http://%s:8080/api/", "34.101.122.109");
         init();
         progressBar.setVisibility(View.VISIBLE);
         ConnectTask connectTask = new ConnectTask(this);
