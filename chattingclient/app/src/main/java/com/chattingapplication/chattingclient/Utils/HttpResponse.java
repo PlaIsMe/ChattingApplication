@@ -114,7 +114,6 @@ public class HttpResponse {
     }
 
     public void loadUser(int responseCode, String jsonString) {
-        Log.d("debugLoadUser", "loadingUser");
         Gson gson = new Gson();
         try {
             JSONArray jsonArray = new JSONArray(jsonString);

@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,12 +45,14 @@ public class ServerService {
     }
 
     public static void socketSend(ClientHandleService clientHandleService, String responseName, String responseParam) {
+        // System.out.printf("\n======\nDEBUG SOCKET SEND: \n%s\n%s\n%s", clientHandleService.getClientAccount().toString(), responseName, responseParam);
         String message;
         try {
             message = new JSONObject()
                     .put("responseFunction", responseName)
                     .put("responseParam", responseParam)
                     .toString();
+            // System.out.printf("DEBUG MESSAGE %s\n", message);
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
@@ -59,6 +63,7 @@ public class ServerService {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        // System.out.println("DEBUG SEND DONE ");
     }
 
     public static void chattingRequest(ClientHandleService clientHandleService, String jsonString) throws JSONException, IOException, InterruptedException {
@@ -82,8 +87,20 @@ public class ServerService {
         Gson gson = new Gson();
         clientHandleService.setClientAccount(gson.fromJson(accountJson, Account.class));
         updateCurrentClient(clientHandleService);
+        System.out.printf("DEBUG: %s\n", clientHandleService.getClientAccount().toString());
         socketSend(clientHandleService, "updateResponse", gson.toJson(clientHandleService.getClientAccount()));
-        System.out.println(clientHandleService.getClientAccount().toString());
+        onlineClient(clientHandleService);
+    }
+
+    public static void onlineClient(ClientHandleService clientHandleService) {
+        Gson gson = new Gson();
+        List<Long> onlineUsers = clientHandlers.stream()
+        .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
+        c.getClientAccount().getUser() != null)
+        .map(client -> client.getClientAccount().getUser().getId())
+        .collect(Collectors.toList());
+        socketSend(clientHandleService, "onlineUsers", gson.toJson(onlineUsers));
+        System.out.println(onlineUsers);
     }
 
     public static void updateCurrentClient(ClientHandleService clientHandleService) throws JsonSyntaxException, IOException, InterruptedException {

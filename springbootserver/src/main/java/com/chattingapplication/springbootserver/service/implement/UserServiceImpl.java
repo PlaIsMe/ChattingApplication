@@ -89,4 +89,23 @@ public class UserServiceImpl implements UserService {
             throw new Exception("User not found!");
         }
     }
+
+    @Override
+    public List<User> searchUser(String keyword) throws Exception {
+        List<UserEntity> userEntities = userRepository.searchUser(keyword);
+        if (userEntities.size() != 0) {
+            return userEntities
+            .stream().map(user -> new User(
+                user.getId(),
+                user.getLastName(),
+                user.getFirstName(),
+                user.getAvatar(),
+                user.getGender(),
+                user.getDob(),
+                chatRoomService.getChatRoomsByUserId(user.getId())
+            )).collect(Collectors.toList());
+        } else {
+            throw new Exception("No user match your search!");
+        }
+    }
 }

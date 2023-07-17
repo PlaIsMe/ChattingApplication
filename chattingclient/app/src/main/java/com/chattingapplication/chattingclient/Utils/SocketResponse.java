@@ -16,6 +16,10 @@ import com.google.gson.Gson;
 
 import com.chattingapplication.chattingclient.Service.NotificationService;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class SocketResponse {
     private Context context;
 
@@ -82,6 +86,14 @@ public class SocketResponse {
         Gson gson = new Gson();
         LoadActivity.currentAccount = gson.fromJson(account, Account.class);
         Log.d("debugAcc", LoadActivity.currentAccount.toString());
+    }
+
+    public void onlineUsers(String userIdList) {
+        String trimmedString = userIdList.replaceAll("\\[|\\]|\\s", "");
+        LoadActivity.idList = Arrays.stream(trimmedString.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        Log.d("debugUserOnl", userIdList);
         Intent mainActivity = new Intent(context, MainActivity.class);
         context.startActivity(mainActivity);
     }

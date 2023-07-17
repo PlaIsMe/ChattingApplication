@@ -21,6 +21,14 @@ public class User {
     private Bitmap downloadAvatar;
     private String gender;
     private List<ChatRoom> chatRooms;
+    private boolean isOnline;
+    public boolean isOnline() {
+        return isOnline;
+    }
+
+    public void setOnline(boolean online) {
+        isOnline = online;
+    }
 
     public List<ChatRoom> getChatRooms() {
         return chatRooms;

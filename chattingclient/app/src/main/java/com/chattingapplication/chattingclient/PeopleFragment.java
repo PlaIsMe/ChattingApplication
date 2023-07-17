@@ -46,6 +46,9 @@ public class PeopleFragment extends Fragment {
     private ListView listViewPeople;
     private MainActivity mainActivity;
 
+    public static UserAdapter userAdapter;
+
+
     public PeopleFragment() {
         // Required empty public constructor
     }
@@ -70,7 +73,7 @@ public class PeopleFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_people, container, false);
         listViewPeople = view.findViewById(R.id.listViewPeople);
-        UserAdapter userAdapter = new UserAdapter(mainActivity.getApplicationContext(), MainActivity.listPeople);
+        userAdapter = new UserAdapter(mainActivity.getApplicationContext(), MainActivity.listPeople);
         listViewPeople.setAdapter(userAdapter);
         listViewPeople.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

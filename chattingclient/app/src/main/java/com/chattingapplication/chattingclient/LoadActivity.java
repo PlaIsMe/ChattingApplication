@@ -33,6 +33,7 @@ public class LoadActivity extends AppCompatActivity {
     public static SharedPreferences preferencesAccount;
     private SocketResponse responseFunction;
     public static List<User> listPeople;
+    public static List<Long> idList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +44,10 @@ public class LoadActivity extends AppCompatActivity {
         preferencesAccount = getSharedPreferences("account", MODE_PRIVATE);
         currentContext = this;
 //
-//        IP = Utils.getIpV4(this, "my_ipv4.json");
-//        apiUrl = String.format("http://%s:8080/api/", IP);
-        IP = "34.128.120.19";
-        apiUrl = String.format("http://%s:8080/api/", "34.101.122.109");
+        IP = Utils.getIpV4(this, "my_ipv4.json");
+        apiUrl = String.format("http://%s:8080/api/", IP);
+//        IP = "34.128.120.19";
+//        apiUrl = String.format("http://%s:8080/api/", "34.101.122.109");
         init();
         progressBar.setVisibility(View.VISIBLE);
         ConnectTask connectTask = new ConnectTask(this);

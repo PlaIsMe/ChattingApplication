@@ -67,4 +67,9 @@ public class UserController {
         System.out.println("=====================================\nUSER" + user);
         return uploadFileService.uploadAvatar(id, user);
     }
+
+    @GetMapping(path = "/search/{keyword}")
+    public List<User> searchUser(@PathVariable(name = "keyword") String keyword) throws Exception {
+        return userService.searchUser(keyword);
+    }
 }

@@ -45,6 +45,7 @@ public class MessageServiceImpl implements MessageService {
                     message.getUser().getFirstName(),
                     message.getUser().getLastName(),
                     message.getUser().getGender(),
+                    message.getUser().getAvatar(),
                     message.getUser().getDob()
                 )
             )).collect(Collectors.toList());

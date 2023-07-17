@@ -2,15 +2,18 @@ package com.chattingapplication.chattingclient.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chattingapplication.chattingclient.AsyncTask.DownloadFromURLTask;
+import com.chattingapplication.chattingclient.LoadActivity;
 import com.chattingapplication.chattingclient.Model.User;
 import com.chattingapplication.chattingclient.R;
 
@@ -65,6 +68,12 @@ public class UserAdapter extends BaseAdapter {
             avatar.setImageBitmap(currentUser.getDownloadAvatar());
         }
 
+        if (LoadActivity.idList.contains(currentUser.getId())) {
+            ImageView status = convertView.findViewById(R.id.activeStatus);
+            status.setImageResource(R.drawable.online);
+        }
+
         return convertView;
     }
+
 }

@@ -47,11 +47,12 @@ public class User {
         this.chatRooms = chatRooms;
     }
 
-    public User(Long id, String firstName, String lastName, String gender, LocalDateTime dob) {
+    public User(Long id, String firstName, String lastName, String gender, String avatar, LocalDateTime dob) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
         this.gender = gender;
+        this.avatar = avatar;
         this.dob = dob;
     }
 }

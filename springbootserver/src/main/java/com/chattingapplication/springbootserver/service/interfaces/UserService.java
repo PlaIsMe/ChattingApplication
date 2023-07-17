@@ -14,4 +14,6 @@ public interface UserService {
   User updateUser(Long userId, User user) throws Exception;
 
   User getUserById(Long userId) throws Exception;
+
+  List<User> searchUser(String keyword) throws Exception;
 }

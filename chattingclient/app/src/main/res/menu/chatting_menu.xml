@@ -9,5 +9,6 @@
         android:id="@+id/searchBar"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"
         android:title="Search" />
 </menu>

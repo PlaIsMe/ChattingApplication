@@ -1,5 +1,6 @@
 com\chattingapplication\model\User.class
 com\chattingapplication\model\ChatRoom.class
+com\chattingapplication\service\ServerService$1.class
 com\chattingapplication\service\ClientHandleService.class
 com\chattingapplication\model\Request.class
 com\chattingapplication\service\ServerService.class
