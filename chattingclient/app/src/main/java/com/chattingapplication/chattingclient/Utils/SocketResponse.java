@@ -90,9 +90,11 @@ public class SocketResponse {
 
     public void onlineUsers(String userIdList) {
         String trimmedString = userIdList.replaceAll("\\[|\\]|\\s", "");
-        LoadActivity.idList = Arrays.stream(trimmedString.split(","))
-                .map(Long::parseLong)
-                .collect(Collectors.toList());
+        if (!trimmedString.equals("")) {
+            LoadActivity.idList = Arrays.stream(trimmedString.split(","))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+        }
         Log.d("debugUserOnl", userIdList);
         Intent mainActivity = new Intent(context, MainActivity.class);
         context.startActivity(mainActivity);
