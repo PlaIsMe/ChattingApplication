@@ -76,7 +76,7 @@ public class ServerService {
         Message message = gson.fromJson(messageJson, Message.class);
         clientHandlers.stream()
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
-        c.getClientAccount().getUser() != null &&
+        c.getClientAccount() != null && c.getClientAccount().getUser() != null &&
         c.getClientAccount().getUser().getChatRooms().contains(message.getChatRoom()))
         .forEach(client -> {
             socketSend(client, "chattingResponse", messageJson);
@@ -97,17 +97,21 @@ public class ServerService {
         Gson gson = new Gson();
         clientHandlers.stream()
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
-        c.getClientAccount().getUser() != null)
+         c.getClientAccount() != null && c.getClientAccount().getUser() != null)
         .forEach(client -> {
             socketSend(client, (isOnline ? "updateOnlineUser": "updateOfflineUser"), gson.toJson(clientHandleService.getClientAccount().getUser().getId()));
         });
+    }
+
+    public static void logOut(ClientHandleService clientHandleService, String emptyJson) {
+        realTimeActiveStatus(clientHandleService, false);
     }
 
     public static void onlineClient(ClientHandleService clientHandleService) {
         Gson gson = new Gson();
         List<Long> onlineUsers = clientHandlers.stream()
         .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
-        c.getClientAccount().getUser() != null)
+        c.getClientAccount() != null && c.getClientAccount().getUser() != null)
         .map(client -> client.getClientAccount().getUser().getId())
         .collect(Collectors.toList());
         socketSend(clientHandleService, "onlineUsers", gson.toJson(onlineUsers));

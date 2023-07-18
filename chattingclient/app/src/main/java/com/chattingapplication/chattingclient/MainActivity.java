@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.chattingapplication.chattingclient.AsyncTask.GetRequestTask;
+import com.chattingapplication.chattingclient.AsyncTask.SendTask;
 import com.chattingapplication.chattingclient.Model.User;
 import com.chattingapplication.chattingclient.Service.NotificationChannels;
 import com.chattingapplication.chattingclient.Utils.HttpResponse;
@@ -118,6 +119,8 @@ public class MainActivity extends AppCompatActivity {
             SharedPreferences.Editor editorCheck = LoadActivity.preferencesCheck.edit();
             editorCheck.putString("check", "false");
             editorCheck.apply();
+            SendTask sendTask = new SendTask();
+            sendTask.execute("logOut", "");
             Intent authenticationActivity = new Intent(this, AuthenticationActivity.class);
             startActivity(authenticationActivity);
             this.finish();
