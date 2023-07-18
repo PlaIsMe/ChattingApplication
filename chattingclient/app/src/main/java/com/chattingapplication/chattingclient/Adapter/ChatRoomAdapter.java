@@ -71,13 +71,9 @@ public class ChatRoomAdapter extends BaseAdapter {
             avatar.setImageBitmap(currentChatRoom.getTargetUser().getDownloadAvatar());
         }
 
-        try {
-            if (LoadActivity.idList.contains(currentChatRoom.getTargetUser().getId())) {
-                ImageView status = convertView.findViewById(R.id.activeStatus);
-                status.setImageResource(R.drawable.online);
-            }
-        } catch (NullPointerException e) {
-
+        if (LoadActivity.idList.contains(currentChatRoom.getTargetUser().getId())) {
+            ImageView status = convertView.findViewById(R.id.activeStatus);
+            status.setImageResource(R.drawable.online);
         }
         return convertView;
     }

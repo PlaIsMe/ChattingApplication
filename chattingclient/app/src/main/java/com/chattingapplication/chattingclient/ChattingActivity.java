@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Debug;
@@ -37,6 +38,7 @@ public class ChattingActivity extends AppCompatActivity {
     private Fragment chattingFragment;
     private boolean isRoomAvailable = true;
     private int pos;
+    public static ActionBar actionBar;
 
     public void setCurrentChatRoom(ChatRoom currentChatRoom) {
         this.currentChatRoom = currentChatRoom;
@@ -91,8 +93,10 @@ public class ChattingActivity extends AppCompatActivity {
             String path = String.format("chat_room/%s/%s/true", LoadActivity.currentAccount.getUser().getId(), targetUser.getId());
             getRequestTask.execute(path, "joinPrivateRoom");
         }
+    }
 
-        ActionBar actionBar = getSupportActionBar();
+    public void init() {
+        actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayUseLogoEnabled(true);
 //        actionBar.setTitle(String.format("%s %s", targetUser.getFirstName(), targetUser.getLastName()));
@@ -104,6 +108,10 @@ public class ChattingActivity extends AppCompatActivity {
             new DownloadFromURLTask(targetUser, imageView);
         } else {
             imageView.setImageBitmap(targetUser.getDownloadAvatar());
+        }
+        if (LoadActivity.idList.contains(currentChatRoom.getTargetUser().getId())) {
+            ImageView status = customView.findViewById(R.id.chatRoomStatus);
+            status.setImageResource(R.drawable.online);
         }
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(customView);

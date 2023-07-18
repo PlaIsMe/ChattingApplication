@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 public class LoadActivity extends AppCompatActivity {
@@ -33,7 +34,7 @@ public class LoadActivity extends AppCompatActivity {
     public static SharedPreferences preferencesAccount;
     private SocketResponse responseFunction;
     public static List<User> listPeople;
-    public static List<Long> idList;
+    public static List<Long> idList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

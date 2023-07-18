@@ -91,7 +91,7 @@ public class ClientHandleService implements Runnable {
                 }
             }
         }
-        System.out.printf("%s %s disconnected", this.clientAccount.getUser().getFirstName(), this.clientAccount.getUser().getLastName());
+        ServerService.realTimeActiveStatus(this, false);
         ServerService.removeClient(this);
     }
 }

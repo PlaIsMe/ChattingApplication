@@ -141,6 +141,7 @@ public class HttpResponse {
         } else if (responseCode == 500) {
             ((ChattingActivity) activity).setRoomAvailable(false);
         }
+        ((ChattingActivity) activity).init();
     }
 
     public void loadMessage(int responseCode, String jsonString) throws JSONException {

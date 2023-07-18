@@ -3,6 +3,10 @@ package com.chattingapplication.chattingclient.Utils;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
+import androidx.appcompat.app.ActionBar;
 
 import com.chattingapplication.chattingclient.ChatRoomFragment;
 import com.chattingapplication.chattingclient.ChattingActivity;
@@ -12,6 +16,9 @@ import com.chattingapplication.chattingclient.MainActivity;
 import com.chattingapplication.chattingclient.Model.Account;
 import com.chattingapplication.chattingclient.Model.ChatRoom;
 import com.chattingapplication.chattingclient.Model.Message;
+import com.chattingapplication.chattingclient.Model.User;
+import com.chattingapplication.chattingclient.PeopleFragment;
+import com.chattingapplication.chattingclient.R;
 import com.google.gson.Gson;
 
 import com.chattingapplication.chattingclient.Service.NotificationService;
@@ -95,8 +102,70 @@ public class SocketResponse {
                     .map(Long::parseLong)
                     .collect(Collectors.toList());
         }
-        Log.d("debugUserOnl", userIdList);
+        Log.d("debugUserOnl", LoadActivity.idList.toString());
         Intent mainActivity = new Intent(context, MainActivity.class);
         context.startActivity(mainActivity);
+    }
+
+    public void updateOnlineUser(String userId) {
+        Long onlineUserId = Long.parseLong(userId);
+        LoadActivity.idList.add(onlineUserId);
+        Log.d("debugUserOnl", LoadActivity.idList.toString());
+        if (context instanceof ChattingActivity) {
+            if (((ChattingActivity) context).getCurrentChatRoom().getTargetUser().getId().equals(onlineUserId)) {
+                ((ChattingActivity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        View customView = ChattingActivity.actionBar.getCustomView();
+                        ImageView status = customView.findViewById(R.id.chatRoomStatus);
+                        status.setImageResource(R.drawable.online);
+                        ChattingActivity.actionBar.setCustomView(customView);
+                    }
+                });
+            }
+        } else if (context instanceof MainActivity) {
+            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+                        PeopleFragment.userAdapter.notifyDataSetChanged();
+                    } catch (NullPointerException e) {
+
+                    }
+                }
+            });
+        }
+    }
+
+    public void updateOfflineUser(String userId) {
+        Long offlineUserId = Long.parseLong(userId);
+        LoadActivity.idList.remove(offlineUserId);
+        Log.d("debugUserOnl", LoadActivity.idList.toString());
+        if (context instanceof ChattingActivity) {
+            if (((ChattingActivity) context).getCurrentChatRoom().getTargetUser().getId().equals(offlineUserId)) {
+                ((ChattingActivity) context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        View customView = ChattingActivity.actionBar.getCustomView();
+                        ImageView status = customView.findViewById(R.id.chatRoomStatus);
+                        status.setImageResource(R.drawable.circle);
+                        ChattingActivity.actionBar.setCustomView(customView);
+                    }
+                });
+            }
+        } else if (context instanceof MainActivity) {
+            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+                        PeopleFragment.userAdapter.notifyDataSetChanged();
+                    } catch (NullPointerException e) {
+
+                    }
+                }
+            });
+        }
     }
 }

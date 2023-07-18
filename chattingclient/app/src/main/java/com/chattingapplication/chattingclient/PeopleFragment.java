@@ -80,6 +80,7 @@ public class PeopleFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Gson gson = new Gson();
                 User clickedUser = (User) listViewPeople.getItemAtPosition(position);
+                Log.d("debugClickedUser", clickedUser.toString());
                 Intent chattingActivity = new Intent(((MainActivity) mainActivity).getApplicationContext(), ChattingActivity.class);
                 chattingActivity.putExtra("targetUser",gson.toJson(clickedUser));
                 startActivity(chattingActivity);

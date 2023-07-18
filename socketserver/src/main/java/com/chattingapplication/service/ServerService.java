@@ -90,6 +90,17 @@ public class ServerService {
         System.out.printf("DEBUG: %s\n", clientHandleService.getClientAccount().toString());
         socketSend(clientHandleService, "updateResponse", gson.toJson(clientHandleService.getClientAccount()));
         onlineClient(clientHandleService);
+        realTimeActiveStatus(clientHandleService, true);
+    }
+
+    public static void realTimeActiveStatus(ClientHandleService clientHandleService, boolean isOnline) {
+        Gson gson = new Gson();
+        clientHandlers.stream()
+        .filter(c -> c.getClientSocket() != clientHandleService.getClientSocket() &&
+        c.getClientAccount().getUser() != null)
+        .forEach(client -> {
+            socketSend(client, (isOnline ? "updateOnlineUser": "updateOfflineUser"), gson.toJson(clientHandleService.getClientAccount().getUser().getId()));
+        });
     }
 
     public static void onlineClient(ClientHandleService clientHandleService) {
