@@ -1,5 +1,0 @@
-# Created at 2023-07-18T11:29:56.958
-Boot Manifest-JAR contains absolute paths in classpath 'E:\HocTap\Nam_3\Hoc_ki_3\LapTrinhMobile\ChatApplication\springbootserver\target\test-classes'
-Hint: <argLine>-Djdk.net.URLClassPath.disableClassPathURLCheck=true</argLine>
-'other' has different root
-

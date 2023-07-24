@@ -95,20 +95,20 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chatting_menu, menu);
 
-        MenuItem menuItem = menu.findItem(R.id.searchBar);
-        SearchView searchView = (SearchView) menuItem.getActionView();
-        searchView.setQueryHint("Type user name");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
+//        MenuItem menuItem = menu.findItem(R.id.searchBar);
+//        SearchView searchView = (SearchView) menuItem.getActionView();
+//        searchView.setQueryHint("Type user name");
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
         return super.onCreateOptionsMenu(menu);
     }
 

@@ -134,11 +134,13 @@ public class HttpResponse {
     public void joinPrivateRoom(int responseCode, String jsonString) {
         Gson gson = new Gson();
         if (responseCode == 200) {
+            Log.d("debugJoinPrivateRoom", "200");
             ((ChattingActivity) activity).setCurrentChatRoom(gson.fromJson(jsonString, ChatRoom.class));
             ((ChattingActivity) activity).setRoomAvailable(true);
             GetRequestTask getRequestTask = new GetRequestTask(new HttpResponse(activity));
             getRequestTask.execute(String.format("message/%s", ((ChattingActivity) activity).getCurrentChatRoom().getId()), "loadMessage", "ChattingFragment", "ChattingActivity");
         } else if (responseCode == 500) {
+            Log.d("debugJoinPrivateRoom", "500");
             ((ChattingActivity) activity).setRoomAvailable(false);
         }
         ((ChattingActivity) activity).init();
