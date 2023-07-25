@@ -2,4 +2,16 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="grey">#868686</color>
+
+    <color name="loginPurple">#8D72E1</color>
+    <color name="loginBlue">#8D9EFF</color>
+    <color name="navPurple">#DCD3FF</color>
+    <color name="navBlue">#B9E0FF</color>
+    <color name="otherChatOrange">#FBCDAB</color>
+    <color name="myChatYellow">#FDFF8E</color>
+
+    <color name="green">#05FE00</color>
+    <color name="red">#FF0000</color>
+    <color name="lightRed">#FF5151</color>
 </resources>
