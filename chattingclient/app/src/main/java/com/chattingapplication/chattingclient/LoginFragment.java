@@ -8,10 +8,12 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,6 +40,7 @@ import org.json.JSONObject;
 public class LoginFragment extends Fragment {
     private AuthenticationActivity authenticationActivity;
     private CheckBox remember;
+    private View main_content;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -65,6 +68,26 @@ public class LoginFragment extends Fragment {
         TextView txtInformRegister = (TextView) view.findViewById(R.id.txtInformRegister);
         Button btnLogin = (Button) view.findViewById(R.id.btnLogin);
         remember = view.findViewById(R.id.cbRememberMeLogin);
+
+//        LINH: animation when open
+        main_content = (View) view.findViewById(R.id.main_content);
+        main_content.setVisibility(View.INVISIBLE);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                main_content.setVisibility(View.VISIBLE);
+                TranslateAnimation animate = new TranslateAnimation(
+                        0,
+                        0,
+                        main_content.getHeight(),
+                        0
+                );
+                animate.setDuration(500);
+                animate.setFillAfter(true);
+                main_content.startAnimation(animate);
+            }
+        }, 1000);
 
         txtInformRegister.setOnClickListener(new View.OnClickListener() {
             @Override
