@@ -15,6 +15,5 @@
 local.properties
 /app/src/main/assets/my_ipv4.json
 
-/.idea/deploymentTargetDropDown.xml
-/.idea/misc.xml
+/.idea/
 /app/build.gradle
