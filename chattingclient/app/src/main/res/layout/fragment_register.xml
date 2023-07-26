@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/registerContainer"
@@ -7,64 +7,90 @@
     android:layout_height="match_parent"
     tools:context=".RegisterFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/txt_app_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:text="OU Messenger"
+        android:textColor="@color/loginPurple"
+        android:textSize="34sp"
+        android:textStyle="bold" />
+
+    <RelativeLayout
         android:id="@+id/main_content_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <EditText
-            android:id="@+id/editTxtEmailRegister"
-            android:layout_width="wrap_content"
+        android:layout_height="550dp"
+        android:background="@drawable/purple_rounded_card"
+        android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Email"
-            android:inputType="text"
-            android:text=""
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:padding="24dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                app:hintTextColor="@color/white"
+                app:startIconDrawable="@drawable/ic_email">
 
-        <EditText
-            android:id="@+id/editTxtPasswordRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:text=""
-            app:layout_constraintEnd_toEndOf="@+id/editTxtEmailRegister"
-            app:layout_constraintStart_toStartOf="@+id/editTxtEmailRegister"
-            app:layout_constraintTop_toBottomOf="@+id/editTxtEmailRegister" />
+                <EditText
+                    android:id="@+id/editTxtEmailRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/input_box_element"
+                    android:hint="Email"
+                    android:maxLines="1"
+                    android:textSize="20sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                app:hintTextColor="@color/white"
+                app:passwordToggleEnabled="true"
+                app:startIconDrawable="@drawable/ic_pass">
 
-        <Button
-            android:id="@+id/btnRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="64dp"
-            android:text="Register"
-            app:layout_constraintEnd_toEndOf="@+id/editTxtPasswordRegister"
-            app:layout_constraintStart_toStartOf="@+id/editTxtPasswordRegister"
-            app:layout_constraintTop_toBottomOf="@+id/editTxtPasswordRegister" />
+                <EditText
+                    android:id="@+id/editTxtPasswordRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/input_box_element"
+                    android:layout_marginTop="24dp"
+                    android:maxLines="1"
+                    android:inputType="textPassword"
+                    android:textSize="20sp"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <TextView
+                android:id="@+id/txt_error"
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/red"
+                android:gravity="center"
+                android:text=""/>
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/input_box_element"
+                android:text="Register"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
 
-        <TextView
-            android:id="@+id/txtInformLogin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Already have an account? Login now"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/editTxtPasswordRegister"
-            app:layout_constraintStart_toStartOf="@+id/editTxtPasswordRegister"
-            app:layout_constraintTop_toBottomOf="@+id/btnRegister" />
-
-        <CheckBox
-            android:id="@+id/cbRememberMeRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remember me"
-            app:layout_constraintBottom_toTopOf="@+id/btnRegister"
-            app:layout_constraintStart_toStartOf="@+id/editTxtPasswordRegister"
-            app:layout_constraintTop_toBottomOf="@+id/editTxtPasswordRegister" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+            <TextView
+                android:id="@+id/txtInformLogin"
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Already have an account? Login now" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>
