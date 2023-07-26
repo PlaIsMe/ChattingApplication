@@ -2,7 +2,16 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.ChattingApplication" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/loginPurple</item>
+        <item name="colorAccent">@color/white</item>
+
+        <!-- Custom font -->
+        <item name="fontFamily">@font/worksans</item>
+    </style>
+
+    <style name="Theme.Design.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
 
         <!-- Custom font -->
         <item name="fontFamily">@font/worksans</item>
