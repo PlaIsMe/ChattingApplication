@@ -79,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="18dp"
-                android:text=" Error!"
+                android:text="Error!"
                 android:textColor="@color/red"
                 android:textSize="18sp"
                 android:visibility="gone" />
@@ -101,7 +101,7 @@
                 android:layout_marginTop="8px"
                 android:clickable="true"
                 android:text="New user? Register now"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>
