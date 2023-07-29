@@ -3,20 +3,18 @@ package com.chattingapplication.chattingclient.AsyncTask;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 
+import com.chattingapplication.chattingclient.AuthenticationActivity;
 import com.chattingapplication.chattingclient.LoadActivity;
+import com.chattingapplication.chattingclient.R;
+import com.chattingapplication.chattingclient.Utils.HttpResponse;
 
-import java.io.BufferedInputStream;
+import org.json.JSONObject;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -37,6 +35,9 @@ public class UploadFileTask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         try {
+            if(uri == null){
+                return null;
+            }
             URL apiUrl = new URL(LoadActivity.apiUrl + params[0]);
             HttpURLConnection connection = (HttpURLConnection) apiUrl.openConnection();
 

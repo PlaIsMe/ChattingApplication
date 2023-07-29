@@ -43,7 +43,7 @@ import java.nio.file.Files;
 public class SubRegisterFragment extends Fragment {
     private AuthenticationActivity authenticationActivity;
     private static final int REQUEST_IMAGE_SELECT = 100;
-    private Uri uploadAvatar;
+    private Uri uploadAvatar = null;
     private ImageView userAvatar;
     public SubRegisterFragment() {
         // Required empty public constructor
@@ -79,18 +79,19 @@ public class SubRegisterFragment extends Fragment {
                 EditText editTxtGender = (EditText) view.findViewById(R.id.editTxtGender);
 
                 PatchRequestTask patchRequestTask = new PatchRequestTask(new HttpResponse(authenticationActivity));
-                UploadFileTask uploadFileTask = new UploadFileTask(getContext(), uploadAvatar);
                 String path = String.format("user/%s", LoadActivity.currentAccount.getUser().getId());
                 String uploadAvatarPath = "user/upload_avatar/" + LoadActivity.currentAccount.getUser().getId();
+                UploadFileTask uploadFileTask = new UploadFileTask(getContext(), uploadAvatar);
 
-                Log.d("AvatarURI", uploadAvatar.getPath());
-                File file = new File(uploadAvatar.getPath());
-                Log.d("AvatarURI", file.getName());
-
-                try {
-                    uploadFileTask.execute(uploadAvatarPath, file.getName());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
+                if(uploadAvatar != null){
+                    Log.d("AvatarURI", uploadAvatar.getPath());
+                    File file = new File(uploadAvatar.getPath());
+                    Log.d("AvatarURI", file.getName());
+                    try {
+                        uploadFileTask.execute(uploadAvatarPath, file.getName());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
 
                 try {
