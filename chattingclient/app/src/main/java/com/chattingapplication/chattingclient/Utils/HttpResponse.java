@@ -74,7 +74,7 @@ public class HttpResponse {
 
     public void registerResponse(int responseCode, String jsonResponse) {
         Gson gson = new Gson();
-        CheckBox remember = activity.findViewById(R.id.cbRememberMeRegister);
+        CheckBox remember = activity.findViewById(R.id.cbRememberMeLogin);
         if (responseCode == 200) {
             if (remember.isChecked()) {
                 SharedPreferences.Editor editorCheck = LoadActivity.preferencesCheck.edit();
