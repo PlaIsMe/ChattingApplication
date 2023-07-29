@@ -74,17 +74,17 @@ public class HttpResponse {
 
     public void registerResponse(int responseCode, String jsonResponse) {
         Gson gson = new Gson();
-        CheckBox remember = activity.findViewById(R.id.cbRememberMeRegister);
+//        CheckBox remember = activity.findViewById(R.id.cbRememberMeRegister);
         if (responseCode == 200) {
-            if (remember.isChecked()) {
-                SharedPreferences.Editor editorCheck = LoadActivity.preferencesCheck.edit();
-                editorCheck.putString("check", "true");
-                editorCheck.apply();
-
-                SharedPreferences.Editor editorAccount = LoadActivity.preferencesAccount.edit();
-                editorAccount.putString("account", jsonResponse);
-                editorAccount.apply();
-            }
+//            if (remember.isChecked()) {
+//                SharedPreferences.Editor editorCheck = LoadActivity.preferencesCheck.edit();
+//                editorCheck.putString("check", "true");
+//                editorCheck.apply();
+//
+//                SharedPreferences.Editor editorAccount = LoadActivity.preferencesAccount.edit();
+//                editorAccount.putString("account", jsonResponse);
+//                editorAccount.apply();
+//            }
             LoadActivity.currentAccount = gson.fromJson(jsonResponse, Account.class);
             ((AuthenticationActivity) activity).swapFragment(R.id.fragmentContainerAuthentication, ((AuthenticationActivity) activity).getSubRegisterFragment());
         } else {
