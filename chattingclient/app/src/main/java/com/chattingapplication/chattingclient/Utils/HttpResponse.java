@@ -143,5 +143,6 @@ public class HttpResponse {
         ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).setListMessages(gson.fromJson(jsonArray.toString(), userListType));
         ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).setAdapter(new MessageAdapter((ChattingActivity) activity, activity.getApplicationContext(), ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getListMessages()));
         ((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getListViewMessage().setAdapter(((ChattingFragment) (((ChattingActivity) activity).getChattingFragment())).getAdapter());
+        ((ChattingActivity) activity).init();
     }
 }
