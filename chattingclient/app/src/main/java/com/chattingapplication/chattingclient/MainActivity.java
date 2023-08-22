@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
 //        actionBar.setLogo(R.drawable.default_avatar);
 //        Drawable drawable = new BitmapDrawable()
         actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setElevation(0);
         actionBar.setTitle(String.format("%s %s",
                 LoadActivity.currentAccount.getUser().getFirstName(),
                 LoadActivity.currentAccount.getUser().getLastName()));

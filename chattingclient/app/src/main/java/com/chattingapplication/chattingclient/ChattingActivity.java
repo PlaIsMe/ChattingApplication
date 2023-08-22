@@ -99,6 +99,7 @@ public class ChattingActivity extends AppCompatActivity {
         actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
         actionBar.setDisplayUseLogoEnabled(true);
+        actionBar.setElevation(0);
 //        actionBar.setTitle(String.format("%s %s", targetUser.getFirstName(), targetUser.getLastName()));
         View customView = getLayoutInflater().inflate(R.layout.chat_room_menu, null);
         TextView fullName = customView.findViewById(R.id.chatRoomFullName);
