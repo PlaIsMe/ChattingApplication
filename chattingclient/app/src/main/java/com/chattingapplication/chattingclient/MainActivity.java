@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 
@@ -60,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayout linearLayoutChats = findViewById(R.id.linearLayoutChats);
         LinearLayout linearLayoutPeople = findViewById(R.id.linearLayoutPeople);
+        ImageView view = findViewById(R.id.imageViewChats);
+        view.setImageResource(R.drawable.chats);
         fragmentManager = getSupportFragmentManager();
         chatRoomFragment = fragmentManager.findFragmentById(R.id.fragmentContainerViewMainMenu);
         linearLayoutChats.setOnClickListener(new View.OnClickListener() {
@@ -85,9 +88,11 @@ public class MainActivity extends AppCompatActivity {
 //        actionBar.setLogo(R.drawable.default_avatar);
 //        Drawable drawable = new BitmapDrawable()
         actionBar.setDisplayUseLogoEnabled(true);
-        actionBar.setTitle(String.format("%s %s",
-                LoadActivity.currentAccount.getUser().getFirstName(),
-                LoadActivity.currentAccount.getUser().getLastName()));
+        actionBar.setElevation(0);
+//        actionBar.setTitle(String.format("%s %s",
+//                LoadActivity.currentAccount.getUser().getFirstName(),
+//                LoadActivity.currentAccount.getUser().getLastName()));
+        actionBar.setTitle("Chats");
     }
 
     @Override

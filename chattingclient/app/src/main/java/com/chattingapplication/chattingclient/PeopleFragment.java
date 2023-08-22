@@ -75,6 +75,13 @@ public class PeopleFragment extends Fragment {
         listViewPeople = view.findViewById(R.id.listViewPeople);
         userAdapter = new UserAdapter(mainActivity.getApplicationContext(), MainActivity.listPeople);
         listViewPeople.setAdapter(userAdapter);
+
+        ImageView peopleImageView = mainActivity.findViewById(R.id.imageViewPeople);
+        peopleImageView.setImageResource(R.drawable.people);
+        ImageView chatsImageView = mainActivity.findViewById(R.id.imageViewChats);
+        chatsImageView.setImageResource(R.drawable.chats_grey);
+        mainActivity.getSupportActionBar().setTitle("Contacts");
+
         listViewPeople.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
