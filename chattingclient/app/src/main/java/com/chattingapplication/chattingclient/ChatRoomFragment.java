@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.chattingapplication.chattingclient.Adapter.ChatRoomAdapter;
 import com.chattingapplication.chattingclient.Adapter.UserAdapter;
@@ -65,6 +67,12 @@ public class ChatRoomFragment extends Fragment {
         listViewChatRoom = view.findViewById(R.id.listChatRoom);
         listViewChatRoom.setAdapter(chatRoomAdapter);
         chatRoomAdapter.notifyDataSetChanged();
+
+        ImageView peopleImageView = mainActivity.findViewById(R.id.imageViewPeople);
+        peopleImageView.setImageResource(R.drawable.people_grey);
+        ImageView chatsImageView = mainActivity.findViewById(R.id.imageViewChats);
+        chatsImageView.setImageResource(R.drawable.chats);
+        mainActivity.getSupportActionBar().setTitle("Chats");
 
         listViewChatRoom.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
