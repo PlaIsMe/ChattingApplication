@@ -10,8 +10,8 @@
     </style>
 
     <style name="Theme.Design.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+<!--        <item name="windowActionBar">false</item>-->
+<!--        <item name="windowNoTitle">true</item>-->
 
         <!-- Custom font -->
         <item name="fontFamily">@font/worksans</item>
