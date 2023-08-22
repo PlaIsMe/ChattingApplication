@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 public class RequestService {
-//     static String apiUrl = "http://34.126.147.155:8080/api/";
-static String apiUrl = "http://localhost:8080/api/";
+    static String apiUrl = "http://34.118.232.203:8080/api/";
+// static String apiUrl = "http://localhost:8080/api/";
     
     public static String getRequest(String path) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
