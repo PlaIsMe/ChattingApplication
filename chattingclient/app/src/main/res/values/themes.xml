@@ -11,6 +11,12 @@
 
         <!-- Custom font -->
         <item name="fontFamily">@font/worksans</item>
+        <item name="android:titleTextAppearance">@style/TextAppearance.AppCompat.Widget.ActionBar.Title</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.Widget.ActionBar.Title" parent="@android:style/TextAppearance">
+        <item name="android:textSize">80px</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Theme.Design.NoActionBar">

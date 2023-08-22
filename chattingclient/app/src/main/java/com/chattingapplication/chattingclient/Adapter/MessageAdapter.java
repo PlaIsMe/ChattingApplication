@@ -62,19 +62,19 @@ public class MessageAdapter extends BaseAdapter {
         }
         Message currentMessage = (Message) getItem(position);
         TextView txtContent = (TextView) convertView.findViewById(R.id.txtMessageContent);
-        ImageView img = (ImageView) convertView.findViewById(R.id.imgUserAvatar);
+//        ImageView img = (ImageView) convertView.findViewById(R.id.imgUserAvatar);
         txtContent.setText(currentMessage.getContent());
 //        img.setImageResource(currentMessage.getUser().getAvatar());
-        if(img != null && targetUser != null){
-            if(targetUser.getDownloadAvatar() == null){
-                if(targetUser.getAvatar() == null || targetUser.getAvatar().isEmpty()){
-                    targetUser.setAvatar(context.getResources().getString(R.string.default_avatar_url));
-                }
-                new DownloadFromURLTask(targetUser, img).execute(targetUser.getAvatar());
-            } else {
-                img.setImageBitmap(targetUser.getDownloadAvatar());
-            }
-        }
+//        if(img != null && targetUser != null){
+//            if(targetUser.getDownloadAvatar() == null){
+//                if(targetUser.getAvatar() == null || targetUser.getAvatar().isEmpty()){
+//                    targetUser.setAvatar(context.getResources().getString(R.string.default_avatar_url));
+//                }
+//                new DownloadFromURLTask(targetUser, img).execute(targetUser.getAvatar());
+//            } else {
+//                img.setImageBitmap(targetUser.getDownloadAvatar());
+//            }
+//        }
         return convertView;
     }
 

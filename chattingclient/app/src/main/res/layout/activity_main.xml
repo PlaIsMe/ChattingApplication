@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
 <!--    <SearchView-->
@@ -28,58 +29,67 @@
 
     <!--    </LinearLayout>-->
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20px"
-        android:orientation="horizontal"
-        android:background="@color/loginBlue">
-
-
-        <LinearLayout
-            android:id="@+id/linearLayoutChats"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:onClick="handleSwapFragment">
-
-            <ImageView
-                android:id="@+id/imageViewChats"
-                android:layout_width="50px"
-                android:layout_height="50px"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/chats_grey" />
-
-            <TextView
-                android:id="@+id/txtChats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="Chats" />
-        </LinearLayout>
+        app:cardCornerRadius="100dp"
+        android:layout_margin="20dp"
+        app:cardPreventCornerOverlap="false"
+        app:cardBackgroundColor="#D3D3D3">
 
         <LinearLayout
-            android:id="@+id/linearLayoutPeople"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:onClick="handleSwapFragment">
+            android:layout_height="wrap_content"
+            android:padding="20px"
+            android:orientation="horizontal"
+            android:background="@color/loginBlue">
 
-            <ImageView
-                android:id="@+id/imageViewPeople"
-                android:layout_width="50px"
-                android:layout_height="50px"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/people_grey" />
 
-            <TextView
-                android:id="@+id/txtPeople"
+            <LinearLayout
+                android:id="@+id/linearLayoutChats"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:text="People" />
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:onClick="handleSwapFragment">
+
+                <ImageView
+                    android:id="@+id/imageViewChats"
+                    android:layout_width="50px"
+                    android:layout_height="50px"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/chats_grey" />
+
+                <TextView
+                    android:id="@+id/txtChats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="Chats" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearLayoutPeople"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:onClick="handleSwapFragment">
+
+                <ImageView
+                    android:id="@+id/imageViewPeople"
+                    android:layout_width="50px"
+                    android:layout_height="50px"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/people_grey" />
+
+                <TextView
+                    android:id="@+id/txtPeople"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:text="Contacts" />
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>
