@@ -1,7 +1,7 @@
 ### Spring boot ###
-# ./springbootserver/target/
-# !**/src/main/**/target/
-# !**/src/test/**/target/
+./springbootserver/target/
+!**/src/main/**/target/
+!**/src/test/**/target/
 
 # Compiled class file
 *.class
@@ -16,7 +16,7 @@
 .mtj.tmp/
 
 # Package Files #
-# *.jar
+*.jar
 *.war
 *.nar
 *.ear

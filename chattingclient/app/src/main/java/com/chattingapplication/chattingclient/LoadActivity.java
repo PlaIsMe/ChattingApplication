@@ -47,8 +47,8 @@ public class LoadActivity extends AppCompatActivity {
 //
 //        IP = Utils.getIpV4(this, "my_ipv4.json");
 //        apiUrl = String.format("http://%s:8080/api/", IP);
-        IP = "34.87.94.38";
-        apiUrl = String.format("http://%s:8080/api/", "34.126.147.155");
+        IP = "34.101.218.243";
+        apiUrl = String.format("http://%s:8080/api/", "34.128.104.216");
         init();
         progressBar.setVisibility(View.VISIBLE);
         ConnectTask connectTask = new ConnectTask(this);
