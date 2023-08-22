@@ -109,10 +109,10 @@ public class ChattingActivity extends AppCompatActivity {
         } else {
             imageView.setImageBitmap(targetUser.getDownloadAvatar());
         }
-        if (LoadActivity.idList.contains(targetUser.getId())) {
-            ImageView status = customView.findViewById(R.id.chatRoomStatus);
-            status.setImageResource(R.drawable.online);
-        }
+//        if (LoadActivity.idList.contains(targetUser.getId())) {
+//            ImageView status = customView.findViewById(R.id.chatRoomStatus);
+//            status.setImageResource(R.drawable.online);
+//        }
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(customView);
         actionBar.setDisplayHomeAsUpEnabled(true);

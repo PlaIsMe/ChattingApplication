@@ -96,76 +96,76 @@ public class SocketResponse {
     }
 
     public void onlineUsers(String userIdList) {
-        String trimmedString = userIdList.replaceAll("\\[|\\]|\\s", "");
-        if (!trimmedString.equals("")) {
-            LoadActivity.idList = Arrays.stream(trimmedString.split(","))
-                    .map(Long::parseLong)
-                    .collect(Collectors.toList());
-        }
-        Log.d("debugUserOnl", LoadActivity.idList.toString());
+//        String trimmedString = userIdList.replaceAll("\\[|\\]|\\s", "");
+//        if (!trimmedString.equals("")) {
+//            LoadActivity.idList = Arrays.stream(trimmedString.split(","))
+//                    .map(Long::parseLong)
+//                    .collect(Collectors.toList());
+//        }
+//        Log.d("debugUserOnl", LoadActivity.idList.toString());
         Intent mainActivity = new Intent(context, MainActivity.class);
         context.startActivity(mainActivity);
     }
 
     public void updateOnlineUser(String userId) {
-        Long onlineUserId = Long.parseLong(userId);
-        LoadActivity.idList.add(onlineUserId);
-        Log.d("debugUserOnl", LoadActivity.idList.toString());
-        if (context instanceof ChattingActivity) {
-            if (((ChattingActivity) context).getCurrentChatRoom().getTargetUser().getId().equals(onlineUserId)) {
-                ((ChattingActivity) context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        View customView = ChattingActivity.actionBar.getCustomView();
-                        ImageView status = customView.findViewById(R.id.chatRoomStatus);
-                        status.setImageResource(R.drawable.online);
-                        ChattingActivity.actionBar.setCustomView(customView);
-                    }
-                });
-            }
-        } else if (context instanceof MainActivity) {
-            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
-                        PeopleFragment.userAdapter.notifyDataSetChanged();
-                    } catch (NullPointerException e) {
-
-                    }
-                }
-            });
-        }
+//        Long onlineUserId = Long.parseLong(userId);
+//        LoadActivity.idList.add(onlineUserId);
+//        Log.d("debugUserOnl", LoadActivity.idList.toString());
+//        if (context instanceof ChattingActivity) {
+//            if (((ChattingActivity) context).getCurrentChatRoom().getTargetUser().getId().equals(onlineUserId)) {
+//                ((ChattingActivity) context).runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        View customView = ChattingActivity.actionBar.getCustomView();
+//                        ImageView status = customView.findViewById(R.id.chatRoomStatus);
+//                        status.setImageResource(R.drawable.online);
+//                        ChattingActivity.actionBar.setCustomView(customView);
+//                    }
+//                });
+//            }
+//        } else if (context instanceof MainActivity) {
+//            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+//                        PeopleFragment.userAdapter.notifyDataSetChanged();
+//                    } catch (NullPointerException e) {
+//
+//                    }
+//                }
+//            });
+//        }
     }
 
     public void updateOfflineUser(String userId) {
-        Long offlineUserId = Long.parseLong(userId);
-        LoadActivity.idList.remove(offlineUserId);
-        Log.d("debugUserOnl", LoadActivity.idList.toString());
-        if (context instanceof ChattingActivity) {
-            if (((ChattingActivity) context).getCurrentChatRoom().getTargetUser().getId().equals(offlineUserId)) {
-                ((ChattingActivity) context).runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        View customView = ChattingActivity.actionBar.getCustomView();
-                        ImageView status = customView.findViewById(R.id.chatRoomStatus);
-                        status.setImageResource(R.drawable.circle);
-                        ChattingActivity.actionBar.setCustomView(customView);
-                    }
-                });
-            }
-        } else if (context instanceof MainActivity) {
-            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
-                        PeopleFragment.userAdapter.notifyDataSetChanged();
-                    } catch (NullPointerException e) {
-
-                    }
-                }
-            });
-        }
+//        Long offlineUserId = Long.parseLong(userId);
+//        LoadActivity.idList.remove(offlineUserId);
+//        Log.d("debugUserOnl", LoadActivity.idList.toString());
+//        if (context instanceof ChattingActivity) {
+//            if (((ChattingActivity) context).getCurrentChatRoom().getTargetUser().getId().equals(offlineUserId)) {
+//                ((ChattingActivity) context).runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        View customView = ChattingActivity.actionBar.getCustomView();
+//                        ImageView status = customView.findViewById(R.id.chatRoomStatus);
+//                        status.setImageResource(R.drawable.circle);
+//                        ChattingActivity.actionBar.setCustomView(customView);
+//                    }
+//                });
+//            }
+//        } else if (context instanceof MainActivity) {
+//            ((MainActivity) MainActivity.mainContext).runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        ChatRoomFragment.chatRoomAdapter.notifyDataSetChanged();
+//                        PeopleFragment.userAdapter.notifyDataSetChanged();
+//                    } catch (NullPointerException e) {
+//
+//                    }
+//                }
+//            });
+//        }
     }
 }

@@ -18,13 +18,13 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true" />
 
-        <ImageView
-            android:id="@+id/activeStatus"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/circle" />
+<!--        <ImageView-->
+<!--            android:id="@+id/activeStatus"-->
+<!--            android:layout_width="10dp"-->
+<!--            android:layout_height="10dp"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:src="@drawable/circle" />-->
 
     </RelativeLayout>
 

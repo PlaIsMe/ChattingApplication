@@ -68,10 +68,10 @@ public class UserAdapter extends BaseAdapter {
             avatar.setImageBitmap(currentUser.getDownloadAvatar());
         }
 
-        if (LoadActivity.idList.contains(currentUser.getId())) {
-            ImageView status = convertView.findViewById(R.id.activeStatus);
-            status.setImageResource(R.drawable.online);
-        }
+//        if (LoadActivity.idList.contains(currentUser.getId())) {
+//            ImageView status = convertView.findViewById(R.id.activeStatus);
+//            status.setImageResource(R.drawable.online);
+//        }
 
         return convertView;
     }
