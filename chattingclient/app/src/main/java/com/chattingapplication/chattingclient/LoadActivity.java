@@ -40,11 +40,9 @@ public class LoadActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);
-
         preferencesCheck = getSharedPreferences("check", MODE_PRIVATE);
         preferencesAccount = getSharedPreferences("account", MODE_PRIVATE);
         currentContext = this;
-//
         IP = Utils.getIpV4(this, "my_ipv4.json");
         apiUrl = String.format("http://%s:8080/api/", IP);
 //        IP = "34.101.218.243";
